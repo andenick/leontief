@@ -1,0 +1,405 @@
+/* =========================================================
+   tables.css — I-O Table Explorer styles
+   Extends site.css; uses CSS custom properties from :root.
+   ========================================================= */
+
+/* ----- Explorer controls bar ------------------------------ */
+
+.explorer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 20px;
+  align-items: flex-end;
+  padding: 16px 0 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.ctrl-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ctrl-group label {
+  font-size: .76rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 0;
+}
+
+.ctrl-group select,
+.ctrl-group input[type="search"] {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: .88rem;
+  background: var(--paper);
+  color: var(--ink);
+  min-width: 140px;
+  transition: border-color .12s;
+}
+
+.ctrl-group select:focus,
+.ctrl-group input[type="search"]:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 2px rgba(26, 58, 92, .12);
+}
+
+.ctrl-search input[type="search"] {
+  min-width: 200px;
+}
+
+/* ----- Caption / matrix info bar ------------------------- */
+
+.explorer-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: baseline;
+  padding: 10px 0 6px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+
+.caption-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  color: var(--navy);
+  font-weight: 600;
+  flex: 1 1 300px;
+}
+
+.caption-desc {
+  font-size: .87rem;
+  color: var(--muted);
+  font-style: italic;
+  flex: 2 1 360px;
+}
+
+.caption-dims {
+  font-size: .78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  background: var(--cream);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  align-self: center;
+}
+
+/* ----- Search hit banner ---------------------------------- */
+
+.search-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fffbe6;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: .87rem;
+  color: #7a5c00;
+  margin-bottom: 14px;
+}
+
+.search-clear-btn {
+  background: none;
+  border: 1px solid #c8a400;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: .8rem;
+  color: #7a5c00;
+  margin-left: auto;
+}
+
+.search-clear-btn:hover {
+  background: #ffe082;
+}
+
+/* ----- Loading / error status ----------------------------- */
+
+.explorer-status {
+  padding: 32px;
+  text-align: center;
+  color: var(--muted);
+  font-size: .95rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+
+.explorer-status.error {
+  color: var(--brick);
+  background: #fdf2f2;
+  border-color: #f5c6c6;
+}
+
+/* ----- Explorer view containers --------------------------- */
+
+.explorer-view {
+  margin-bottom: 8px;
+}
+
+#explorer-heatmap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  overflow: hidden;
+  min-height: 500px;
+}
+
+/* ----- Grid view ----------------------------------------- */
+
+#explorer-grid {
+  max-height: 600px;
+  overflow: auto;
+  position: relative;
+}
+
+#grid-inner {
+  overflow: visible;
+}
+
+table.io-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .78rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+table.io-grid th,
+table.io-grid td {
+  text-align: right;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--line);
+  min-width: 72px;
+}
+
+/* Sticky corner cell */
+table.io-grid th.corner {
+  text-align: left;
+  background: var(--cream);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  font-size: .72rem;
+  color: var(--muted);
+  min-width: 180px;
+  max-width: 220px;
+  white-space: normal;
+}
+
+/* Sticky header row (column labels) */
+table.io-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--cream);
+  font-size: .72rem;
+  color: var(--muted);
+  letter-spacing: .02em;
+  font-weight: 600;
+  writing-mode: initial;
+  padding: 6px 8px;
+}
+
+/* Sticky first column (row labels) */
+table.io-grid tbody td:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--cream);
+  font-weight: 500;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  font-size: .8rem;
+  color: var(--ink);
+}
+
+/* Row hover */
+table.io-grid tbody tr:hover td {
+  background: #f0f6ff;
+}
+
+table.io-grid tbody tr:hover td:first-child {
+  background: #ddeeff;
+}
+
+/* Header column hover highlight */
+table.io-grid th.col-highlight {
+  background: #ddeeff !important;
+  color: var(--navy) !important;
+}
+
+/* Row label hit highlight */
+table.io-grid td.row-hit:first-child {
+  background: #d0eef0 !important;
+  color: var(--teal) !important;
+  font-weight: 600;
+}
+
+/* Column header hit */
+table.io-grid th.col-hit {
+  background: #d0eef0 !important;
+  color: var(--teal) !important;
+}
+
+/* Value cell hit intersection */
+table.io-grid td.cell-hit {
+  background: #e8f9f7;
+}
+
+/* Cell value coloring (light heat scale added by JS via inline opacity) */
+table.io-grid td.val-cell {
+  transition: background .05s;
+}
+
+/* ----- Download bar --------------------------------------- */
+
+.download-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 16px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-top: 16px;
+  font-size: .84rem;
+}
+
+.dl-bar-label {
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dl-bar-sep {
+  color: var(--line);
+}
+
+.dl-link {
+  display: inline-block;
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-size: .78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background .1s, color .1s;
+  white-space: nowrap;
+}
+
+.dl-link:hover {
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+}
+
+.dl-link-bulk {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.dl-link-bulk:hover {
+  background: var(--teal);
+  color: #fff;
+}
+
+/* ----- Compact table-embed (hydrated by tables.js globally) */
+
+.table-embed-compact {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+.table-embed-compact .tec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.table-embed-compact .tec-title {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.table-embed-compact .tec-open {
+  font-size: .78rem;
+  color: var(--navy);
+  text-decoration: none;
+  border: 1px solid var(--navy);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.table-embed-compact .tec-open:hover {
+  background: var(--navy);
+  color: #fff;
+  text-decoration: none;
+}
+
+.table-embed-compact .tec-body {
+  max-height: 280px;
+  overflow: auto;
+}
+
+.table-embed-compact .tec-error {
+  padding: 16px;
+  color: var(--brick);
+  font-size: .88rem;
+}
+
+.table-embed-compact .tec-loading {
+  padding: 16px;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+/* ----- Responsive ---------------------------------------- */
+
+@media (max-width: 680px) {
+  .explorer-controls {
+    gap: 12px;
+  }
+
+  .ctrl-group select,
+  .ctrl-group input[type="search"] {
+    min-width: 110px;
+  }
+
+  .download-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .caption-label,
+  .caption-desc {
+    flex-basis: 100%;
+  }
+
+  #explorer-grid {
+    max-height: 400px;
+  }
+}

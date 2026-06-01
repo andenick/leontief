@@ -1,0 +1,41 @@
+# systemd unit — Wassily (Leontief) web app (non-Docker path)
+#
+# Install:
+#   sudo cp leontief-web.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now leontief-web
+#
+# Assumes:
+#   /opt/leontief/           — project root (rsync'd from dev machine)
+#   /opt/leontief/venv/      — Python 3.12 virtualenv with requirements.txt installed
+#   /opt/leontief/webapp/    — FastAPI app (app/, content/, site_data/ all present)
+#
+# PRE-BUILD on dev machine (before rsync):
+#   cd webapp
+#   python data_pipeline/vendor.py
+#   python data_pipeline/build_sectors.py
+#   python data_pipeline/build_cache.py
+#
+# No ExecStartPre for build_cache.py — data is static (BEA annual I-O tables);
+# the pre-built site_data/ is deployed once per BEA data vintage, not at boot.
+
+[Unit]
+Description=Wassily (Leontief) I-O tables website
+After=network.target
+
+[Service]
+Type=simple
+User=leontief
+WorkingDirectory=/opt/leontief/webapp
+Environment=PYTHONPATH=/opt/leontief/webapp
+Environment=WASSILY_HOST=leontief.nickanderson.us
+ExecStart=/opt/leontief/venv/bin/gunicorn app.main:app \
+    -k uvicorn.workers.UvicornWorker \
+    -w 2 \
+    -b 127.0.0.1:8080 \
+    --timeout 120
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

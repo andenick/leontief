@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}I-O Table Explorer — {{ site_title }}{% endblock %}
+{% block description %}Interactively explore U.S. BEA input-output matrices (Use, Supply, Leontief inverse, and more) across 71 sectors and 28 years, 1997–2024.{% endblock %}
+
+{% block content %}
+<main class="content">
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Hero / page header                                                   -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="hero" style="padding: 36px 0 28px;">
+    <div class="container">
+      <h1 style="font-size: 2.1rem; margin-bottom: 8px;">I-O Table Explorer</h1>
+      <p class="lead" style="margin-bottom: 0;">
+        Browse U.S. BEA input-output matrices for any year from 1997 to 2024.
+        Switch between 71-sector detail and 15-sector summary, search for sectors,
+        and download in CSV, XLSX, JSON, or Parquet.
+      </p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Explorer shell                                                       -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="container" style="padding-top: 28px; padding-bottom: 80px;">
+
+    <!-- Controls bar -->
+    <div class="explorer-controls controls" id="explorer-controls">
+
+      <!-- Year -->
+      <div class="ctrl-group">
+        <label for="ctrl-year">Year</label>
+        <select id="ctrl-year" name="year">
+          {% for y in range(2024, 1996, -1) %}
+          <option value="{{ y }}">{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Matrix type -->
+      <div class="ctrl-group">
+        <label for="ctrl-matrix">Matrix</label>
+        <select id="ctrl-matrix" name="matrix">
+          <option value="Use"      title="Use table — purchases from each industry by each industry and final demand">Use</option>
+          <option value="Supply"   title="Supply table — output of each commodity by each industry">Supply</option>
+          <option value="A"        title="Direct requirements — technical coefficients A = Z / q">A</option>
+          <option value="A_square" title="A matrix rearranged into a square industry-by-industry form">A_square</option>
+          <option value="L"        title="Total requirements / Leontief inverse — (I − A)⁻¹">L</option>
+          <option value="VA"       title="Value-added shares (compensation, taxes, gross operating surplus)">VA</option>
+          <option value="FD"       title="Final demand components (PCE, investment, government, exports)">FD</option>
+        </select>
+      </div>
+
+      <!-- Aggregation toggle -->
+      <div class="ctrl-group">
+        <label for="ctrl-agg">Sectors</label>
+        <select id="ctrl-agg" name="agg">
+          <option value="">71-sector (full)</option>
+          <option value="15">15-sector (grouped)</option>
+        </select>
+      </div>
+
+      <!-- View toggle -->
+      <div class="ctrl-group">
+        <label for="ctrl-view">View</label>
+        <select id="ctrl-view" name="view">
+          <option value="heatmap">Heatmap</option>
+          <option value="grid">Grid</option>
+        </select>
+      </div>
+
+      <!-- Sector search -->
+      <div class="ctrl-group ctrl-search">
+        <label for="ctrl-search">Search sectors</label>
+        <input type="search" id="ctrl-search" placeholder="e.g. farm, steel, transport…" autocomplete="off" style="min-width:200px;">
+      </div>
+
+    </div><!-- /.explorer-controls -->
+
+    <!-- Matrix info / caption bar -->
+    <div id="explorer-caption" class="explorer-caption" style="display:none;">
+      <div class="caption-label" id="caption-label"></div>
+      <div class="caption-desc" id="caption-desc"></div>
+      <div class="caption-dims" id="caption-dims"></div>
+    </div>
+
+    <!-- Search hits banner -->
+    <div id="search-banner" class="search-banner" style="display:none;">
+      <span id="search-banner-text"></span>
+      <button id="search-clear" class="search-clear-btn" type="button">✕ Clear</button>
+    </div>
+
+    <!-- Loading / error state -->
+    <div id="explorer-status" class="explorer-status" style="display:none;"></div>
+
+    <!-- Heatmap container -->
+    <div id="explorer-heatmap" class="explorer-view" style="display:none;">
+      <div id="heatmap-plot" style="min-height:500px;"></div>
+    </div>
+
+    <!-- Grid container -->
+    <div id="explorer-grid" class="explorer-view table-embed" style="display:none; padding:0;">
+      <div id="grid-inner"></div>
+    </div>
+
+    <!-- Download bar -->
+    <div class="download-bar" id="download-bar">
+      <span class="dl-bar-label">Download this matrix:</span>
+      <span class="dl-btns" id="dl-matrix-btns">
+        <a id="dl-csv"     href="#" class="dl-link">CSV</a>
+        <a id="dl-xlsx"    href="#" class="dl-link">XLSX</a>
+        <a id="dl-json"    href="#" class="dl-link">JSON</a>
+        <a id="dl-parquet" href="#" class="dl-link">Parquet</a>
+      </span>
+      <span class="dl-bar-sep">|</span>
+      <a id="dl-bulk" href="#" class="dl-link dl-link-bulk">Download all matrices for <span id="dl-bulk-year">2024</span></a>
+    </div>
+
+  </section>
+
+</main>
+{% endblock %}

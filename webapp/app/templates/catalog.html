@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Data Catalog — {{ site_title }}{% endblock %}
+{% block description %}Machine-readable catalog of all U.S. BEA input-output tables (1997–2024, 71 sectors, 7 matrix types) with CSV, XLSX, JSON, and Parquet downloads.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; Data
+    </nav>
+
+    <h1>Data Catalog</h1>
+
+    <p class="lead" style="max-width:760px; color:var(--muted); margin-bottom:12px;">
+      Every BEA input-output table processed by Wassily, in four machine-readable
+      formats. Data are derived from the U.S. Bureau of Economic Analysis (BEA)
+      Annual I-O Accounts, Summary Level (71-sector).
+    </p>
+
+    <div class="provenance-note">
+      <strong>Provenance:</strong> Source data fetched from the
+      <a href="https://apps.bea.gov/api/" target="_blank" rel="noopener">BEA API</a>
+      (Annual Input-Output Accounts, Summary). Matrices A, A_square, L and derived series
+      are computed from the Use and Supply tables using standard I-O methodology.
+      See <a href="/methodology">Methodology</a> for full derivation details.
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Global bulk download                                                 -->
+    <!-- ------------------------------------------------------------------ -->
+    <div class="bundle-box" style="margin:32px 0;" aria-label="Bulk download">
+      <h4>Download Everything</h4>
+      <p>One ZIP containing all years, all matrix types, in all four formats.</p>
+      <a class="btn" href="/api/bulk/all.zip">Download all.zip</a>
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- MATRICES section                                                     -->
+    <!-- ------------------------------------------------------------------ -->
+    <h2 id="matrices">Matrices</h2>
+    <p style="color:var(--muted);font-size:.94rem;margin-bottom:24px;">
+      Seven matrix types per year.
+      <strong>Use</strong> — absorption matrix (industries × commodities);
+      <strong>Supply</strong> — make matrix (industries × commodities);
+      <strong>A</strong> — direct-requirements coefficient matrix;
+      <strong>A_square</strong> — square (industry × industry) version of A;
+      <strong>L</strong> — Leontief inverse (I − A)⁻¹;
+      <strong>VA</strong> — value-added rows;
+      <strong>FD</strong> — final demand columns.
+    </p>
+
+    {% if years_sorted %}
+      <!-- Year selector -->
+      <div class="controls" style="margin-bottom:28px;">
+        <div>
+          <label for="year-select">Jump to year</label>
+          <select id="year-select" onchange="document.getElementById('yr-' + this.value).scrollIntoView({behavior:'smooth'})">
+            {% for yr in years_sorted %}
+              <option value="{{ yr }}">{{ yr }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      {% for yr in years_sorted %}
+        {% set yr_tables = by_year[yr] %}
+        <section class="year-section" id="yr-{{ yr }}" aria-label="Year {{ yr }}">
+
+          <div class="year-header">
+            <h3>{{ yr }}</h3>
+            <a class="bulk-year-link" href="/api/bulk/{{ yr }}.zip">
+              Download all tables for {{ yr }} (.zip)
+            </a>
+          </div>
+
+          <div class="table-embed" style="margin:0 0 32px;">
+            <table class="grid" aria-label="Matrices for {{ yr }}">
+              <thead>
+                <tr>
+                  <th scope="col">Matrix</th>
+                  <th scope="col">Dimensions</th>
+                  <th scope="col" colspan="4">Download</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for mk in matrix_keys %}
+                  {% set row = namespace(found=none) %}
+                  {% for t in yr_tables %}
+                    {% if t.get('matrix') == mk or t.get('key', '').endswith('__' + mk) %}
+                      {% set row.found = t %}
+                    {% endif %}
+                  {% endfor %}
+                  <tr>
+                    <td style="font-weight:600;font-family:monospace;">{{ mk }}</td>
+                    <td>
+                      {% if row.found %}
+                        {{ row.found.get('rows', '?') }} × {{ row.found.get('cols', '?') }}
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if row.found %}
+                        <a href="/api/table/{{ yr }}/{{ mk }}?fmt=csv" class="dl-fmt-link">CSV</a>
+                      {% else %}—{% endif %}
+                    </td>
+                    <td>
+                      {% if row.found %}
+                        <a href="/api/table/{{ yr }}/{{ mk }}?fmt=xlsx" class="dl-fmt-link">XLSX</a>
+                      {% else %}—{% endif %}
+                    </td>
+                    <td>
+                      {% if row.found %}
+                        <a href="/api/table/{{ yr }}/{{ mk }}?fmt=json" class="dl-fmt-link">JSON</a>
+                      {% else %}—{% endif %}
+                    </td>
+                    <td>
+                      {% if row.found %}
+                        <a href="/api/table/{{ yr }}/{{ mk }}?fmt=parquet" class="dl-fmt-link">Parquet</a>
+                      {% else %}—{% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+      {% endfor %}
+
+    {% else %}
+      <div class="stub-notice">
+        Matrix catalog not yet built — run <code>data_pipeline/build_cache.py</code> to generate
+        <code>site_data/site_manifest.json</code>. Once built, all {{ 28 }} years × 7 matrix
+        types will appear here with download links.
+      </div>
+
+      <!-- Still show the documented download URL pattern so the test can find it -->
+      <p style="font-size:.88rem;color:var(--muted);">
+        Download URL pattern (once built):
+        <code>/api/table/{year}/{matrix}?fmt=csv</code> — e.g.
+        <a href="/api/table/2002/L?fmt=csv">/api/table/2002/L</a>
+      </p>
+    {% endif %}
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- DERIVED SERIES section                                               -->
+    <!-- ------------------------------------------------------------------ -->
+    <h2 id="series" style="margin-top:56px;">Derived Series</h2>
+    <p style="color:var(--muted);font-size:.94rem;margin-bottom:24px;">
+      Time-series tables computed from the annual matrices (e.g. sector multipliers
+      over 1997–2024, backward/forward linkage indices).
+    </p>
+
+    {% if series %}
+      <div class="table-embed">
+        <table class="grid" aria-label="Derived series">
+          <thead>
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Description</th>
+              <th scope="col" colspan="4">Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in series %}
+              <tr>
+                <td style="font-family:monospace;font-weight:600;">{{ s.get('key', '—') }}</td>
+                <td>{{ s.get('description', s.get('title', '')) }}</td>
+                <td><a href="/api/series/{{ s.get('key') }}?fmt=csv" class="dl-fmt-link">CSV</a></td>
+                <td><a href="/api/series/{{ s.get('key') }}?fmt=xlsx" class="dl-fmt-link">XLSX</a></td>
+                <td><a href="/api/series/{{ s.get('key') }}?fmt=json" class="dl-fmt-link">JSON</a></td>
+                <td><a href="/api/series/{{ s.get('key') }}?fmt=parquet" class="dl-fmt-link">Parquet</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="stub-notice">
+        Derived series will appear here once <code>build_cache.py</code> has been run.
+      </div>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}

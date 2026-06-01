@@ -1,0 +1,54 @@
+{
+  "leontief_1936": {
+    "label": "Leontief, W. (1936). Quantitative input and output relations in the economic system of the United States. <em>Review of Economics and Statistics</em>, 18(3), 105–125.",
+    "url": "https://www.jstor.org/stable/1927837"
+  },
+  "leontief_1941": {
+    "label": "Leontief, W. (1941). <em>The Structure of American Economy, 1919–1929</em>. Harvard University Press.",
+    "url": ""
+  },
+  "leontief_1970": {
+    "label": "Leontief, W. (1970). Environmental repercussions and the economic structure: An input-output approach. <em>Review of Economics and Statistics</em>, 52(3), 262–271.",
+    "url": "https://www.jstor.org/stable/1926294"
+  },
+  "leontief_1973": {
+    "label": "Leontief, W. (1973). Structure of the world economy: Outline of a simple input-output formulation. Nobel Prize Lecture, December 11, 1973.",
+    "url": "https://www.nobelprize.org/prizes/economic-sciences/1973/leontief/lecture/"
+  },
+  "leontief_1986": {
+    "label": "Leontief, W. (1986). <em>Input-Output Economics</em> (2nd ed.). Oxford University Press.",
+    "url": ""
+  },
+  "miller_blair_2022": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2022). <em>Input-Output Analysis: Foundations and Extensions</em> (3rd ed.). Cambridge University Press.",
+    "url": "https://www.cambridge.org/core/books/inputoutput-analysis/EED2427B0C8AB77BF0B64A6DD68F9F3A"
+  },
+  "bea_concepts_2009": {
+    "label": "Horowitz, K. J., &amp; Planting, M. A. (2009). <em>Concepts and Methods of the U.S. Input-Output Accounts</em>. Bureau of Economic Analysis, U.S. Department of Commerce.",
+    "url": "https://www.bea.gov/sites/default/files/methodologies/IOmanual_092906.pdf"
+  },
+  "dietzenbacher_los_1998": {
+    "label": "Dietzenbacher, E., &amp; Los, B. (1998). Structural decomposition techniques: Sense and sensitivity. <em>Economic Systems Research</em>, 10(4), 307–323.",
+    "url": ""
+  },
+  "acemoglu_2012": {
+    "label": "Acemoglu, D., Carvalho, V. M., Ozdaglar, A., &amp; Tahbaz-Salehi, A. (2012). The network origins of aggregate fluctuations. <em>Econometrica</em>, 80(5), 1977–2016.",
+    "url": "https://doi.org/10.3982/ECTA9623"
+  },
+  "pasinetti_1981": {
+    "label": "Pasinetti, L. L. (1981). <em>Structural Change and Economic Growth: A Theoretical Essay on the Dynamics of the Wealth of Nations</em>. Cambridge University Press.",
+    "url": ""
+  },
+  "godley_lavoie_2007": {
+    "label": "Godley, W., &amp; Lavoie, M. (2007). <em>Monetary Economics: An Integrated Approach to Credit, Money, Income, Production and Wealth</em>. Palgrave Macmillan.",
+    "url": ""
+  },
+  "un_handbook_2018": {
+    "label": "United Nations, et al. (2018). <em>Handbook on Supply, Use and Input-Output Tables with Extensions and Applications</em>. United Nations Statistics Division.",
+    "url": "https://unstats.un.org/unsd/nationalaccount/docs/SUT_IOT_HB_wc.pdf"
+  },
+  "shaikh_capitalism_2016": {
+    "label": "Shaikh, A. (2016). <em>Capitalism: Competition, Conflict, Crises</em>. Oxford University Press.",
+    "url": ""
+  }
+}

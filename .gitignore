@@ -1,0 +1,120 @@
+# ============ Leontief code-only .gitignore ============
+# --- Data trees ---
+Inputs/
+Outputs/
+_archive/
+Technical/data/
+Technical/logs/
+# build-progress state artifact (not source; high-entropy slug list trips scanners)
+Technical/website_build/build_state.json
+**/site_data/
+site_data/
+**/data/raw/
+**/data/processed/
+
+# --- Vendored / large static assets ---
+**/static/vendor/
+**/static/**/*.woff2
+**/static/**/*.woff
+**/static/**/*.ttf
+
+# --- Data / large binary file types ---
+*.parquet
+*.feather
+*.rdb
+*.rds
+*.sqlite
+*.sqlite3
+*.db
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.gz
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.docx
+*.doc
+*.pptx
+*.h5
+*.nc
+*.dta
+
+# --- Notebooks (often embed large data/outputs) ---
+*.ipynb
+
+# --- Caches / build ---
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+.pytest_cache/
+**/.pytest_cache/
+.ipynb_checkpoints/
+*_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+node_modules/
+
+# --- Virtual envs ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Secrets / credentials ---
+*.env
+.env
+.env.*
+api_keys*
+*.key
+*.pem
+credentials*
+secrets*
+*token*
+*.secret
+
+# --- LaTeX build artifacts ---
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.backup_*
+.backup_*
+
+# --- Internal session/process docs (Arcanum Publication Hygiene Standard) ---
+**/Handoffs/
+**/HANDOFF_*.md
+**/*HANDOFF*.md
+**/PROGRESS_LOG.md
+**/*PROGRESS_LOG.md
+.claude/
+.cursor/
+CLAUDE.md
+AGENTS.md
+**/*_PLAN.md
+**/REBUILD_PLAN.md
+**/NEXT_STEPS*.md
+**/DECISION_LOG*.md
+**/*WISHLIST*.md
+**/DEVELOPMENT_ROADMAP.md
+**/*DEVELOPMENT_ROADMAP.md
+**/WYNNE_KB_IO_SYNTHESIS.md

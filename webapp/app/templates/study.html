@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} — {{ site_title }}{% endblock %}
+{% block description %}{{ meta.get('summary', title + ' — a reproducible input-output analysis study.') }}{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; <a href="/studies">Studies</a> &rsaquo; {{ title }}
+    </nav>
+
+    <h1>{{ title }}</h1>
+
+    {% if meta.get('summary') %}
+      <p class="lead" style="color:var(--muted);max-width:680px;margin-bottom:32px;">
+        {{ meta.summary }}
+      </p>
+    {% endif %}
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Reproduce this study box                                             -->
+    <!-- ------------------------------------------------------------------ -->
+    <div class="bundle-box" role="complementary" aria-label="Reproduce this study">
+      <h4>Reproduce this Study</h4>
+      <p>
+        Download the complete code bundle, run it with the Wassily data,
+        and get the identical charts and tables shown below.
+      </p>
+      <a class="btn" href="/api/study/{{ slug }}/bundle.zip" download>
+        Download bundle (.zip)
+      </a>
+      {% if code_files %}
+        <ul class="code-file-list" style="margin:12px 0 0; padding-left:20px; font-size:.9rem;">
+          {% for f in code_files %}
+            <li><a href="/api/file/{{ f }}">{{ f }}</a></li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Narrative + embedded charts/tables from markdown                     -->
+    <!-- ------------------------------------------------------------------ -->
+    <div class="prose">
+      {{ doc_html | safe }}
+    </div>
+
+    {% if citations %}
+      <section class="references" aria-label="References">
+        <h2>References</h2>
+        <ol>
+          {% for c in citations %}
+            <li id="cite-{{ c.key }}">
+              [{{ c.n }}]
+              {% if c.get('label') %}{{ c.label }}{% else %}{{ c.key }}{% endif %}
+              {% if c.get('url') %} — <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a>{% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+    <p style="margin-top:32px;">
+      <a href="/studies">&larr; All studies</a>
+    </p>
+
+  </div>
+</main>
+{% endblock %}

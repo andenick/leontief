@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} — {{ site_title }}{% endblock %}
+{% block description %}{{ title }} — {{ site_title }}: {{ tagline }}.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container narrative-layout">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; {{ title }}
+    </nav>
+
+    <article class="prose narrative-prose">
+      <h1>{{ title }}</h1>
+      {{ doc_html | safe }}
+    </article>
+
+    {% if citations %}
+      <section class="references" aria-label="References">
+        <h2>References</h2>
+        <ol>
+          {% for c in citations %}
+            <li id="cite-{{ c.key }}">
+              [{{ c.n }}]
+              {% if c.get('label') %}{{ c.label }}{% else %}{{ c.key }}{% endif %}
+              {% if c.get('url') %} — <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a>{% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}

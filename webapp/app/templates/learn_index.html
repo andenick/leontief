@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Learn — {{ site_title }}{% endblock %}
+{% block description %}Progressive tutorials on U.S. input-output analysis: reading I-O tables, computing multipliers, linkages, structural decomposition, and more.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; Learn
+    </nav>
+
+    <h1>Learn Input-Output Analysis</h1>
+    <p class="lead" style="max-width:700px; color:var(--muted); margin-bottom:40px;">
+      A self-contained tutorial track — from the basics of reading an I-O table
+      through advanced multiplier, linkage, and structural-decomposition methods.
+      Each tutorial includes worked examples, KaTeX equations, and embedded charts.
+    </p>
+
+    {% if tutorials %}
+      <ol class="tutorial-list" role="list">
+        {% for t in tutorials %}
+          {% set meta = t.meta %}
+          {% set order = meta.get('order', loop.index) %}
+          <li class="tutorial-item">
+            <a class="tutorial-link" href="/learn/{{ t.slug }}">
+              <span class="tutorial-num">{{ '%02d' % order }}</span>
+              <div class="tutorial-body">
+                <h2 class="tutorial-title">{{ meta.get('title', t.slug) }}</h2>
+                {% if meta.get('summary') %}
+                  <p class="tutorial-summary">{{ meta.summary }}</p>
+                {% endif %}
+                {% if meta.get('difficulty') %}
+                  <span class="badge
+                    {% if meta.difficulty == 'beginner' %}live
+                    {% elif meta.difficulty == 'intermediate' %}wip
+                    {% else %}pending{% endif %}">
+                    {{ meta.difficulty | capitalize }}
+                  </span>
+                {% endif %}
+              </div>
+              <span class="tutorial-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <div class="empty-state">
+        <p>Tutorials are being prepared. Check back soon.</p>
+        <p>In the meantime, browse the <a href="/data">data catalog</a> or read the <a href="/methodology">methodology</a>.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}

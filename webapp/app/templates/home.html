@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ site_title }} — {{ tagline }}{% endblock %}
+{% block description %}Free, downloadable U.S. BEA input-output tables for 71 sectors, 1997–2024. Interactive explorer, tutorials, and reproducible studies.{% endblock %}
+
+{% block content %}
+<main>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Hero                                                                 -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="hero">
+    <div class="container">
+      <h1>Understand the U.S. Economy<br>as a Web of Industries</h1>
+      <p class="lead">
+        Free, one-click-downloadable BEA input-output tables for {{ n_sectors or 71 }} sectors
+        across {{ n_years or 28 }} years — plus an interactive explorer, progressive tutorials,
+        and fully reproducible example studies.
+      </p>
+
+      <!-- Headline stats -->
+      <div class="stats">
+        <div class="stat">
+          <span class="v">{{ n_years or 28 }}</span>
+          <span class="l">Years of data<br>(1997–2024)</span>
+        </div>
+        <div class="stat">
+          <span class="v">{{ n_sectors or 71 }}</span>
+          <span class="l">BEA sectors<br>(Summary level)</span>
+        </div>
+        <div class="stat">
+          <span class="v">{{ n_studies if n_studies else "—" }}</span>
+          <span class="l">Reproducible<br>studies</span>
+        </div>
+        <div class="stat">
+          <span class="v">{{ n_tutorials if n_tutorials else "—" }}</span>
+          <span class="l">Tutorials</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- What is an I-O table? teaser                                        -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="container io-teaser">
+    <div class="prose">
+      <h2>What is an Input-Output Table?</h2>
+      <p>
+        An input-output (I-O) table is a matrix that records how much each
+        industry in an economy buys from every other industry — and from final
+        demand (households, government, exports). Developed by Nobel laureate
+        Wassily Leontief in the 1940s, I-O analysis lets economists answer
+        questions like: <em>if auto sales rise by $1 billion, how much does
+        steel output need to grow?</em>
+      </p>
+      <p>
+        The U.S. Bureau of Economic Analysis (BEA) publishes annual I-O accounts
+        at the summary (71-sector) level. This site packages every table from
+        1997 to 2024 into machine-readable formats and derived matrices — all
+        freely downloadable and reproducible.
+      </p>
+      <p><a href="/learn">Start with the tutorials &rarr;</a></p>
+    </div>
+
+    <!-- Embedded chart: multiplier trend (hydrated client-side by app.js) -->
+    <div class="chart-embed" data-chart="multiplier_trend"></div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <!-- Section cards                                                        -->
+  <!-- ------------------------------------------------------------------ -->
+  <section class="container" style="padding-top:16px; padding-bottom:80px;">
+
+    <div class="cards">
+
+      <a class="card" href="/learn">
+        <h3>Learn</h3>
+        <p>A progressive tutorial track covering what an I-O table is,
+           how to read it, and how to compute multipliers, linkages, structural
+           decomposition, and more — with KaTeX math and embedded examples.</p>
+        {% if n_tutorials %}
+          <span class="badge live">{{ n_tutorials }} tutorial{{ 's' if n_tutorials != 1 }}</span>
+        {% else %}
+          <span class="badge wip">Tutorials</span>
+        {% endif %}
+      </a>
+
+      <a class="card" href="/tables">
+        <h3>Tables</h3>
+        <p>Interactive I-O Table Explorer: pick a year (1997–2024) and matrix
+           (Use, Supply, Leontief inverse, …), toggle 71↔15-sector aggregation,
+           search sectors, and download in CSV, XLSX, JSON, or Parquet.</p>
+        <span class="badge live">{{ n_years or 28 }} years × 7 matrices</span>
+      </a>
+
+      <a class="card" href="/studies">
+        <h3>Studies</h3>
+        <p>Fully reproducible example analyses — key sectors, multipliers,
+           supply-chain networks, structural decomposition, and more.
+           Every chart links to the exact Python code that produced it.</p>
+        {% if n_studies %}
+          <span class="badge live">{{ n_studies }} stud{{ 'y' if n_studies == 1 else 'ies' }}</span>
+        {% else %}
+          <span class="badge wip">Studies</span>
+        {% endif %}
+      </a>
+
+      <a class="card" href="/data">
+        <h3>Data</h3>
+        <p>Machine-readable catalog of every table and derived series, with
+           provenance notes and bulk downloads for every year or the full dataset.</p>
+        <span class="badge live">BEA U.S. only</span>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+{% endblock %}

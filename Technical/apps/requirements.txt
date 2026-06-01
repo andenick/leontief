@@ -1,0 +1,19 @@
+# Wassily Platform Dependencies
+# Leontief.io Project - Interactive I-O Analysis Explorer
+
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+streamlit>=1.28.0
+plotly>=5.17.0
+
+# Data storage
+openpyxl>=3.1.0
+
+# Scientific computing
+scipy>=1.11.0
+
+# Additional utilities
+pillow>=10.0.0  # For image handling in Streamlit

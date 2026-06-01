@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site_title }} — {{ tagline }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ tagline }}{% endblock %}">
+
+  <!-- KaTeX (math rendering — vendored, no CDN) -->
+  <link rel="stylesheet" href="/static/vendor/katex/katex.min.css">
+
+  <!-- Site stylesheet -->
+  <link rel="stylesheet" href="/static/css/site.css">
+
+  <!-- Pygments code-highlight stylesheet -->
+  <link rel="stylesheet" href="/static/vendor/pygments.css">
+
+  <!-- Plotly (vendored, no CDN) -->
+  <script src="/static/vendor/plotly.min.js"></script>
+
+  <!-- KaTeX runtime (vendored) -->
+  <script defer src="/static/vendor/katex/katex.min.js"></script>
+  <script defer src="/static/vendor/katex/auto-render.min.js"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$',  right: '$',  display: false}
+            ],
+            throwOnError: false
+          });"></script>
+
+  <!-- App JS (chart hydration, code-copy buttons) -->
+  <script defer src="/static/js/app.js"></script>
+
+  <!-- I-O Table Explorer CSS + JS (loaded globally; also hydrates table embeds) -->
+  <link rel="stylesheet" href="/static/css/tables.css">
+  <script src="/static/js/tables.js" defer></script>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Sticky navigation                                                    -->
+<!-- ------------------------------------------------------------------ -->
+<header class="nav">
+  <div class="inner">
+    <a class="brand" href="/">{{ site_title }}<small>{{ tagline }}</small></a>
+    <nav>
+      {% set s = section | default('') %}
+      <a href="/learn"        class="{{ 'active' if s == 'Learn' }}">Learn</a>
+      <a href="/tables"       class="{{ 'active' if s == 'Tables' }}">Tables</a>
+      <a href="/studies"      class="{{ 'active' if s == 'Studies' }}">Studies</a>
+      <a href="/data"         class="{{ 'active' if s == 'Data' }}">Data</a>
+      <a href="/methodology"  class="{{ 'active' if s == 'Methodology' }}">Methodology</a>
+      <a href="/about"        class="{{ 'active' if s == 'About' }}">About</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Page content                                                         -->
+<!-- ------------------------------------------------------------------ -->
+{% block content %}{% endblock %}
+
+<!-- ------------------------------------------------------------------ -->
+<!-- Footer                                                               -->
+<!-- ------------------------------------------------------------------ -->
+<footer class="site">
+  <div class="container">
+    <strong>{{ site_title }}</strong> — {{ tagline }}.
+    Named for Wassily Leontief (1905–1999), Nobel laureate and inventor
+    of input-output analysis. Data from the U.S. Bureau of Economic Analysis.
+    <br>
+    <a href="/methodology">Methodology &amp; sources</a> ·
+    <a href="/data">Download data</a> ·
+    <a href="/about">About &amp; reproducibility</a>
+    <br><br>
+    <em>Reproducibility note:</em> every chart on this site is produced by
+    the same Python code available for download on the Studies pages.
+    Download the code, run it yourself, and get the identical output.
+  </div>
+</footer>
+
+{% block body_scripts %}{% endblock %}
+</body>
+</html>

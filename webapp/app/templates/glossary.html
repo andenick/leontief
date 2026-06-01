@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Glossary — {{ site_title }}{% endblock %}
+{% block description %}Input-output analysis terminology glossary — definitions for I-O tables, Leontief inverse, multipliers, linkages, and more.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; Glossary
+    </nav>
+
+    <article class="prose glossary-prose">
+      <h1>{{ title }}</h1>
+      {{ doc_html | safe }}
+    </article>
+
+    {% if citations %}
+      <section class="references" aria-label="References">
+        <h2>References</h2>
+        <ol>
+          {% for c in citations %}
+            <li id="cite-{{ c.key }}">
+              [{{ c.n }}]
+              {% if c.get('label') %}{{ c.label }}{% else %}{{ c.key }}{% endif %}
+              {% if c.get('url') %} — <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a>{% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}

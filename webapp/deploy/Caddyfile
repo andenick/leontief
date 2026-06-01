@@ -1,0 +1,47 @@
+# Caddyfile — Wassily (Leontief) I-O website
+# Caddy 2.8 · automatic HTTPS via Let's Encrypt (no certbot needed)
+# Public subdomain: leontief.nickanderson.us → internal app:8080
+#
+# Deployment note: the server must be reachable on ports 80 + 443 for
+# ACME HTTP-01 challenge. With Cloudflare Tunnel + no open router ports,
+# use Caddy's Cloudflare DNS-01 challenge instead (add the
+# caddy-dns/cloudflare plugin and a CF_API_TOKEN env var), OR let
+# cloudflared terminate TLS at the edge and have Caddy serve plain HTTP
+# internally on 127.0.0.1:8080 (simplest for our tunnel topology).
+
+leontief.nickanderson.us {
+    # Gzip compression for all text responses
+    encode gzip
+
+    # Long-lived cache for versioned static assets (JS, CSS, fonts, images)
+    header /static/* Cache-Control "public, max-age=86400, stale-while-revalidate=3600"
+
+    # Proxy everything to the app container
+    reverse_proxy app:8080 {
+        # Pass real client IP so app logs are useful
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Give gunicorn time to handle slow I-O table renders
+        transport http {
+            read_timeout 120s
+        }
+    }
+
+    # Health check endpoint — suppress access logs
+    @healthz path /healthz
+    log @healthz {
+        output discard
+    }
+}
+
+
+# ── Local testing (HTTP only — no TLS, no ACME challenge) ─────────────────
+# Uncomment this block and comment the block above to test locally:
+#
+# :8080 {
+#     encode gzip
+#     header /static/* Cache-Control "public, max-age=86400"
+#     reverse_proxy app:8080
+# }

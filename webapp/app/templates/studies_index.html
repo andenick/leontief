@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Studies — {{ site_title }}{% endblock %}
+{% block description %}Fully reproducible input-output analysis studies — multipliers, sector linkages, supply-chain networks, structural decomposition, and more.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; Studies
+    </nav>
+
+    <h1>Reproducible Studies</h1>
+    <p class="lead" style="max-width:700px; color:var(--muted); margin-bottom:40px;">
+      Worked examples using the Wassily I-O data — each with an embedded narrative,
+      charts produced by downloadable Python code, and a one-click bundle so you
+      can reproduce every figure on your own machine.
+    </p>
+
+    {% if studies %}
+      <div class="cards">
+        {% for s in studies %}
+          {% set meta = s.meta %}
+          <a class="card" href="/studies/{{ s.slug }}">
+            <h3>{{ meta.get('title', s.slug) }}</h3>
+            {% if meta.get('summary') %}
+              <p>{{ meta.summary }}</p>
+            {% endif %}
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;">
+              {% if meta.get('difficulty') %}
+                <span class="badge
+                  {% if meta.difficulty == 'beginner' %}live
+                  {% elif meta.difficulty == 'intermediate' %}wip
+                  {% else %}pending{% endif %}">
+                  {{ meta.difficulty | capitalize }}
+                </span>
+              {% endif %}
+              <span class="badge live">Reproducible</span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>Studies are being prepared and will appear here soon.</p>
+        <p>While you wait, explore the <a href="/learn">tutorials</a> or download data from the <a href="/data">catalog</a>.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</main>
+{% endblock %}

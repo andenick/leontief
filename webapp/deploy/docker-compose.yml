@@ -1,0 +1,63 @@
+# Wassily (Leontief) I-O website — self-host stack
+#
+# TWO services only — app + caddy.
+# No refresh service: BEA annual I-O data is static; site_data/ is pre-built
+# on the dev machine before `docker build`.
+#
+# Usage (from project root D:\Arcanum\Projects\Leontief):
+#   docker compose -f webapp/deploy/docker-compose.yml up -d --build
+#
+# Prerequisites (run on dev machine before docker build):
+#   cd webapp
+#   python data_pipeline/build_sectors.py
+#   python data_pipeline/build_cache.py
+#   # optional (not yet implemented):
+#   # python data_pipeline/run_studies.py
+#
+# Public exposure: Cloudflare Tunnel (outbound-only, no open router ports).
+# See README.md for full go-live steps.
+# Sites registry: Council/Carson/Technical/sites_registry.json
+
+services:
+
+  # ── Application (FastAPI + gunicorn + UvicornWorker) ─────────────────────
+  app:
+    build:
+      context: ../..          # project root = D:\Arcanum\Projects\Leontief
+      dockerfile: webapp/deploy/Dockerfile
+    environment:
+      - PYTHONPATH=/app/webapp
+      - WASSILY_HOST=${WASSILY_HOST:-leontief.nickanderson.us}
+      - WEB_CONCURRENCY=${WORKERS:-2}
+    expose:
+      - "8080"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - "CMD"
+        - "python"
+        - "-c"
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8080/healthz').status==200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ── Reverse proxy / TLS (Caddy — automatic HTTPS via Let's Encrypt) ───────
+  caddy:
+    image: caddy:2.8-alpine
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+    # persists ACME certificates across container restarts
+  caddy_config:
