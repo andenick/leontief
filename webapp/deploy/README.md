@@ -1,19 +1,17 @@
-# Deploy Runbook — Wassily (Leontief) I-O Website
+# Deploy Runbook — Leontief I-O Website
 
 **Subdomain:** `leontief.nickanderson.us`
 **Stack:** FastAPI + gunicorn/uvicorn · Caddy 2.8 · Cloudflare Tunnel
-**Hardware:** Carson mini PC (go-live GATED — box not yet online; see below)
-**Sites registry:** `Council/Carson/Technical/sites_registry.json`
-**Architecture:** `Council/Carson/Technical/HOSTING_ARCHITECTURE.md`
+**Hosting:** any self-hosted Linux box (go-live GATED — not yet online; see below)
 
 ---
 
 ## Why no refresh service?
 
 BEA publishes I-O tables annually (typically April/May for the prior year).
-Unlike Gerhard (live FRED/BLS data), Wassily's data is fully static between
-BEA vintages. There is no scheduled refresh container. Redeploy (`docker compose
-up -d --build`) once per BEA release after re-running the pre-build steps.
+Leontief's data is fully static between BEA vintages. There is no scheduled
+refresh container. Redeploy (`docker compose up -d --build`) once per BEA
+release after re-running the pre-build steps.
 
 ---
 
@@ -22,7 +20,7 @@ up -d --build`) once per BEA release after re-running the pre-build steps.
 Ensure the Python webapp venv is active:
 
 ```powershell
-# Windows dev machine (D:\Arcanum\Projects\Leontief\webapp)
+# Windows dev machine (from the project root: <project-root>\webapp)
 .venv\Scripts\Activate
 ```
 
@@ -35,7 +33,7 @@ Ensure the Python webapp venv is active:
 before the image is built and then copied in.
 
 ```bash
-cd D:\Arcanum\Projects\Leontief\webapp
+cd <project-root>/webapp
 
 # Step 1: vendor front-end assets (plotly, KaTeX, Pygments CSS)
 python data_pipeline/vendor.py
@@ -59,7 +57,7 @@ After these steps, verify `webapp/site_data/` contains:
 
 ## 2. Build and start the stack
 
-From the project root (`D:\Arcanum\Projects\Leontief`):
+From the project root (one level above `webapp/`):
 
 ```bash
 docker compose -f webapp/deploy/docker-compose.yml up -d --build
@@ -76,7 +74,7 @@ This builds the image (copies app/, content/, site_data/) and starts:
 ```bash
 # Health check
 curl http://localhost:8080/healthz
-# Expected: {"status":"ok","site":"Wassily","manifest_present":true,...}
+# Expected: {"status":"ok","site":"Leontief","manifest_present":true,...}
 
 # Via Caddy (on the server, before public DNS is live)
 curl -H "Host: leontief.nickanderson.us" http://localhost/healthz
@@ -88,7 +86,7 @@ curl -H "Host: leontief.nickanderson.us" http://localhost/healthz
 
 TLS terminates at the Cloudflare edge. The box never opens an inbound port.
 
-### 4a. Install cloudflared (on the Carson mini PC, Debian/Ubuntu)
+### 4a. Install cloudflared (on the host, Debian/Ubuntu)
 
 ```bash
 curl -L --output cloudflared.deb \
@@ -135,25 +133,22 @@ Cloudflare forwards `leontief.nickanderson.us` → tunnel → `localhost:80` (Ca
 curl -I https://leontief.nickanderson.us
 # Expected: HTTP/2 200, server: cloudflare
 curl https://leontief.nickanderson.us/healthz
-# Expected: {"status":"ok","site":"Wassily",...}
+# Expected: {"status":"ok","site":"Leontief",...}
 ```
 
 ---
 
 ## 6. GO-LIVE GATE
 
-**Carson mini PC is not yet online (as of 2026-05-31).** This runbook is
-complete and ready; execute from step 0 once:
+**The hosting box is not yet online.** This runbook is complete and ready;
+execute from step 0 once:
 
-- [ ] Carson hardware purchased and powered on
+- [ ] Host hardware powered on
 - [ ] Debian/Ubuntu headless installed; SSH key auth; UFW default-deny
 - [ ] Docker + Compose plugin installed; non-root docker group
-- [ ] Tailscale joined (admin access over VPN)
+- [ ] Admin access over VPN configured (optional)
 - [ ] `nickanderson.us` DNS nameservers moved to Cloudflare
 - [ ] cloudflared installed and authenticated
-
-Reference checklist: `Council/Carson/Technical/HOSTING_ARCHITECTURE.md`
-(Open setup checklist section).
 
 ---
 
@@ -190,7 +185,7 @@ sudo systemctl enable --now leontief-web
 | `Dockerfile` | Production image (python:3.12-slim, vendored assets, pre-built site_data) |
 | `docker-compose.yml` | app + caddy services; no refresh service (static data) |
 | `Caddyfile` | Reverse proxy + automatic HTTPS; `leontief.nickanderson.us` |
-| `nginx.conf` | Equivalent nginx alternative (for parity with Gerhard) |
+| `nginx.conf` | Equivalent nginx alternative |
 | `leontief-web.service` | systemd unit for non-Docker venv deploy |
-| `.env.example` | Environment variable template (no secrets needed) |
+| `.env.example` | Environment variable template (no secrets needed to serve) |
 | `README.md` | This runbook |

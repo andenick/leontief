@@ -1,4 +1,4 @@
-# Wassily - Technical Implementation
+# Leontief - Technical Implementation
 
 **Project:** Input-Output Tables Analysis Tool
 **Language:** Python
@@ -11,7 +11,7 @@
 **Type:** Monolithic analytical tool
 **Approach:** Modular functions for I-O analysis, unified interface
 
-Wassily is designed as a comprehensive I-O analysis tool with:
+Leontief is designed as a comprehensive I-O analysis tool with:
 - **Data acquisition module** - Download/load I-O tables from various sources
 - **Data processing module** - Standardize and clean I-O tables
 - **Analysis module** - Calculate multipliers, linkages, and structural metrics
@@ -55,7 +55,7 @@ flake8>=4.0.0          # Linting
 
 ```bash
 # Navigate to project
-cd "D:/Arcanum/Projects/Wassily"
+cd "<project-root>"
 
 # Create virtual environment
 python -m venv venv

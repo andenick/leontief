@@ -1,4 +1,4 @@
-"""Narrative service — Markdown rendering with Wassily-specific directives.
+"""Narrative service — Markdown rendering with Leontief-specific directives.
 
 Public API
 ----------

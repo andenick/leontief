@@ -75,6 +75,9 @@ ENV/
 *.env
 .env
 .env.*
+# ...but DO track the committed example templates (no secrets in them)
+!.env.example
+!**/.env.example
 api_keys*
 *.key
 *.pem
@@ -100,7 +103,7 @@ Thumbs.db
 *.backup_*
 .backup_*
 
-# --- Internal session/process docs (Arcanum Publication Hygiene Standard) ---
+# --- Internal session/process docs (publication hygiene) ---
 **/Handoffs/
 **/HANDOFF_*.md
 **/*HANDOFF*.md

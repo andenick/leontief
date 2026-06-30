@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Compare Wassily Results to BEA Published Benchmarks
-Wassily Project - Validation Script
+Compare Leontief Results to BEA Published Benchmarks
+Leontief Project - Validation Script
 
 Compares our calculated multipliers and Leontief inverse
 to BEA's published Industry-by-Industry Total Requirements.
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -130,8 +131,8 @@ def calculate_bea_multipliers(L_matrix: pd.DataFrame) -> pd.Series:
 
 
 def load_wassily_results(filepath: Path) -> dict:
-    """Load Wassily analysis results."""
-    print(f"\nLoading Wassily results from: {filepath.name}")
+    """Load Leontief analysis results."""
+    print(f"\nLoading Leontief results from: {filepath.name}")
 
     with open(filepath, 'rb') as f:
         results = pickle.load(f)
@@ -148,28 +149,28 @@ def load_wassily_results(filepath: Path) -> dict:
 
 def compare_results(bea_mult, wassily_mult, bea_L, wassily_L):
     """
-    Compare BEA and Wassily results.
+    Compare BEA and Leontief results.
 
     Args:
         bea_mult: BEA output multipliers
-        wassily_mult: Wassily output multipliers
+        wassily_mult: Leontief output multipliers
         bea_L: BEA Leontief inverse
         wassily_L: Wassily Leontief inverse
     """
     print("\n" + "="*80)
-    print("COMPARISON: BEA vs Wassily")
+    print("COMPARISON: BEA vs Leontief")
     print("="*80)
 
     # Find common industries
     common_industries = set(bea_mult.index) & set(wassily_mult.index)
     print(f"\nCommon industries: {len(common_industries)}")
     print(f"  BEA industries: {len(bea_mult)}")
-    print(f"  Wassily industries: {len(wassily_mult)}")
+    print(f"  Leontief industries: {len(wassily_mult)}")
 
     if len(common_industries) == 0:
         print("\n[WARNING] No common industries found!")
         print("  This likely means we're comparing different sectors.")
-        print("  BEA might have industry codes, Wassily might have commodity codes.")
+        print("  BEA might have industry codes, Leontief might have commodity codes.")
         return
 
     # Align to common industries
@@ -199,7 +200,7 @@ def compare_results(bea_mult, wassily_mult, bea_L, wassily_L):
         wassily_val = wassily_common[ind]
         pct = (wassily_val - bea_val) / bea_val * 100
         print(f"  {i}. {ind}:")
-        print(f"      BEA: {bea_val:.4f}, Wassily: {wassily_val:.4f}, Diff: {diff_val:.4f} ({pct:+.2f}%)")
+        print(f"      BEA: {bea_val:.4f}, Leontief: {wassily_val:.4f}, Diff: {diff_val:.4f} ({pct:+.2f}%)")
 
     # Show top matches
     print(f"\nTop 10 Closest Matches:")
@@ -207,18 +208,18 @@ def compare_results(bea_mult, wassily_mult, bea_L, wassily_L):
     for i, (ind, diff_val) in enumerate(closest.items(), 1):
         bea_val = bea_common[ind]
         wassily_val = wassily_common[ind]
-        print(f"  {i}. {ind}: BEA={bea_val:.4f}, Wassily={wassily_val:.4f}, Diff={diff_val:.6f}")
+        print(f"  {i}. {ind}: BEA={bea_val:.4f}, Leontief={wassily_val:.4f}, Diff={diff_val:.6f}")
 
     # Create comparison DataFrame
     comparison_df = pd.DataFrame({
         'BEA_Multiplier': bea_common,
-        'Wassily_Multiplier': wassily_common,
+        'Leontief_Multiplier': wassily_common,
         'Absolute_Diff': abs_diff,
         'Percent_Diff': pct_diff
     })
 
     # Save comparison
-    output_path = Path("D:/Arcanum/Projects/Wassily/Output/Data/bea_wassily_comparison.xlsx")
+    output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/bea_wassily_comparison.xlsx")
     comparison_df.to_excel(output_path, sheet_name='Multiplier_Comparison')
     print(f"\n[OK] Comparison saved to: {output_path}")
 
@@ -231,16 +232,16 @@ def main():
     print("="*80)
 
     # Paths
-    bea_file = Path("D:/Arcanum/Projects/Wassily/Technical/data/raw/bea/benchmarks/ixitr2002/IndbyIndTRDetail.txt")
-    wassily_file = Path("D:/Arcanum/Projects/Wassily/Output/Data/industry_by_industry_2002.pkl")
+    bea_file = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/benchmarks/ixitr2002/IndbyIndTRDetail.txt")
+    wassily_file = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/industry_by_industry_2002.pkl")
 
     # Load BEA data
     print("\n[1/3] Loading BEA Total Requirements...")
     bea_L = load_bea_total_requirements(bea_file)
     bea_mult = calculate_bea_multipliers(bea_L)
 
-    # Load Wassily results
-    print("\n[2/3] Loading Wassily Results...")
+    # Load Leontief results
+    print("\n[2/3] Loading Leontief Results...")
     wassily_results = load_wassily_results(wassily_file)
     wassily_mult = wassily_results['output_multipliers']
     L_key = 'L_industry' if 'L_industry' in wassily_results else 'L_matrix'

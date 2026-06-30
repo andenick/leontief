@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-WIOD Integration Module for Leontief.io
-Leontief.io - Multi-Regional Input-Output Analysis Integration
+WIOD Integration Module for Leontief
+Leontief - Multi-Regional Input-Output Analysis Integration
 
 This module integrates WIOD (World Input-Output Database) data processing
-capabilities with the existing Leontief.io framework, enabling international
+capabilities with the existing Leontief framework, enabling international
 and multi-regional economic analysis alongside existing U.S. BEA data.
 
 Author: Claude Code Assistant
@@ -12,6 +12,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -19,12 +20,12 @@ from typing import Dict, List, Optional, Union, Tuple
 import logging
 from datetime import datetime
 
-# Import existing Leontief.io components
+# Import existing Leontief components
 try:
     from io_loader import IOTableLoader
     from io_analysis import IOAnalyzer
 except ImportError:
-    print("Warning: Some Leontief.io modules not available. Integration will be limited.")
+    print("Warning: Some Leontief modules not available. Integration will be limited.")
     IOTableLoader = None
     IOAnalyzer = None
 
@@ -39,7 +40,7 @@ except ImportError:
 except NameError:
     # Handle when __file__ is not defined (during exec)
     try:
-        wiod_processor_path = Path("D:/Arcanum/Projects/Leontief.io/Technical/src/[2025.10.14] wiod_processor.py")
+        wiod_processor_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/src/[2025.10.14] wiod_processor.py")
         exec(open(wiod_processor_path).read())
     except Exception as e:
         print(f"Error loading WIOD processor: {e}")
@@ -52,10 +53,10 @@ logger = logging.getLogger(__name__)
 
 class WIODIntegration:
     """
-    WIOD Integration for Leontief.io Platform
+    WIOD Integration for Leontief Platform
 
     Provides unified interface for loading, processing, and analyzing both
-    U.S. BEA data and international WIOD data within the Leontief.io framework.
+    U.S. BEA data and international WIOD data within the Leontief framework.
     """
 
     def __init__(self, data_dir: Optional[str] = None):
@@ -66,14 +67,14 @@ class WIODIntegration:
             data_dir: Base data directory for all I-O data sources
         """
         if data_dir is None:
-            self.data_dir = Path("D:/Arcanum/Projects/Leontief.io/Technical/data")
+            self.data_dir = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data")
         else:
             self.data_dir = Path(data_dir)
 
         # Initialize data processors
         self.wiod_processor = WIODProcessor(base_path=self.data_dir / "raw/wiod/2016_release")
 
-        # Initialize Leontief.io components if available
+        # Initialize Leontief components if available
         if IOTableLoader:
             self.io_loader = IOTableLoader(data_dir=self.data_dir / "raw")
         else:
@@ -601,7 +602,7 @@ def main():
         # Initialize integration
         integration = WIODIntegration()
 
-        print("WIOD Integration for Leontief.io")
+        print("WIOD Integration for Leontief")
         print("=" * 50)
 
         # Show available data

@@ -89,7 +89,7 @@ $$A = U \hat{V}^{-1} (V \hat{q}^{-1})^{-1}$$
 
 where $U$ is the Use matrix (commodities × industries), $V$ is the Make/Supply matrix (industries × commodities), and $\hat{q}$ is the diagonal of commodity totals [cite:miller_blair_2022]. The result is the symmetric $A_{IxI}$ (industry-by-industry) matrix that underlies the L matrix you saw in Tutorial 1.
 
-A critical methodological note: before 2007, BEA published only a single Use table mixing domestic and imported inputs. From the 2007 benchmark onward, BEA publishes **separate** domestic and import Use tables. Multipliers computed from the total-use table overstate domestic production effects because they include import leakage. The Wassily database uses the **total** Use table for the full 1997–2024 span to maintain consistency; keep this in mind when comparing multipliers across time [cite:bea_concepts_2009].
+A critical methodological note: before 2007, BEA published only a single Use table mixing domestic and imported inputs. From the 2007 benchmark onward, BEA publishes **separate** domestic and import Use tables. Multipliers computed from the total-use table overstate domestic production effects because they include import leakage. The Leontief database uses the **total** Use table for the full 1997–2024 span to maintain consistency; keep this in mind when comparing multipliers across time [cite:bea_concepts_2009].
 
 ---
 
@@ -98,7 +98,7 @@ A critical methodological note: before 2007, BEA published only a single Use tab
 ```python
 import pandas as pd
 
-# Download from the Wassily API
+# Download from the Leontief API
 VA = pd.read_csv("2024_VA.csv", index_col=0)  # rows: V001, V003, VABAS, VAPRO
 L  = pd.read_csv("2024_L.csv",  index_col=0)
 

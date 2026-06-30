@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Classification Cross-Walk Module for Leontief.io
-Leontief.io - Industry Classification Harmonization
+Classification Cross-Walk Module for Leontief
+Leontief - Industry Classification Harmonization
 
 This module provides cross-walk functionality between different industry
 classification systems, enabling harmonization across international I-O databases.
@@ -18,6 +18,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -56,7 +57,7 @@ class ClassificationCrossWalk:
         Args:
             base_path (str): Base path for cross-walk data storage
         """
-        self.base_path = Path(base_path) if base_path else Path("D:/Arcanum/Projects/Leontief.io/Technical/data/classifications")
+        self.base_path = Path(base_path) if base_path else (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/classifications")
 
         # Initialize classification systems
         self.isic_rev4_sectors = self._get_isic_rev4_sectors()

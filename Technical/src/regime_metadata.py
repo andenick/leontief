@@ -241,7 +241,7 @@ def is_comparable(year1: int, year2: int, strict: bool = True) -> bool:
 
 
 def get_available_benchmarks() -> list[int]:
-    """Return all benchmark years with data in Leontief.io."""
+    """Return all benchmark years with data in Leontief."""
     all_benchmarks = []
     for regime in REGIMES:
         all_benchmarks.extend(regime.benchmark_years)

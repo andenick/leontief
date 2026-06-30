@@ -10,6 +10,7 @@ Note: BEA IEA tables require manual Excel download (no API endpoint).
 This script provides download URLs and parses downloaded files.
 """
 
+import os
 import json
 import csv
 from pathlib import Path
@@ -25,8 +26,8 @@ PROJECT = Path(__file__).parent.parent.parent
 SATELLITE = PROJECT / "Technical" / "data" / "raw" / "satellite" / "energy"
 PROCESSED = PROJECT / "Technical" / "data" / "processed" / "satellite"
 
-# BEA API key (same as bea_api_collector.py)
-API_KEY = "857E9ADD-656E-43ED-9598-4EA83299418F"
+# BEA API key - set the BEA_API_KEY environment variable (free key at https://apps.bea.gov/API/signup/).
+API_KEY = os.environ.get("BEA_API_KEY")
 BASE_URL = "https://apps.bea.gov/api/data"
 RATE_LIMIT = 0.5
 
@@ -38,7 +39,7 @@ def api_request(params: dict) -> dict:
     query = "&".join(f"{k}={v}" for k, v in params.items())
     url = f"{BASE_URL}?{query}"
     try:
-        req = Request(url, headers={"User-Agent": "Leontief.io/1.0"})
+        req = Request(url, headers={"User-Agent": "Leontief/1.0"})
         with urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
         time.sleep(RATE_LIMIT)

@@ -1,10 +1,10 @@
-# Wassily (Leontief) I-O website — self-host stack
+# Leontief I-O website — self-host stack
 #
 # TWO services only — app + caddy.
 # No refresh service: BEA annual I-O data is static; site_data/ is pre-built
 # on the dev machine before `docker build`.
 #
-# Usage (from project root D:\Arcanum\Projects\Leontief):
+# Usage (from the project root, one level above webapp/):
 #   docker compose -f webapp/deploy/docker-compose.yml up -d --build
 #
 # Prerequisites (run on dev machine before docker build):
@@ -16,18 +16,17 @@
 #
 # Public exposure: Cloudflare Tunnel (outbound-only, no open router ports).
 # See README.md for full go-live steps.
-# Sites registry: Council/Carson/Technical/sites_registry.json
 
 services:
 
   # ── Application (FastAPI + gunicorn + UvicornWorker) ─────────────────────
   app:
     build:
-      context: ../..          # project root = D:\Arcanum\Projects\Leontief
+      context: ../..          # project root (one level above webapp/)
       dockerfile: webapp/deploy/Dockerfile
     environment:
       - PYTHONPATH=/app/webapp
-      - WASSILY_HOST=${WASSILY_HOST:-leontief.nickanderson.us}
+      - LEONTIEF_HOST=${LEONTIEF_HOST:-leontief.nickanderson.us}
       - WEB_CONCURRENCY=${WORKERS:-2}
     expose:
       - "8080"

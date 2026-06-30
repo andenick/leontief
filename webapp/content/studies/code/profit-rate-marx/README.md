@@ -1,6 +1,6 @@
 # Study 10: A Marxian Profit Rate from the Input-Output Table
 
-Replication bundle for the Wassily I-O study *"A Marxian Profit Rate from the Input-Output Table"*.
+Replication bundle for the Leontief I-O study *"A Marxian Profit Rate from the Input-Output Table"*.
 
 ## Quick start
 

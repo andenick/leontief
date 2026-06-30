@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Simple BEA Text Parser
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Parse BEA Use tables from space-delimited text format.
 Simple, robust line-by-line approach.
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -260,7 +261,7 @@ def main():
     print("Simple BEA Parser - Test")
     print("="*80)
 
-    filepath = Path("D:/Arcanum/Projects/Wassily/Technical/data/raw/bea/2002_benchmark/REV_NAICSUseDetail 4-24-08.txt")
+    filepath = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/2002_benchmark/REV_NAICSUseDetail 4-24-08.txt")
 
     if not filepath.exists():
         print(f"\n[ERROR] File not found: {filepath}")
@@ -297,7 +298,7 @@ def main():
         # Save for next step
         print(f"\n[INFO] Saving parsed table...")
         import pickle
-        output_path = Path("D:/Arcanum/Projects/Wassily/Technical/data/processed/io_table_2002.pkl")
+        output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/io_table_2002.pkl")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'wb') as f:
             pickle.dump(io_table, f)

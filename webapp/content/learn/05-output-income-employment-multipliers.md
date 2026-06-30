@@ -20,7 +20,7 @@ $$m_j = \sum_{i=1}^{n} l_{ij}$$
 
 This is the **Type I output multiplier** for sector $j$. If $m_j = 1.82$, then a $1 billion increase in final demand for sector $j$ generates $1.82 billion of total output across all 71 sectors — $1 billion in sector $j$ itself plus $0.82 billion spread through its suppliers and their suppliers.
 
-The minimum possible value is 1 (a sector with no intermediate inputs at all; the diagonal element $l_{jj}$ is always at least 1). The maximum in the Wassily dataset over 1997–2024 peaked at about 3.18 in 2008, for the most deeply embedded manufacturing industries.[cite:miller_blair_2022]
+The minimum possible value is 1 (a sector with no intermediate inputs at all; the diagonal element $l_{jj}$ is always at least 1). The maximum in the Leontief dataset over 1997–2024 peaked at about 3.18 in 2008, for the most deeply embedded manufacturing industries.[cite:miller_blair_2022]
 
 {{chart:multiplier_bar?year=2024}}
 
@@ -75,7 +75,7 @@ Type II multipliers require an assumption that household spending patterns are s
 
 ## Try It
 
-Download the 2024 L matrix (CSV) from the Wassily data page and compute Type I output multipliers yourself:
+Download the 2024 L matrix (CSV) from the Leontief data page and compute Type I output multipliers yourself:
 
 ```python
 import pandas as pd

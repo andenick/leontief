@@ -7,6 +7,7 @@ Also extends bea_api_collector for regional GDP by industry
 (needed for interregional I-O analysis).
 """
 
+import os
 import json
 import csv
 import time
@@ -22,7 +23,7 @@ PROJECT = Path(__file__).parent.parent.parent
 TRADE_DIR = PROJECT / "Technical" / "data" / "raw" / "satellite" / "trade"
 PROCESSED = PROJECT / "Technical" / "data" / "processed" / "satellite"
 
-API_KEY = "857E9ADD-656E-43ED-9598-4EA83299418F"
+API_KEY = os.environ.get("BEA_API_KEY")
 BASE_URL = "https://apps.bea.gov/api/data"
 RATE_LIMIT = 0.5
 
@@ -34,7 +35,7 @@ def api_request(params: dict) -> dict:
     query = "&".join(f"{k}={v}" for k, v in params.items())
     url = f"{BASE_URL}?{query}"
     try:
-        req = Request(url, headers={"User-Agent": "Leontief.io/1.0"})
+        req = Request(url, headers={"User-Agent": "Leontief/1.0"})
         with urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
         time.sleep(RATE_LIMIT)

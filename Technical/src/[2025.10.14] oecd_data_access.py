@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-OECD Data Access Module for Leontief.io
-Leontief.io - OECD Statistics API Integration
+OECD Data Access Module for Leontief
+Leontief - OECD Statistics API Integration
 
 This module provides automated access to OECD Statistics database for
 retrieving ICIO (Inter-Country Input-Output) tables and related economic data.
@@ -11,6 +11,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 import requests
@@ -54,7 +55,7 @@ class OECDDataAccess:
             cache_dir (str): Directory for caching downloaded data
             api_key (str): OECD API key (optional for public datasets)
         """
-        self.cache_dir = Path(cache_dir) if cache_dir else Path("D:/Arcanum/Projects/Leontief.io/Technical/data/cache/oecd")
+        self.cache_dir = Path(cache_dir) if cache_dir else (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/cache/oecd")
         self.api_key = api_key
         self.base_url = "https://stats.oecd.org/sdmx-json/data"
         self.metadata_url = "https://stats.oecd.org/SDMX-JSON/data"

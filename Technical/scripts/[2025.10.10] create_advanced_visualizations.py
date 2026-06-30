@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Advanced Visualizations for I-O Analysis
-Wassily Project - Heatmaps and Network Graphs
+Leontief Project - Heatmaps and Network Graphs
 
 Creates publication-quality visualizations:
 1. Heatmaps of Leontief inverse matrices
@@ -9,10 +9,11 @@ Creates publication-quality visualizations:
 3. Correlation heatmaps between methods
 4. Difference heatmaps showing methodological divergence
 
-Author: Arcanum Research
+Author: Leontief Project
 Date: October 10, 2025
 """
 
+import os
 import pickle
 import pandas as pd
 import numpy as np
@@ -35,7 +36,7 @@ def load_data():
     print("Loading Data")
     print("="*80)
 
-    base_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data")
+    base_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data")
 
     with open(base_path / "industry_by_industry_2002.pkl", 'rb') as f:
         method1 = pickle.load(f)
@@ -537,7 +538,7 @@ def create_multiplier_comparison_visualization(method1, method2, method3, output
     ax7.legend()
     ax7.grid(True, alpha=0.3, axis='x')
 
-    plt.suptitle('Comprehensive Methodological Comparison\nWassily Project - 2002 Benchmark I-O Analysis',
+    plt.suptitle('Comprehensive Methodological Comparison\nLeontief Project - 2002 Benchmark I-O Analysis',
                 fontsize=16, fontweight='bold', y=0.995)
 
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -550,11 +551,11 @@ def main():
     """Main execution function."""
     print("="*80)
     print("Advanced Visualizations Generator")
-    print("Wassily Project - Input-Output Analysis")
+    print("Leontief Project - Input-Output Analysis")
     print("="*80)
 
     # Create output directory
-    output_dir = Path("D:/Arcanum/Projects/Leontief.io/Output/Visualizations")
+    output_dir = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Visualizations")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load data

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 BEA HTML Table Parser
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Parse BEA Input-Output tables from HTML format.
 BEA historical tables are HTML despite .xlsx extension.
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -253,7 +254,7 @@ def main():
     parser = BEAHTMLParser()
 
     # Try parsing 2002 Use table
-    filepath = Path("D:/Arcanum/Projects/Wassily/Technical/data/raw/bea/2002_benchmark/Use_SUT_Framework_2002.xlsx")
+    filepath = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/2002_benchmark/Use_SUT_Framework_2002.xlsx")
 
     if filepath.exists():
         print(f"\nParsing: {filepath.name}")

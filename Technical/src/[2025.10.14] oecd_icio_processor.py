@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-OECD ICIO Processor for Leontief.io
-Leontief.io - OECD Inter-Country Input-Output Tables Processing
+OECD ICIO Processor for Leontief
+Leontief - OECD Inter-Country Input-Output Tables Processing
 
 This module processes OECD ICIO (Inter-Country Input-Output) tables,
 providing harmonized international I-O data with annual coverage from
@@ -12,6 +12,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -50,7 +51,7 @@ class OECDICIOProcessor:
         Args:
             base_path (str): Base path for OECD ICIO data storage
         """
-        self.base_path = Path(base_path) if base_path else Path("D:/Arcanum/Projects/Leontief.io/Technical/data/raw/oecd/icio")
+        self.base_path = Path(base_path) if base_path else (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/oecd/icio")
 
         # OECD ICIO specifications
         self.countries = self._get_country_list()

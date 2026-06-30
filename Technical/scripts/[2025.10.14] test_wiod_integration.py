@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 WIOD Integration Test Script
-Leontief.io - Testing WIOD Integration with Main Platform
+Leontief - Testing WIOD Integration with Main Platform
 
 This script tests the WIOD integration module and demonstrates how
-WIOD data connects with the existing Leontief.io framework.
+WIOD data connects with the existing Leontief framework.
 
 Author: Claude Code Assistant
 Date: 2025-10-14
@@ -105,7 +105,7 @@ def test_wiod_integration():
         print("\n" + "=" * 50)
         print("WIOD INTEGRATION TESTS PASSED!")
         print("=" * 50)
-        print("\nWIOD integration is ready for production use with Leontief.io")
+        print("\nWIOD integration is ready for production use with Leontief")
 
         return True
 
@@ -155,7 +155,7 @@ def demonstrate_integration_capabilities():
 
 def main():
     """Main function"""
-    print("WIOD Integration Testing for Leontief.io")
+    print("WIOD Integration Testing for Leontief")
     print("=" * 60)
 
     # Run integration tests

@@ -1,4 +1,4 @@
-# Wassily - Input-Output Tables Analysis Tool
+# Leontief - Input-Output Tables Analysis Tool
 # Python Dependencies
 # Generated: October 10, 2025
 

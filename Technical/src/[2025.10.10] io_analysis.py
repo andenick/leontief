@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Input-Output Analysis Engine
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Core I-O analysis functions:
 - Leontief inverse calculation

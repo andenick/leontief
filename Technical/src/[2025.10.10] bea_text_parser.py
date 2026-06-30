@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 BEA Text Format Parser
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Parse BEA Input-Output tables from tab-delimited text format.
 Specifically handles the detailed benchmark tables (e.g., 2002 Use table).
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -321,7 +322,7 @@ def main():
     parser = BEATextParser()
 
     # Parse 2002 Use table
-    filepath = Path("D:/Arcanum/Projects/Wassily/Technical/data/raw/bea/2002_benchmark/REV_NAICSUseDetail 4-24-08.txt")
+    filepath = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/2002_benchmark/REV_NAICSUseDetail 4-24-08.txt")
 
     if not filepath.exists():
         print(f"\n[ERROR] File not found: {filepath}")

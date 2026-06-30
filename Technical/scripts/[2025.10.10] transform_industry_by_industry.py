@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Transform Use and Make Tables to Industry-by-Industry
-Wassily Project - Proper I-O Transformation
+Leontief Project - Proper I-O Transformation
 
 Implements commodity technology assumption to create
 industry-by-industry direct requirements matrix.
@@ -20,6 +20,7 @@ Mathematical Approach:
 Reference: Miller & Blair (2022), Chapter 5
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -33,8 +34,8 @@ def load_tables():
     print("Loading Use and Make Tables")
     print("="*80)
 
-    use_path = Path("D:/Arcanum/Projects/Wassily/Technical/data/processed/io_table_2002.pkl")
-    make_path = Path("D:/Arcanum/Projects/Wassily/Technical/data/processed/make_table_2002.pkl")
+    use_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/io_table_2002.pkl")
+    make_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/make_table_2002.pkl")
 
     print(f"\nLoading Use table: {use_path.name}")
     with open(use_path, 'rb') as f:
@@ -313,7 +314,7 @@ def main():
         'total_industry_output': q
     }
 
-    output_path = Path("D:/Arcanum/Projects/Wassily/Output/Data/industry_by_industry_2002.pkl")
+    output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/industry_by_industry_2002.pkl")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, 'wb') as f:
@@ -322,7 +323,7 @@ def main():
     print(f"\n[OK] Results saved to: {output_path}")
 
     # Also save multipliers to Excel
-    excel_path = Path("D:/Arcanum/Projects/Wassily/Output/Data/industry_multipliers_2002.xlsx")
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/industry_multipliers_2002.xlsx")
     mult_df = pd.DataFrame({
         'Industry': multipliers.index,
         'Output_Multiplier': multipliers.values

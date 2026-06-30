@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WIOD Processor Test Script
-Leontief.io - Testing WIOD Data Processing Framework
+Leontief - Testing WIOD Data Processing Framework
 
 This script tests the WIOD processor functionality without requiring
 the actual WIOD data files.
@@ -378,7 +378,7 @@ def main():
             print("Next steps:")
             print("1. Download real WIOD data using download_wiod_data.py")
             print("2. Process the data using wiod_processor.py")
-            print("3. Integrate with Leontief.io framework")
+            print("3. Integrate with Leontief framework")
             print()
 
             # Ask if user wants sample data

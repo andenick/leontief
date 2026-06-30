@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-TiVA (Trade-in-Value-Added) Analysis Module for Leontief.io
-Leontief.io - Advanced Global Value Chain Analysis
+TiVA (Trade-in-Value-Added) Analysis Module for Leontief
+Leontief - Advanced Global Value Chain Analysis
 
 This module provides comprehensive Trade-in-Value-Added analysis capabilities,
 enabling detailed examination of global value chains, international trade patterns,
@@ -20,6 +20,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 import networkx as nx
@@ -628,7 +629,7 @@ class TiVAAnalyzer:
             if year not in self.tiva_data:
                 self.calculate_all_tiva_indicators(year)
 
-            output_dir = Path("D:/Arcanum/Projects/Leontief.io/Technical/data/processed/tiva")
+            output_dir = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/tiva")
             output_dir.mkdir(parents=True, exist_ok=True)
 
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Test I-O Table Loader
-Wassily Project
+Leontief Project
 
 Quick test to load and inspect a downloaded I-O table.
 """

@@ -469,7 +469,7 @@ MODULES = {
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Run all Wassily I-O analyses")
+    parser = argparse.ArgumentParser(description="Run all Leontief I-O analyses")
     parser.add_argument("--modules", type=str, default=None,
                         help="Comma-separated list of modules to run (default: all)")
     parser.add_argument("--start", type=int, default=1997)
@@ -480,7 +480,7 @@ def main():
     LOGS.mkdir(parents=True, exist_ok=True)
 
     logger.info("=" * 60)
-    logger.info("Wassily I-O Analysis Suite — Master Orchestrator")
+    logger.info("Leontief I-O Analysis Suite — Master Orchestrator")
     logger.info("=" * 60)
 
     data = load_all_years(args.start, args.end)

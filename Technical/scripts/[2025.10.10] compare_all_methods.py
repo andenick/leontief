@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Comparison of All 3 Methods
-Wassily Project - Methodological Analysis
+Leontief Project - Methodological Analysis
 
 Compares three approaches to calculating output multipliers:
 1. Method 1: Commodity Technology Assumption (D @ B transformation)
@@ -11,6 +11,7 @@ Compares three approaches to calculating output multipliers:
 Generates comprehensive comparison Excel file (Druck compliant: ONE sheet only!)
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -25,7 +26,7 @@ def load_all_methods():
 
     # Method 1: Commodity Technology
     print("\nMethod 1: Commodity Technology")
-    method1_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/industry_by_industry_2002.pkl")
+    method1_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/industry_by_industry_2002.pkl")
     with open(method1_path, 'rb') as f:
         method1 = pickle.load(f)
     mult1 = method1['output_multipliers']
@@ -34,7 +35,7 @@ def load_all_methods():
 
     # Method 2: BEA Direct
     print("\nMethod 2: BEA Total Requirements (Direct)")
-    method2_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/method2_bea_direct_2002.pkl")
+    method2_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/method2_bea_direct_2002.pkl")
     with open(method2_path, 'rb') as f:
         method2 = pickle.load(f)
     mult2 = method2['output_multipliers']
@@ -43,7 +44,7 @@ def load_all_methods():
 
     # Method 3: Reverse-Engineered
     print("\nMethod 3: Reverse-Engineered Redefinitions")
-    method3_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/method3_reverse_engineered_2002.pkl")
+    method3_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/method3_reverse_engineered_2002.pkl")
     with open(method3_path, 'rb') as f:
         method3 = pickle.load(f)
     mult3 = method3['output_multipliers']
@@ -203,7 +204,7 @@ def generate_summary_statistics(comparison, special_df):
 def main():
     print("="*80)
     print("Comprehensive Methodological Comparison")
-    print("Wassily Project - Input-Output Analysis")
+    print("Leontief Project - Input-Output Analysis")
     print("="*80)
 
     # Load all methods
@@ -223,7 +224,7 @@ def main():
     print("Saving Comprehensive Comparison")
     print("="*80)
 
-    excel_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/[2025.10.10] comprehensive_methods_comparison.xlsx")
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/[2025.10.10] comprehensive_methods_comparison.xlsx")
 
     # Create Excel with multiple sections in ONE sheet
     with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
@@ -249,7 +250,7 @@ def main():
     print(f"     3. BEA Special Industries ({len(special_df)} industries)")
 
     # Also save just the comparison DataFrame separately for easy access
-    comparison_only_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/[2025.10.10] multipliers_all_methods.xlsx")
+    comparison_only_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/[2025.10.10] multipliers_all_methods.xlsx")
     comparison.to_excel(comparison_only_path, index=False, sheet_name='Methods_Comparison')
     print(f"\n[OK] Industry comparison also saved to:")
     print(f"     {comparison_only_path}")

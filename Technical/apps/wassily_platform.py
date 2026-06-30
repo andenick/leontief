@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Wassily Interactive Platform
-Leontief.io Project - Input-Output Analysis Explorer
+Leontief Interactive Platform
+Leontief Project - Input-Output Analysis Explorer
 
 A comprehensive Streamlit application for exploring Input-Output analysis results
 across three methodological approaches.
 
-Author: Arcanum Research
+Author: Leontief Project
 Date: October 10, 2025
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,7 +21,7 @@ from pathlib import Path
 
 # Page configuration
 st.set_page_config(
-    page_title="Wassily Platform - I-O Analysis Explorer",
+    page_title="Leontief Platform - I-O Analysis Explorer",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -67,7 +68,7 @@ st.markdown("""
 @st.cache_data
 def load_all_methods():
     """Load results from all three methodological approaches."""
-    base_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data")
+    base_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data")
 
     # Method 1: Commodity Technology
     with open(base_path / "industry_by_industry_2002.pkl", 'rb') as f:
@@ -86,7 +87,7 @@ def load_all_methods():
 @st.cache_data
 def load_comparison_data():
     """Load comprehensive comparison data."""
-    excel_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/[2025.10.10] comprehensive_methods_comparison.xlsx")
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/[2025.10.10] comprehensive_methods_comparison.xlsx")
     return pd.read_excel(excel_path, sheet_name='Complete_Analysis')
 
 @st.cache_data
@@ -858,10 +859,10 @@ def tab_data_export(method1, method2, method3, industry_data):
     st.markdown("### 📝 Citation")
     st.markdown('<div class="info-box">', unsafe_allow_html=True)
     st.markdown("""
-    If you use Wassily data in your research or analysis, please cite:
+    If you use Leontief data in your research or analysis, please cite:
 
-    **Wassily (Leontief.io) Project**. (2025). *Input-Output Analysis: Methodological Comparison of
-    Commodity Technology and BEA Redefinitions Approaches*. Arcanum Research.
+    **Leontief Project**. (2025). *Input-Output Analysis: Methodological Comparison of
+    Commodity Technology and BEA Redefinitions Approaches*. Leontief Project.
 
     Data source: Bureau of Economic Analysis, 2002 Benchmark Input-Output Accounts.
     """)
@@ -1057,16 +1058,16 @@ def main():
     """Main application logic."""
 
     # Header
-    st.markdown('<p class="main-header">Wassily Platform</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">Leontief Platform</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Interactive Input-Output Analysis Explorer</p>', unsafe_allow_html=True)
 
     # Sidebar
     with st.sidebar:
-        st.image("https://via.placeholder.com/200x80/1f77b4/ffffff?text=Wassily", use_column_width=True)
+        st.markdown("#### Leontief")
         st.markdown("---")
         st.markdown("### About")
         st.markdown("""
-        **Wassily** (Leontief.io) is a comprehensive platform for exploring Input-Output analysis
+        **Leontief** (Leontief) is a comprehensive platform for exploring Input-Output analysis
         results across three methodological approaches.
 
         Named after Wassily Leontief, Nobel laureate and pioneer of Input-Output economics.
@@ -1142,7 +1143,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style='text-align: center; color: #666; font-size: 0.9em;'>
-        <p><strong>Wassily Platform v2.0</strong> | Leontief.io Project | Arcanum Research</p>
+        <p><strong>Leontief Platform v2.0</strong> | Leontief Project</p>
         <p>Built with Streamlit | Data: BEA I-O Tables 1997-2024 (28 years) + 2002 Benchmark</p>
     </div>
     """, unsafe_allow_html=True)

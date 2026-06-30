@@ -62,7 +62,7 @@ $$m_j = \sum_i L_{ij}$$
 
 It answers the practical question every policy analyst asks: if government purchases from sector $j$ rise by one dollar, by how much does total U.S. output rise?[cite:miller_blair_2022]
 
-Across the 28 years in Wassily, the cross-sector mean output multiplier has ranged from **1.87 in 2024** to **2.02 in 2008**, with a typical spread from about 1.17 (the lowest, usually a non-manufacturing service) to about 3.18 (the highest, usually a materials or energy sector at commodity-price peaks). The 2008 peak reflects rising input intensities during the commodity boom; the 2020 trough reflects pandemic-era supply-chain disruption.
+Across the 28 years in Leontief, the cross-sector mean output multiplier has ranged from **1.87 in 2024** to **2.02 in 2008**, with a typical spread from about 1.17 (the lowest, usually a non-manufacturing service) to about 3.18 (the highest, usually a materials or energy sector at commodity-price peaks). The 2008 peak reflects rising input intensities during the commodity boom; the 2020 trough reflects pandemic-era supply-chain disruption.
 
 {{chart:multiplier_trend}}
 
@@ -91,7 +91,7 @@ for i in top:
 
 ## An Important Caveat: Technology Changes
 
-L is computed from A, which is computed from the Use table for a *specific year*. Use L_2002 to analyze 2002 conditions; use L_2024 to analyze 2024 conditions. Applying a 2002 L to 2024 final demand ignores two decades of technological change — the rise of digital services, shifts in energy sourcing, the reshaping of global supply chains.[cite:bea_concepts_2009] Wassily publishes L for all 28 years precisely so you can study how the total-requirements structure itself has shifted — which is the subject of [Structural Decomposition Analysis](/studies/shock-propagation-hem).
+L is computed from A, which is computed from the Use table for a *specific year*. Use L_2002 to analyze 2002 conditions; use L_2024 to analyze 2024 conditions. Applying a 2002 L to 2024 final demand ignores two decades of technological change — the rise of digital services, shifts in energy sourcing, the reshaping of global supply chains.[cite:bea_concepts_2009] Leontief publishes L for all 28 years precisely so you can study how the total-requirements structure itself has shifted — which is the subject of [Structural Decomposition Analysis](/studies/shock-propagation-hem).
 
 ---
 

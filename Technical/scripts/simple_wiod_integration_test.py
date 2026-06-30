@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Simple WIOD Integration Test
-Leontief.io - Basic WIOD Integration Testing
+Leontief - Basic WIOD Integration Testing
 
 This script provides a simplified test for WIOD integration functionality.
 """
@@ -112,7 +112,7 @@ def test_wiod_integration():
 
 def main():
     """Main function"""
-    print("WIOD Integration Testing for Leontief.io")
+    print("WIOD Integration Testing for Leontief")
     print("=" * 50)
 
     # Run integration tests

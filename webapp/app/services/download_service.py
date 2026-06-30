@@ -306,7 +306,7 @@ def bundle_year_zip(year: int) -> tuple[bytes, str, str]:
 
         # README.txt
         readme = (
-            f"Wassily I-O Data Bundle — Year {year}\n"
+            f"Leontief I-O Data Bundle — Year {year}\n"
             f"=====================================\n\n"
             f"Contents: {csv_count} CSV file(s)\n\n"
             f"Provenance\n"
@@ -361,7 +361,7 @@ def bundle_all_zip() -> tuple[bytes, str, str]:
         years_covered = sorted(set(t["year"] for t in tables))
         year_range = f"{min(years_covered)}–{max(years_covered)}" if years_covered else "unknown"
         readme = (
-            f"Wassily I-O Data Bundle — All Years\n"
+            f"Leontief I-O Data Bundle — All Years\n"
             f"=====================================\n\n"
             f"Years: {year_range}  ({len(years_covered)} annual tables)\n"
             f"Matrices per year: Use, Supply, A, A_square, L, VA, FD\n"

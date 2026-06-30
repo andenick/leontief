@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
 Analyze 2002 U.S. Input-Output Table
-Wassily Project - First Analysis!
+Leontief Project - First Analysis!
 
 Calculate Leontief inverse, multipliers, and identify key sectors.
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -19,11 +20,11 @@ from io_analysis import IOAnalyzer
 
 def main():
     print("="*80)
-    print("Wassily - 2002 U.S. I-O Analysis")
+    print("Leontief - 2002 U.S. I-O Analysis")
     print("="*80)
 
     # Load parsed table
-    data_path = Path("D:/Arcanum/Projects/Wassily/Technical/data/processed/io_table_2002.pkl")
+    data_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/io_table_2002.pkl")
 
     print(f"\nLoading parsed I-O table from: {data_path.name}")
 
@@ -201,7 +202,7 @@ def main():
         'key_sectors': key_sector_list
     }
 
-    output_path = Path("D:/Arcanum/Projects/Wassily/Output/Data/analysis_results_2002.pkl")
+    output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/analysis_results_2002.pkl")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, 'wb') as f:
@@ -210,7 +211,7 @@ def main():
     print(f"\n[OK] Results saved to: {output_path}")
 
     # Also save multipliers to Excel
-    excel_path = Path("D:/Arcanum/Projects/Wassily/Output/Data/multipliers_2002.xlsx")
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/multipliers_2002.xlsx")
     mult_df = pd.DataFrame({
         'Industry': output_multipliers.index,
         'Output_Multiplier': output_multipliers.values,
@@ -227,7 +228,7 @@ def main():
     print("\n" + "="*80)
     print("Analysis Complete!")
     print("="*80)
-    print(f"\nWassily has successfully analyzed the 2002 U.S. economy!")
+    print(f"\nLeontief has successfully analyzed the 2002 U.S. economy!")
     print(f"  - {len(output_multipliers)} industries analyzed")
     print(f"  - {len(key_sector_list)} key sectors identified")
     print(f"  - Results saved for further analysis")

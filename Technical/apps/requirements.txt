@@ -1,5 +1,5 @@
-# Wassily Platform Dependencies
-# Leontief.io Project - Interactive I-O Analysis Explorer
+# Leontief Platform Dependencies
+# Leontief Project - Interactive I-O Analysis Explorer
 
 # Core data processing
 pandas>=2.0.0

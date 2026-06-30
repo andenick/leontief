@@ -10,7 +10,7 @@ Every industry both buys and sells. A car manufacturer buys steel, electricity, 
 
 Wassily Leontief built the first comprehensive table for the U.S. economy in the 1930s [cite:leontief_1936][cite:leontief_1941]. The idea was simple but powerful: if you know *who sells to whom*, you can trace a spending shock — a new highway project, an export boom — as it ripples across the whole economy. Leontief received the 1973 Nobel Prize in Economic Sciences for this framework [cite:leontief_1973].
 
-The Wassily site carries 28 years of annual U.S. I-O data (1997–2024) at the BEA Summary level of **71 sectors** — everything from Farms (sector 1) to Federal Reserve Banks to Computer Systems Design.
+The Leontief site carries 28 years of annual U.S. I-O data (1997–2024) at the BEA Summary level of **71 sectors** — everything from Farms (sector 1) to Federal Reserve Banks to Computer Systems Design.
 
 ---
 
@@ -82,7 +82,7 @@ High-multiplier sectors — think Petroleum Refining or Construction — trigger
 ```python
 import pandas as pd
 
-# Download from the Wassily API or export button
+# Download from the Leontief API or export button
 L = pd.read_csv("2024_L.csv", index_col=0)
 
 # Output multiplier = column sum of L

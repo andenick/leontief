@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Method 2: Load BEA Total Requirements Directly
-Wassily Project - Methodological Comparison
+Leontief Project - Methodological Comparison
 
 This script loads BEA's pre-calculated Total Requirements matrix
 (Leontief inverse) directly without any transformation.
@@ -9,6 +9,7 @@ This script loads BEA's pre-calculated Total Requirements matrix
 Methodology: Use BEA's published results as-is
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -109,7 +110,7 @@ def main():
     print("="*80)
 
     # Path to BEA Total Requirements
-    bea_file = Path("D:/Arcanum/Projects/Leontief.io/Technical/data/raw/bea/benchmarks/ixitr2002/[2009.03.05] IndbyIndTRDetail.txt")
+    bea_file = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/benchmarks/ixitr2002/[2009.03.05] IndbyIndTRDetail.txt")
 
     # Load BEA data
     L_bea, mult_bea = load_bea_total_requirements(bea_file)
@@ -132,7 +133,7 @@ def main():
         'industries': list(L_bea.index)
     }
 
-    output_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/method2_bea_direct_2002.pkl")
+    output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/method2_bea_direct_2002.pkl")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, 'wb') as f:
@@ -141,7 +142,7 @@ def main():
     print(f"\n[OK] Results saved to: {output_path}")
 
     # Save multipliers to Excel (one sheet)
-    excel_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/[2025.10.10] method2_bea_multipliers.xlsx")
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/[2025.10.10] method2_bea_multipliers.xlsx")
     mult_df = pd.DataFrame({
         'Industry': mult_bea.index,
         'Output_Multiplier': mult_bea.values

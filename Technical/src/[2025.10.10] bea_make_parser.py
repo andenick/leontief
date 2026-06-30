@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 BEA Make Table Parser
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Parse BEA Make tables from space-delimited text format.
 Make table: Industries produce Commodities (industries × commodities)
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -178,7 +179,7 @@ def main():
     print("BEA Make Table Parser - Test")
     print("="*80)
 
-    filepath = Path("D:/Arcanum/Projects/Wassily/Technical/data/raw/bea/2002_benchmark/REV_NAICSMakeDetail 4-24-08.txt")
+    filepath = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/bea/2002_benchmark/REV_NAICSMakeDetail 4-24-08.txt")
 
     if not filepath.exists():
         print(f"\n[ERROR] File not found: {filepath}")
@@ -213,7 +214,7 @@ def main():
         # Save for next step
         print(f"\n[INFO] Saving parsed Make table...")
         import pickle
-        output_path = Path("D:/Arcanum/Projects/Wassily/Technical/data/processed/make_table_2002.pkl")
+        output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/processed/make_table_2002.pkl")
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'wb') as f:
             pickle.dump(make_table, f)

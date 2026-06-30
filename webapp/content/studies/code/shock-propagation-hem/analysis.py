@@ -21,7 +21,7 @@ Method:
 
     NOTE: uses the clean square A_square (71x71), NOT the raw asymmetric
     BEA A matrix (70x71). A_square is derived from the Leontief inverse
-    published on the Wassily site: A = I - L^{-1}.
+    published on the Leontief site: A = I - L^{-1}.
 
 Writes:
     ./outputs/hem_2024.csv

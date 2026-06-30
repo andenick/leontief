@@ -46,7 +46,7 @@ This is not a coincidence. Wassily Leontief and Karl Marx were asking the same e
 
 ## Distribution: Wages and Profits in I-O
 
-Once you can compute the total labor content of output, the division of income between workers and capital owners becomes measurable. In the BEA value-added rows (the VA matrix Wassily publishes for each year), the key split is:
+Once you can compute the total labor content of output, the division of income between workers and capital owners becomes measurable. In the BEA value-added rows (the VA matrix Leontief publishes for each year), the key split is:
 
 - **Compensation of employees** ($w_j$) — wages, salaries, and employer contributions
 - **Gross operating surplus** — profits, proprietors' income, and capital consumption
@@ -59,7 +59,7 @@ The trend line matters. When the wage share falls, more of each dollar of output
 
 ## Financialization: A Structural Signature
 
-One of the most striking structural changes in the U.S. economy over Wassily's 28-year window is the growing weight of finance in intermediate production. Finance, insurance, and real estate sectors are not just final services purchased by households — they are intermediate inputs bought by every other industry: manufacturers pay interest on working capital, retailers pay insurance premiums, construction firms pay real estate fees.
+One of the most striking structural changes in the U.S. economy over Leontief's 28-year window is the growing weight of finance in intermediate production. Finance, insurance, and real estate sectors are not just final services purchased by households — they are intermediate inputs bought by every other industry: manufacturers pay interest on working capital, retailers pay insurance premiums, construction firms pay real estate fees.
 
 {{chart:structural_trend:financialization}}
 
@@ -91,4 +91,4 @@ print(pd.Series(v_integrated, index=L.columns).sort_values().tail(10))
 
 ## Where Next
 
-The price and distribution framework sets the stage for thinking about *change over time*. Tutorial 10 — [Vintages and Pitfalls](/learn/10-vintages-and-pitfalls) — shows how to navigate Wassily's 28 annual tables responsibly: which years are directly comparable, where the methodological breaks are, and how to download the data. For deeper empirical work on wages, profits, and prices across industries, see [/studies/prices-and-distribution](/studies/prices-and-distribution).
+The price and distribution framework sets the stage for thinking about *change over time*. Tutorial 10 — [Vintages and Pitfalls](/learn/10-vintages-and-pitfalls) — shows how to navigate Leontief's 28 annual tables responsibly: which years are directly comparable, where the methodological breaks are, and how to download the data. For deeper empirical work on wages, profits, and prices across industries, see [/studies/prices-and-distribution](/studies/prices-and-distribution).

@@ -1,10 +1,10 @@
-"""Central configuration for the Wassily (Leontief) website.
+"""Central configuration for the Leontief I-O website.
 
 Resolves project paths and site constants. All paths are computed relative to
 this file so the app works regardless of where the venv lives.
 
 Path hierarchy:
-    webapp/app/config.py  ->  webapp/  ->  Leontief/  ->  Projects/  ->  Arcanum/
+    webapp/app/config.py  ->  webapp/  ->  <project-root>/
 """
 from __future__ import annotations
 
@@ -15,10 +15,9 @@ from pathlib import Path
 # Root paths
 # ---------------------------------------------------------------------------
 
-# webapp/app/config.py -> webapp/ -> Leontief/
+# webapp/app/config.py -> webapp/ -> <project-root>/
 WEBAPP_ROOT: Path = Path(__file__).resolve().parent.parent
-PROJECT_ROOT: Path = WEBAPP_ROOT.parent           # …/Leontief/
-ARCANUM_ROOT: Path = PROJECT_ROOT.parent.parent   # …/Arcanum/  (Leontief -> Projects -> Arcanum)
+PROJECT_ROOT: Path = WEBAPP_ROOT.parent           # project root (one level above webapp/)
 
 # ---------------------------------------------------------------------------
 # Project source directories (read-only; populated outside webapp)
@@ -49,9 +48,12 @@ STATIC_DIR: Path = WEBAPP_ROOT / "app" / "static"
 # Site identity
 # ---------------------------------------------------------------------------
 
-SITE_TITLE: str = "Wassily"
+SITE_TITLE: str = "Leontief"
 SITE_TAGLINE: str = "U.S. Input-Output Tables, 1997–2024"
-SITE_HOST: str = os.environ.get("WASSILY_HOST", "leontief.nickanderson.us")
+SITE_HOST: str = os.environ.get("LEONTIEF_HOST", "leontief.nickanderson.us")
+
+# Public source repository (Code mode "View on GitHub" button).
+GITHUB_URL: str = os.environ.get("LEONTIEF_GITHUB_URL", "https://github.com/andenick/leontief")
 
 # BEA data scope constants
 BEA_YEARS: tuple[int, ...] = tuple(range(1997, 2025))   # 1997–2024 inclusive

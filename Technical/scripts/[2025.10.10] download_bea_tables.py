@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Download BEA Input-Output Tables
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 This script downloads historical BEA I-O tables from direct download links.
 For 2012 and 2017 (in interactive apps), manual download or API access needed.
@@ -114,7 +114,7 @@ def download_benchmark_year(year, tables_dict):
 def main():
     """Main download routine."""
     print("BEA Input-Output Tables Downloader")
-    print("Wassily Project")
+    print("Leontief Project")
     print("="*60)
 
     # Ensure data directory exists

@@ -3,13 +3,14 @@
 Downloads all available I-O tables (1997-2024) and GDP-by-Industry data
 using the BEA API. Saves raw JSON responses and converted CSV files.
 
-BEA API Key: From Robin (Council/Robin/ADMIN/api-keys/economic-data-keys.env)
+BEA API Key: set the BEA_API_KEY environment variable (get a free key at https://apps.bea.gov/API/signup/).
 Base URL: https://apps.bea.gov/api/data
 
 Usage:
     python bea_api_collector.py
 """
 
+import os
 import json
 import time
 import csv
@@ -21,7 +22,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-API_KEY = "857E9ADD-656E-43ED-9598-4EA83299418F"
+API_KEY = os.environ.get("BEA_API_KEY")
 BASE_URL = "https://apps.bea.gov/api/data"
 RATE_LIMIT = 0.5  # seconds between requests
 
@@ -56,7 +57,7 @@ def api_request(params: dict) -> dict:
     url = f"{BASE_URL}?{query}"
 
     try:
-        req = Request(url, headers={"User-Agent": "Leontief.io/1.0"})
+        req = Request(url, headers={"User-Agent": "Leontief/1.0"})
         with urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read().decode())
         time.sleep(RATE_LIMIT)
@@ -196,7 +197,7 @@ def download_underlying_gdp():
 
 def main():
     logger.info("=" * 70)
-    logger.info("BEA API COLLECTOR — Leontief.io")
+    logger.info("BEA API COLLECTOR — Leontief")
     logger.info("=" * 70)
 
     # Ensure directories exist

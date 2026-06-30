@@ -250,7 +250,7 @@ def generate_walkthrough_report(
     lines.append("")
 
     # Data availability
-    lines.append("## Data Availability in Leontief.io")
+    lines.append("## Data Availability in Leontief")
     lines.append("")
     lines.append("| Benchmark | Data? | Files |")
     lines.append("|-----------|-------|-------|")

@@ -1,4 +1,4 @@
-# Wassily Platform
+# Leontief Platform
 
 Interactive web application for exploring Input-Output analysis results across three methodological approaches.
 
@@ -24,7 +24,7 @@ Interactive web application for exploring Input-Output analysis results across t
 
 1. Navigate to the apps directory:
 ```bash
-cd D:/Arcanum/Projects/Leontief.io/Technical/apps
+cd <project-root>/Technical/apps
 ```
 
 2. Install dependencies:
@@ -105,9 +105,9 @@ The platform reveals that:
 
 ## Citation
 
-If you use Wassily in your research:
+If you use Leontief in your research:
 
-> Wassily (Leontief.io) Project. (2025). *Input-Output Analysis: Methodological Comparison of Commodity Technology and BEA Redefinitions Approaches*. Arcanum Research.
+> Leontief Project. (2025). *Input-Output Analysis: Methodological Comparison of Commodity Technology and BEA Redefinitions Approaches*. Leontief Project.
 
 Data source: Bureau of Economic Analysis, 2002 Benchmark Input-Output Accounts.
 
@@ -120,7 +120,7 @@ For questions or issues, refer to the project documentation:
 
 ## Version
 
-**Wassily Platform v1.0**
+**Leontief Platform v1.0**
 Built: October 10, 2025
-Project: Leontief.io
-Organization: Arcanum Research
+Project: Leontief
+Organization: Leontief Project

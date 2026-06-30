@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Test script for OECD Data Access module
-Leontief.io - Testing OECD data download and access functionality
+Leontief - Testing OECD data download and access functionality
 """
 
 import sys
@@ -83,7 +83,7 @@ def test_oecd_data_access():
 
 def main():
     """Main function"""
-    print("OECD Data Access Testing for Leontief.io")
+    print("OECD Data Access Testing for Leontief")
     print("=" * 50)
 
     # Run tests

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Input-Output Table Loader
-Wassily Project - I-O Tables Analysis Tool
+Leontief Project - I-O Tables Analysis Tool
 
 Load and parse I-O tables from various sources (BEA, OECD, WIOD).
 """
@@ -208,7 +208,7 @@ class IOTableLoader:
 
     def to_standard_format(self, io_table: Dict) -> Dict:
         """
-        Convert I-O table to standardized format used across Wassily.
+        Convert I-O table to standardized format used across Leontief.
 
         Standard format:
         - transactions_matrix: pandas DataFrame (Z matrix)

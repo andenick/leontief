@@ -51,7 +51,7 @@ Plotting $U_j^b$ (horizontal axis) against $U_j^f$ (vertical axis) for all 71 se
 | **Backward-oriented** (lower right) | > 1 | < 1 | Buys widely, supplies narrowly | Food processing, construction |
 | **Weak** (lower left) | < 1 | < 1 | Below average both ways | Many service sectors |
 
-The 2002 cross-section plotted above (a benchmark-quality year in the Wassily dataset) illustrates the classic pattern: manufacturing sectors cluster in the upper-right key-sector quadrant, while many service industries fall in the lower-left. The horizontal and vertical lines at 1.0 are the decision boundaries.
+The 2002 cross-section plotted above (a benchmark-quality year in the Leontief dataset) illustrates the classic pattern: manufacturing sectors cluster in the upper-right key-sector quadrant, while many service industries fall in the lower-left. The horizontal and vertical lines at 1.0 are the decision boundaries.
 
 The most important insight from the scatter plot is that the four quadrants are not equally populated. In the U.S. 71-sector table, services occupy the lower-left overwhelmingly — the U.S. economy has a relatively service-heavy structure where many industries buy and sell primarily within their own sector or directly to final demand. Manufacturing and resource sectors carry the heavy cross-industry linkage load.[cite:miller_blair_2022][cite:dietzenbacher_los_1998]
 
@@ -67,7 +67,7 @@ For an introductory look at which sectors dominate the linkage structure, Rasmus
 
 ## The Hirschman Development Logic
 
-Albert Hirschman's *Strategy of Economic Development* (1958) is not included in the Wassily citation set, but his reasoning underlies the entire applied linkage literature. The core argument: in a capital-scarce developing economy, you cannot build everything at once. Choose industries with high total linkages as your investment priorities — they will exert "inducement pressure" on complementary sectors, forcing private investors to fill gaps upstream and downstream. The Leontief framework gave this intuition a precise empirical form.
+Albert Hirschman's *Strategy of Economic Development* (1958) is not included in the Leontief citation set, but his reasoning underlies the entire applied linkage literature. The core argument: in a capital-scarce developing economy, you cannot build everything at once. Choose industries with high total linkages as your investment priorities — they will exert "inducement pressure" on complementary sectors, forcing private investors to fill gaps upstream and downstream. The Leontief framework gave this intuition a precise empirical form.
 
 Modern network economics extends this idea: Acemoglu et al. (2012) show that in an economy with an asymmetric input-output network, aggregate fluctuations can originate from purely sectoral shocks — a finding that depends critically on which sectors occupy central positions in exactly the sense Rasmussen linkages measure.[cite:acemoglu_2012]
 

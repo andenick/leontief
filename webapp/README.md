@@ -1,8 +1,8 @@
-# Wassily — U.S. Input-Output Tables, 1997–2024
+# Leontief — U.S. Input-Output Tables, 1997–2024
 
-**Wassily** is a free, public website that publishes all 28 annual U.S. Bureau of Economic Analysis (BEA) input-output tables (1997–2024, 71-sector detail) as machine-readable downloads, alongside an educational Learn track of 10 progressive tutorials and 10 fully reproducible empirical studies.
+**Leontief** is a free, public website that publishes all 28 annual U.S. Bureau of Economic Analysis (BEA) input-output tables (1997–2024, 71-sector detail) as machine-readable downloads, alongside an educational Learn track of 10 progressive tutorials and 10 fully reproducible empirical studies.
 
-Live site: `leontief.nickanderson.us` (go-live gated on Carson hardware — see `deploy/README.md`).
+Live site: `leontief.nickanderson.us` (go-live gated on hosting — see `deploy/README.md`).
 
 ---
 
@@ -129,9 +129,9 @@ python data_pipeline/selfcheck.py
 
 See `deploy/README.md` for the full production runbook. Summary:
 
-- **Target:** Carson mini PC, `leontief.nickanderson.us`, Cloudflare Tunnel (no open ports)
+- **Target:** any self-hosted Linux box, `leontief.nickanderson.us`, Cloudflare Tunnel (no open ports)
 - **Stack:** gunicorn/uvicorn behind Caddy 2, Dockerized
-- **Go-live gate:** Carson hardware not yet online as of 2026-05-31 — runbook is complete and ready to execute
+- **Go-live gate:** hosting box not yet online — runbook is complete and ready to execute
 - **No refresh service:** BEA I-O tables are published annually; redeploy once per vintage
 
 ```bash

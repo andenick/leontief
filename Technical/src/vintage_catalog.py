@@ -1,7 +1,7 @@
 """Complete catalog of all U.S. Input-Output table vintages (1947-2024).
 
 Documents every benchmark year, its classification system, sector counts,
-table types, and data availability in the Leontief.io project.
+table types, and data availability in the Leontief project.
 
 Usage:
     from vintage_catalog import ALL_BENCHMARKS, ANNUAL_SYSTEM, get_benchmark
@@ -23,7 +23,7 @@ class Benchmark:
     has_make_use: bool                # True if Make/Use (not just transactions)
     has_imports_separate: bool        # True if domestic/import split available
     has_redefinitions: bool           # True if before/after redefinitions available
-    data_in_project: bool             # True if data files exist in Leontief.io
+    data_in_project: bool             # True if data files exist in Leontief
     files: list[str] = field(default_factory=list)
     sic_version: Optional[str] = None
     naics_version: Optional[str] = None

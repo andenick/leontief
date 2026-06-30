@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WIOD Data Download Assistant
-Leontief.io - WIOD 2016 Release Data Acquisition
+Leontief - WIOD 2016 Release Data Acquisition
 
 This script assists with downloading and organizing WIOD 2016 data.
 Due to registration requirements, it provides guidance and validation
@@ -41,7 +41,7 @@ class WIODDownloader:
             base_path: Base path for WIOD data storage
         """
         if base_path is None:
-            self.base_path = Path("D:/Arcanum/Projects/Leontief.io/Technical/data/raw/wiod/2016_release")
+            self.base_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/wiod/2016_release")
         else:
             self.base_path = Path(base_path)
 
@@ -115,7 +115,7 @@ class WIODDownloader:
         print("STEP 3: Download Data Package")
         print("  - Look for 'Complete WIOD 2016 Release' or similar")
         print("  - Download the main data package (usually a ZIP file)")
-        print("  - Save to: D:/Arcanum/Projects/Leontief.io/Technical/data/raw/wiod/downloads/")
+        print("  - Save to: <DATA_ROOT>/Technical/data/raw/wiod/downloads/")
         print()
         print("STEP 4: Extract and Organize")
         print("  - Extract ZIP file to temporary location")

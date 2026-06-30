@@ -40,7 +40,7 @@ You can also inspect the matrix numerically, aggregated to 15 sectors for readab
 
 The formula $a_{ij} = z_{ij}/x_j$ assumes that input proportions are **fixed and constant** regardless of output scale. This is the *constant-returns-to-scale* assumption built into standard [input-output analysis](/glossary#a-matrix-direct-requirements-matrix--technical-coefficients): double $x_j$ and all inputs double proportionally.
 
-Real production is messier — there are economies of scale, factor substitution, and technological change. For short-run analysis or for tracing supply-chain linkages, the assumption is workable. For long-run comparisons across decades, it is a simplification. This is exactly why Wassily publishes A matrices for all 28 years from 1997 to 2024: you can *see* how the recipe book changes, rather than assuming it is static.[cite:bea_concepts_2009]
+Real production is messier — there are economies of scale, factor substitution, and technological change. For short-run analysis or for tracing supply-chain linkages, the assumption is workable. For long-run comparisons across decades, it is a simplification. This is exactly why Leontief publishes A matrices for all 28 years from 1997 to 2024: you can *see* how the recipe book changes, rather than assuming it is static.[cite:bea_concepts_2009]
 
 ## An Honest Caveat: 70 × 71 vs Square
 
@@ -48,12 +48,12 @@ A subtlety matters here. BEA's Use table has **commodities in rows** and **indus
 
 The result: the published BEA direct-requirements matrix A is technically **70 × 71** — *not* square. This is a commodity-vs-industry alignment artifact, not an error. A 70 × 71 matrix cannot be subtracted from the identity matrix, so you cannot compute the [Leontief inverse](/learn/04-leontief-inverse) $(I - A)^{-1}$ directly from it.
 
-To solve this, Wassily also publishes **A_square**: a square 71 × 71 version derived by applying the industry-technology assumption to allocate secondary products back to their primary industry, yielding an industry-by-industry direct requirements matrix. The heatmap above and the table above both show A_square. See our [methodology](/methodology) page for the full derivation.
+To solve this, Leontief also publishes **A_square**: a square 71 × 71 version derived by applying the industry-technology assumption to allocate secondary products back to their primary industry, yielding an industry-by-industry direct requirements matrix. The heatmap above and the table above both show A_square. See our [methodology](/methodology) page for the full derivation.
 
 ```python
 import requests, numpy as np
 
-# Fetch A_square for 2002 (71x71) via the Wassily API
+# Fetch A_square for 2002 (71x71) via the Leontief API
 resp = requests.get("http://localhost:5000/api/table/2002/A_square.json")
 data = resp.json()
 

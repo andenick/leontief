@@ -73,7 +73,7 @@ The long-run decline reflects structural change: the shift of GDP share toward s
 
 Output multipliers are not magic numbers — they are transparent column sums of a well-defined matrix. Every element of that matrix traces to a specific cell in the BEA Use table. Once you understand that $m_j = \sum_i l_{ij}$, you can see exactly why Motor vehicles has a multiplier of 2.77: its production pulls intensively from steel, aluminum, rubber, glass, semiconductors, and dozens of other intermediate-goods sectors, each of which pulls from its own suppliers in turn. Housing, by contrast, buys very little from the rest of the economy — most of its "output" is an imputed rental flow with minimal domestic supply-chain content.
 
-The declining trend in the mean multiplier since 2008 is a structural signal: the American economy has become, in a supply-chain sense, shallower. Whether that reflects import substitution, servicification, or platform-economy dynamics that are incompletely captured by the Use table is an open research question — and one where the Wassily data can help.
+The declining trend in the mean multiplier since 2008 is a structural signal: the American economy has become, in a supply-chain sense, shallower. Whether that reflects import substitution, servicification, or platform-economy dynamics that are incompletely captured by the Use table is an open research question — and one where the Leontief data can help.
 
 ---
 

@@ -1,6 +1,6 @@
 # Study 9: Cost-Push Prices and the Wage Share
 
-Replication bundle for the Wassily I-O study *"Cost-Push Prices and the Wage Share"*.
+Replication bundle for the Leontief I-O study *"Cost-Push Prices and the Wage Share"*.
 
 ## Quick start
 

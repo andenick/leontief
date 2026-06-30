@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 Comprehensive Input-Output Analysis Framework
-Leontief.io - Complete Analysis Implementation
+Leontief - Complete Analysis Implementation
 
 This module provides a unified framework for comprehensive I-O analysis
 including U.S. multi-year analysis, international comparisons, and
 multiple methodology implementations.
 
-Author: Leontief.io Project
+Author: Leontief Project
 Date: October 28, 2025
 Version: 2.0 - Complete Analysis Framework
 """

@@ -50,7 +50,7 @@ The multiplier decline documented in the [multipliers study](/studies/multiplier
 
 The gross output share is the more relevant measure here: it tracks not just what manufacturing produces but how deeply it is embedded as an *intermediate-goods buyer*. A 17-percentage-point shrinkage in that share, sustained over 28 years, is consistent with the 0.15-point decline in the mean output multiplier observed from 2008 to 2024.
 
-For structural decomposition — see the upcoming study on growth-accounting with I-O matrices — deindustrialization enters through changes in both the coefficient matrix $A$ and the final-demand composition. Separating the two contributions requires exactly the kind of two-date comparison the Wassily data makes straightforward.[cite:dietzenbacher_los_1998]
+For structural decomposition — see the upcoming study on growth-accounting with I-O matrices — deindustrialization enters through changes in both the coefficient matrix $A$ and the final-demand composition. Separating the two contributions requires exactly the kind of two-date comparison the Leontief data makes straightforward.[cite:dietzenbacher_los_1998]
 
 ---
 

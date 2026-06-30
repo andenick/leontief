@@ -28,7 +28,7 @@ Type=simple
 User=leontief
 WorkingDirectory=/opt/leontief/webapp
 Environment=PYTHONPATH=/opt/leontief/webapp
-Environment=WASSILY_HOST=leontief.nickanderson.us
+Environment=LEONTIEF_HOST=leontief.nickanderson.us
 ExecStart=/opt/leontief/venv/bin/gunicorn app.main:app \
     -k uvicorn.workers.UvicornWorker \
     -w 2 \

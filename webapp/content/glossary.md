@@ -1,6 +1,6 @@
 ---
 title: Glossary
-summary: Definitions of input-output terms used throughout Wassily, from A matrix to vertically integrated labor.
+summary: Definitions of input-output terms used throughout Leontief, from A matrix to vertically integrated labor.
 order: 30
 ---
 
@@ -18,7 +18,7 @@ A measure of how intensively a sector purchases inputs from the rest of the econ
 
 ### BEA Summary Classification
 
-The Bureau of Economic Analysis grouping of the U.S. economy into 71 industries used in the annual Supply-Use accounts. The classification is based on the North American Industry Classification System (NAICS) and has been stable since the first NAICS-era benchmark in 1997, making it the standard framework for time-series analysis of U.S. I-O data. Wassily uses the BEA Summary classification exclusively.
+The Bureau of Economic Analysis grouping of the U.S. economy into 71 industries used in the annual Supply-Use accounts. The classification is based on the North American Industry Classification System (NAICS) and has been stable since the first NAICS-era benchmark in 1997, making it the standard framework for time-series analysis of U.S. I-O data. Leontief uses the BEA Summary classification exclusively.
 
 ### Commodity vs. Industry
 
@@ -34,7 +34,7 @@ The immediate, first-round input needs of a sector: the elements of the [A matri
 
 ### Final Demand
 
-The portion of output that goes to end-users rather than further production: personal consumption expenditure, private fixed investment, changes in inventories, exports, and federal and state/local government purchases. In the standard I-O identity, total output equals intermediate demand plus final demand: $x = Ax + f$, which rearranges to $x = (I-A)^{-1}f = Lf$. The **FD** matrix on Wassily contains the final demand columns extracted from the BEA Use table (19 F-code categories).
+The portion of output that goes to end-users rather than further production: personal consumption expenditure, private fixed investment, changes in inventories, exports, and federal and state/local government purchases. In the standard I-O identity, total output equals intermediate demand plus final demand: $x = Ax + f$, which rearranges to $x = (I-A)^{-1}f = Lf$. The **FD** matrix on Leontief contains the final demand columns extracted from the BEA Use table (19 F-code categories).
 
 ### Forward Linkage
 
@@ -76,7 +76,7 @@ See: [Supply table](#supply-table). (Older BEA terminology; "Supply table" is no
 
 ### NAICS
 
-The North American Industry Classification System. Replaced the Standard Industrial Classification (SIC) beginning with the 1997 BEA benchmark I-O accounts. The transition from SIC to NAICS is the largest single methodological break in U.S. I-O history; pre- and post-1997 data are not directly comparable at the sector level. All Wassily data uses NAICS classification.
+The North American Industry Classification System. Replaced the Standard Industrial Classification (SIC) beginning with the 1997 BEA benchmark I-O accounts. The transition from SIC to NAICS is the largest single methodological break in U.S. I-O history; pre- and post-1997 data are not directly comparable at the sector level. All Leontief data uses NAICS classification.
 
 ### Rasmussen Indices
 
@@ -84,7 +84,7 @@ Standardized measures of [backward](#backward-linkage) and [forward](#forward-li
 
 ### Sector (BEA Summary)
 
-See: [BEA Summary Classification](#bea-summary-classification). In Wassily, "sector" always means one of the 71 BEA Summary industries unless specified otherwise.
+See: [BEA Summary Classification](#bea-summary-classification). In Leontief, "sector" always means one of the 71 BEA Summary industries unless specified otherwise.
 
 ### Structural Decomposition Analysis (SDA)
 
@@ -108,7 +108,7 @@ One of the two foundational BEA tables. The Use table records, for each commodit
 
 ### Value Added
 
-The contribution of an industry to GDP: total industry output minus the cost of intermediate inputs. In BEA I-O accounts, value added is decomposed into employee compensation (wages and benefits), taxes on production, gross operating surplus (profits and depreciation), and occasionally other adjustments. The **VA** matrix on Wassily contains the four V-code rows from the BEA Use table — V001 (compensation), V003 (taxes on production), VABAS (value added at basic prices), and VAPRO (value added at producers' prices) — for all 71 industries.
+The contribution of an industry to GDP: total industry output minus the cost of intermediate inputs. In BEA I-O accounts, value added is decomposed into employee compensation (wages and benefits), taxes on production, gross operating surplus (profits and depreciation), and occasionally other adjustments. The **VA** matrix on Leontief contains the four V-code rows from the BEA Use table — V001 (compensation), V003 (taxes on production), VABAS (value added at basic prices), and VAPRO (value added at producers' prices) — for all 71 industries.
 
 ### Vertically Integrated Labor (Pasinetti)
 

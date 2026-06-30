@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Method 3: Reverse-Engineer BEA Redefinitions
-Wassily Project - Methodological Comparison
+Leontief Project - Methodological Comparison
 
 This script attempts to understand and replicate BEA's redefinitions
 methodology by analyzing the relationship between:
@@ -18,6 +18,7 @@ Approach:
 Reference: BEA's "redefinitions after redefinitions" methodology
 """
 
+import os
 import sys
 from pathlib import Path
 import pickle
@@ -31,7 +32,7 @@ def load_bea_total_requirements():
     print("Loading BEA Total Requirements")
     print("="*80)
 
-    pkl_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/method2_bea_direct_2002.pkl")
+    pkl_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/method2_bea_direct_2002.pkl")
 
     print(f"\nLoading: {pkl_path.name}")
     with open(pkl_path, 'rb') as f:
@@ -49,10 +50,10 @@ def load_bea_total_requirements():
 def load_wassily_commodity_tech():
     """Load our commodity technology results (Method 1)."""
     print("\n" + "="*80)
-    print("Loading Wassily Commodity Technology Results")
+    print("Loading Leontief Commodity Technology Results")
     print("="*80)
 
-    pkl_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/industry_by_industry_2002.pkl")
+    pkl_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/industry_by_industry_2002.pkl")
 
     print(f"\nLoading: {pkl_path.name}")
     with open(pkl_path, 'rb') as f:
@@ -61,8 +62,8 @@ def load_wassily_commodity_tech():
     L_wassily = wassily_data['L_industry']
     mult_wassily = wassily_data['output_multipliers']
 
-    print(f"  Wassily L matrix: {L_wassily.shape}")
-    print(f"  Wassily multipliers: {len(mult_wassily)}")
+    print(f"  Leontief L matrix: {L_wassily.shape}")
+    print(f"  Leontief multipliers: {len(mult_wassily)}")
 
     return L_wassily, mult_wassily, wassily_data
 
@@ -148,22 +149,22 @@ def compare_common_industries(L_bea, L_wassily, standard_codes):
     comparison = pd.DataFrame({
         'Industry': common,
         'BEA_Multiplier': mult_bea_common.values,
-        'Wassily_Multiplier': mult_wassily_common.values
+        'Leontief_Multiplier': mult_wassily_common.values
     })
 
-    comparison['Difference'] = comparison['BEA_Multiplier'] - comparison['Wassily_Multiplier']
-    comparison['Ratio'] = comparison['BEA_Multiplier'] / comparison['Wassily_Multiplier']
+    comparison['Difference'] = comparison['BEA_Multiplier'] - comparison['Leontief_Multiplier']
+    comparison['Ratio'] = comparison['BEA_Multiplier'] / comparison['Leontief_Multiplier']
 
     print(f"\nComparison Statistics:")
     print(f"  Mean BEA multiplier: {comparison['BEA_Multiplier'].mean():.4f}")
-    print(f"  Mean Wassily multiplier: {comparison['Wassily_Multiplier'].mean():.4f}")
-    print(f"  Mean ratio (BEA/Wassily): {comparison['Ratio'].mean():.4f}")
+    print(f"  Mean Leontief multiplier: {comparison['Leontief_Multiplier'].mean():.4f}")
+    print(f"  Mean ratio (BEA/Leontief): {comparison['Ratio'].mean():.4f}")
     print(f"  Std of ratio: {comparison['Ratio'].std():.4f}")
 
     print(f"\nTop 10 Largest Differences (BEA higher):")
     top_diff = comparison.nlargest(10, 'Difference')
     for idx, row in top_diff.iterrows():
-        print(f"  {row['Industry']}: BEA={row['BEA_Multiplier']:.4f}, Wassily={row['Wassily_Multiplier']:.4f}, Diff={row['Difference']:.4f}")
+        print(f"  {row['Industry']}: BEA={row['BEA_Multiplier']:.4f}, Leontief={row['Leontief_Multiplier']:.4f}, Diff={row['Difference']:.4f}")
 
     return comparison
 
@@ -224,7 +225,7 @@ def create_approximate_redefinitions(L_wassily, comparison):
     # Calculate average ratio
     avg_ratio = comparison['Ratio'].mean()
 
-    print(f"\nAverage BEA/Wassily ratio: {avg_ratio:.4f}")
+    print(f"\nAverage BEA/Leontief ratio: {avg_ratio:.4f}")
     print(f"This suggests BEA multipliers are ~{avg_ratio:.2f}x our commodity tech values")
 
     # Create scaled version
@@ -286,7 +287,7 @@ def main():
         'industries': list(L_wassily.index)
     }
 
-    output_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/method3_reverse_engineered_2002.pkl")
+    output_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/method3_reverse_engineered_2002.pkl")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, 'wb') as f:
@@ -295,8 +296,8 @@ def main():
     print(f"\n[OK] Results saved to: {output_path}")
 
     # Save comparison to Excel (Druck: one sheet!)
-    excel_path = Path("D:/Arcanum/Projects/Leontief.io/Output/Data/[2025.10.10] method3_comparison.xlsx")
-    comparison.to_excel(excel_path, index=False, sheet_name='BEA_vs_Wassily_Common')
+    excel_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Output/Data/[2025.10.10] method3_comparison.xlsx")
+    comparison.to_excel(excel_path, index=False, sheet_name='BEA_vs_Leontief_Common')
     print(f"[OK] Comparison saved to: {excel_path}")
 
     print("\n" + "="*80)
@@ -304,7 +305,7 @@ def main():
     print("="*80)
     print(f"\nKEY FINDINGS:")
     print(f"  BEA has {len(special_codes)} special redefinition industries")
-    print(f"  Average BEA/Wassily ratio: {comparison['Ratio'].mean():.4f}")
+    print(f"  Average BEA/Leontief ratio: {comparison['Ratio'].mean():.4f}")
     print(f"  This suggests BEA's methodology produces ~2x higher multipliers")
     print(f"\nLIMITATION:")
     print(f"  Cannot truly replicate without BEA's redefinition algorithms")

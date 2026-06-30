@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-International Integration Module for Leontief.io
-Leontief.io - Unified International I-O Data Integration
+International Integration Module for Leontief
+Leontief - Unified International I-O Data Integration
 
 This module provides a unified interface for integrating multiple international
 I-O databases (WIOD, OECD ICIO) with the existing BEA U.S. data framework,
@@ -20,6 +20,7 @@ Date: 2025-10-14
 Version: 1.0
 """
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -52,7 +53,7 @@ class InternationalIntegration:
     Unified International I-O Data Integration System
 
     Provides comprehensive integration of multiple international I-O databases
-    with the existing Leontief.io platform, enabling harmonized analysis
+    with the existing Leontief platform, enabling harmonized analysis
     across different data sources, classifications, and geographic regions.
 
     Supported Data Sources:
@@ -68,7 +69,7 @@ class InternationalIntegration:
         Args:
             data_dir (str): Base directory for international data storage
         """
-        self.data_dir = Path(data_dir) if data_dir else Path("D:/Arcanum/Projects/Leontief.io/Technical/data")
+        self.data_dir = Path(data_dir) if data_dir else (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data")
 
         # Initialize data processors
         self.wiod_processor = WIODProcessor(base_path=self.data_dir / "raw/wiod/2016_release")

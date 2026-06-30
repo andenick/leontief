@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 WIOD (World Input-Output Database) Processor
-Leontief.io - WIOD 2016 Release Integration
+Leontief - WIOD 2016 Release Integration
 
 This module handles downloading, processing, and integrating WIOD 2016 data
-into the Leontief.io platform for international I-O analysis.
+into the Leontief platform for international I-O analysis.
 
 Author: Claude Code Assistant
 Date: 2025-10-14
@@ -45,7 +45,7 @@ class WIODProcessor:
             base_path: Base path for WIOD data storage
         """
         if base_path is None:
-            self.base_path = Path("D:/Arcanum/Projects/Leontief.io/Technical/data/raw/wiod/2016_release")
+            self.base_path = (Path(os.environ.get("DATA_ROOT", ".")) / "Technical/data/raw/wiod/2016_release")
         else:
             self.base_path = Path(base_path)
 
@@ -385,7 +385,7 @@ class WIODProcessor:
 
     def export_to_leontief_format(self, data: Dict, output_dir: str = None):
         """
-        Export processed data to Leontief.io format
+        Export processed data to Leontief format
 
         Args:
             data: Dictionary containing processed WIOD data
@@ -399,7 +399,7 @@ class WIODProcessor:
 
             output_dir.mkdir(parents=True, exist_ok=True)
 
-            # Export to Excel format compatible with Leontief.io
+            # Export to Excel format compatible with Leontief
             for year in self.years:
                 if year in data:
                     output_file = output_dir / f'wiod_processed_{year}.xlsx'
