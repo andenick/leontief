@@ -83,11 +83,19 @@ The table below shows the 2024 final demand breakdown aggregated to 15 sector gr
 
 The raw Supply and Use tables use a commodity-by-industry layout that is not square — you cannot invert a non-square matrix. To get the Leontief inverse $L = (I - A)^{-1}$ we need a square, industry-by-industry table.
 
-BEA applies an **industry-technology assumption**: each industry uses inputs in fixed proportions regardless of which commodity it produces. Under this assumption, the direct requirements matrix becomes:
+BEA applies an **industry-technology assumption**: each industry uses inputs in fixed proportions regardless of which commodity it produces. The construction goes through two intermediate matrices. First, the commodity-by-industry **direct-input** coefficients normalise the Use table by industry output:
 
-$$A = U \hat{V}^{-1} (V \hat{q}^{-1})^{-1}$$
+$$B = U\,\hat{x}^{-1}$$
 
-where $U$ is the Use matrix (commodities × industries), $V$ is the Make/Supply matrix (industries × commodities), and $\hat{q}$ is the diagonal of commodity totals [cite:miller_blair_2022]. The result is the symmetric $A_{IxI}$ (industry-by-industry) matrix that underlies the L matrix you saw in Tutorial 1.
+where $U$ is the Use matrix (commodities × industries) and $\hat{x}$ is the diagonal matrix of industry total outputs. Second, the **market-share** (transformation) matrix normalises the Make/Supply table by commodity output:
+
+$$D = V\,\hat{q}^{-1}$$
+
+where $V$ is the Make/Supply matrix (industries × commodities) and $\hat{q}$ is the diagonal matrix of commodity total outputs. Combining them under the industry-technology assumption gives the symmetric industry-by-industry direct requirements matrix:
+
+$$A = D\,B$$
+
+[cite:miller_blair_2009_ch5]. This $A_{IxI}$ is the matrix that underlies the L matrix you saw in Tutorial 1.
 
 A critical methodological note: before 2007, BEA published only a single Use table mixing domestic and imported inputs. From the 2007 benchmark onward, BEA publishes **separate** domestic and import Use tables. Multipliers computed from the total-use table overstate domestic production effects because they include import leakage. The Leontief database uses the **total** Use table for the full 1997–2024 span to maintain consistency; keep this in mind when comparing multipliers across time [cite:bea_concepts_2009].
 
@@ -121,5 +129,11 @@ One regime change that quietly reshapes the A matrix: in 2003 BEA began allocati
 
 ## Where next
 
-- **Next tutorial**: [Multipliers and Linkages](/learn/03-multipliers-and-linkages) — how to read output, income, and employment multipliers from the Leontief inverse, and what "key sector" status really means.
+- **Next tutorial**: [The Recipe Book: Technical Coefficients and the A Matrix](/learn/03-technical-coefficients-A) — how the Use table is compressed into the A matrix, the economy's recipe book of input requirements per dollar of output.
 - **Dig into the data**: [Multipliers Explained](/studies/multipliers-explained) — a worked study tracing how the mean output multiplier fell from 1.93 in 1997 to 1.87 in 2024, and which sectors drove the change.
+
+## Further reading
+
+- Miller &amp; Blair (2009), ch. 5 — the commodity-by-industry framework: Use and Make tables and the derivation of the symmetric direct- and total-requirements matrices. [cite:miller_blair_2009_ch5]
+- Horowitz &amp; Planting (2009), *Concepts and Methods of the U.S. Input-Output Accounts* — BEA's own documentation of how the U.S. Supply and Use tables are built. [cite:bea_concepts_2009]
+- United Nations (2018), *Handbook on Supply, Use and Input-Output Tables* — the international SUT standard. [cite:un_handbook_2018]

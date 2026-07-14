@@ -7,7 +7,7 @@ summary: "The price dual of the Leontief model shows how wage costs propagate th
 
 ## The Question
 
-Production costs are not confined to the sector where they originate. A wage increase in trucking raises the delivered cost of every commodity that travels by truck — and through the inter-industry network, those cost increases cascade further. Input-output analysis provides the exact arithmetic of this pass-through: the *price dual* of the Leontief quantity model.[cite:miller_blair_2022]
+Production costs are not confined to the sector where they originate. A wage increase in trucking raises the delivered cost of every commodity that travels by truck — and through the inter-industry network, those cost increases cascade further. Input-output analysis provides the exact arithmetic of this pass-through: the *price dual* of the Leontief quantity model.[cite:miller_blair_2009_ch2]
 
 How much does a uniform 10% increase in labor costs raise output prices, and which sectors are most exposed through their supply-chain linkages? Separately, what has happened to the share of income going to labor across the American economy over the past three decades?
 
@@ -124,4 +124,4 @@ python analysis.py
 
 The script reads `data/A_square_2024.csv`, `data/value_added_2024.csv`, `data/total_output_2024.csv`, `data/labor_share.csv`, and `data/sector_names.csv`. It uses only `numpy`, `pandas`, and `plotly`. An `analysis.ipynb` notebook mirrors every step.
 
-[cite:miller_blair_2022][cite:pasinetti_1981][cite:godley_lavoie_2007][cite:shaikh_capitalism_2016]
+[cite:miller_blair_2009_ch2][cite:pasinetti_1981][cite:godley_lavoie_2007][cite:shaikh_capitalism_2016]

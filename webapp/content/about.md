@@ -12,7 +12,7 @@ Input-output tables are one of the most powerful lenses economics has for unders
 
 ## The Data
 
-Leontief draws on 28 annual tables published by the Bureau of Economic Analysis (BEA) covering 1997 through 2024, each organized using the BEA Summary 71-sector classification. For each year we compute and publish seven matrices: the raw Use and Supply tables, the direct-requirements matrix A, a squared variant A\_square, the Leontief inverse L (total requirements), the value-added breakdown, and the final demand columns. Every matrix is available for download in CSV, Excel, JSON, and Parquet format.
+Leontief draws on 28 annual tables published by the Bureau of Economic Analysis (BEA) covering 1997 through 2024, each organized using the BEA Summary 71-sector classification. For each year we compute and publish seven matrices: the raw Use and Supply tables, the direct-requirements matrix A, a squared variant A\_square, the Leontief inverse L (total requirements), the value-added breakdown, and the final demand columns. Every matrix is available for download in CSV, Excel, and Parquet format.
 
 The BEA data is in the public domain. Leontief adds computation, documentation, and presentation — but no proprietary content of its own.
 
@@ -38,7 +38,7 @@ The underlying BEA input-output data is a product of the United States federal g
 
 If you use Leontief data or charts in published work, please cite it as:
 
-> Leontief: U.S. Input-Output Tables, 1997–2024. Retrieved from https://leontief.nickanderson.us. Data sourced from the Bureau of Economic Analysis (BEA), U.S. Department of Commerce.
+> Leontief: U.S. Input-Output Tables, 1997–2024. Retrieved from https://leontief.heterodata.org. Data sourced from the Bureau of Economic Analysis (BEA), U.S. Department of Commerce.
 
 For the BEA methodology underlying the accounts, cite:
 

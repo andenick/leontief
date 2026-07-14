@@ -1,4 +1,4 @@
-"""Selfcheck gate for the Wassily I-O website.
+"""Selfcheck gate for the Leontief I-O website.
 
 Run with the webapp venv python:
     .venv/Scripts/python.exe data_pipeline/selfcheck.py
@@ -174,7 +174,7 @@ def check_studies_count() -> bool:
 
 def main() -> int:
     print("=" * 60)
-    print("Wassily Self-Check Gate")
+    print("Leontief Self-Check Gate")
     print("=" * 60)
 
     # 1. Manifest present

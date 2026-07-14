@@ -7,7 +7,7 @@ summary: "Structural decomposition analysis (SDA) splits the $39.7 trillion rise
 
 ## The Question
 
-Between 1997 and 2024, U.S. gross output rose by roughly $39.7 trillion in current dollars. How much of that increase was driven by changes in *what consumers, firms, and government bought* (the final-demand effect), and how much by changes in *how industries produce* (the technology effect)? The two forces can reinforce or offset each other, and their relative weight tells us something fundamental about the character of structural change in the American economy.[cite:miller_blair_2022]
+Between 1997 and 2024, U.S. gross output rose by roughly $39.7 trillion in current dollars. How much of that increase was driven by changes in *what consumers, firms, and government bought* (the final-demand effect), and how much by changes in *how industries produce* (the technology effect)? The two forces can reinforce or offset each other, and their relative weight tells us something fundamental about the character of structural change in the American economy.[cite:miller_blair_2009_ch13]
 
 ---
 
@@ -89,7 +89,7 @@ Download the full replication bundle at:
 **[/api/study/structural-decomposition/bundle.zip](/api/study/structural-decomposition/bundle.zip)**
 
 ```bash
-unzip wassily_study_structural-decomposition.zip
+unzip leontief_study_structural-decomposition.zip
 cd code
 pip install -r requirements.txt
 python analysis.py
@@ -98,4 +98,4 @@ python analysis.py
 
 The script reads `data/L_1997.csv`, `data/L_2024.csv`, `data/fd_1997.csv`, `data/fd_2024.csv`, and `data/sector_names.csv`. It implements the three-term SDA using only NumPy linear algebra — no scipy, no networkx. An `analysis.ipynb` notebook mirrors every step interactively.
 
-[cite:miller_blair_2022][cite:dietzenbacher_los_1998]
+[cite:miller_blair_2009_ch13][cite:dietzenbacher_los_1998]

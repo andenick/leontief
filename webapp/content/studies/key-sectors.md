@@ -9,7 +9,7 @@ summary: "Rasmussen linkage indices measure every sector's pull on suppliers (ba
 
 Every industry buys inputs from suppliers and sells outputs to other producers. Some industries do both intensively; others specialize in one direction. To spot the economy's structural hubs — the sectors where a disruption or stimulus reverberates most widely — we need a way to measure both directions of dependence at once.
 
-That tool is **Rasmussen's linkage indices**, computed directly from the Leontief inverse $L = (I - A)^{-1}$.[cite:miller_blair_2022]
+That tool is **Rasmussen's linkage indices**, computed directly from the Leontief inverse $L = (I - A)^{-1}$.[cite:miller_blair_2009_ch12]
 
 ---
 
@@ -94,4 +94,4 @@ python analysis.py
 
 The script reads `data/L_2024.csv` and `data/L_2002.csv` (Leontief inverses exported from the BEA cache) and `data/sector_names.csv`. It writes result tables and Plotly JSON figures to `outputs/`. An `analysis.ipynb` notebook mirrors every step for interactive exploration.
 
-[cite:miller_blair_2022][cite:dietzenbacher_los_1998]
+[cite:miller_blair_2009_ch12][cite:dietzenbacher_los_1998]

@@ -20,47 +20,92 @@
     {% endif %}
 
     <!-- ------------------------------------------------------------------ -->
-    <!-- Reproduce this study box                                             -->
-    <!-- ------------------------------------------------------------------ -->
-    <div class="bundle-box" role="complementary" aria-label="Reproduce this study">
-      <h4>Reproduce this Study</h4>
-      <p>
-        Download the complete code bundle, run it with the Wassily data,
-        and get the identical charts and tables shown below.
-      </p>
-      <a class="btn" href="/api/study/{{ slug }}/bundle.zip" download>
-        Download bundle (.zip)
-      </a>
-      {% if code_files %}
-        <ul class="code-file-list" style="margin:12px 0 0; padding-left:20px; font-size:.9rem;">
-          {% for f in code_files %}
-            <li><a href="/api/file/{{ f }}">{{ f }}</a></li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    </div>
-
-    <!-- ------------------------------------------------------------------ -->
     <!-- Narrative + embedded charts/tables from markdown                     -->
+    <!-- The data / code / sources / disclaimer block is the                  -->
+    <!-- STUDY_PAGE_STANDARD page-foot below (single canonical location).     -->
     <!-- ------------------------------------------------------------------ -->
     <div class="prose">
       {{ doc_html | safe }}
     </div>
 
-    {% if citations %}
-      <section class="references" aria-label="References">
-        <h2>References</h2>
-        <ol>
-          {% for c in citations %}
-            <li id="cite-{{ c.key }}">
-              [{{ c.n }}]
-              {% if c.get('label') %}{{ c.label }}{% else %}{{ c.key }}{% endif %}
-              {% if c.get('url') %} — <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.url }}</a>{% endif %}
-            </li>
+    <!-- ================================================================== -->
+    <!-- STUDY_PAGE_STANDARD v1.0 — mandatory page-foot block                -->
+    <!-- (1) data download CSV+parquet  (2) replication-code permalink       -->
+    <!-- (3) sources block  (4) educational disclaimer                       -->
+    <!-- ================================================================== -->
+    <section class="study-standard-foot" aria-label="Data, code, sources, and disclaimer"
+             style="margin-top:40px; border-top:2px solid var(--ark-line, rgba(128,128,128,.25)); padding-top:24px;">
+
+      <!-- (1) Download the data — CSV and parquet -->
+      <h2 id="download-data">Download the data</h2>
+      {% if data_downloads %}
+        <p>The data behind this study's charts, in both formats:</p>
+        <p class="dl-btns">
+          <a class="btn" href="{{ data_downloads.csv }}" download>Download CSV</a>
+          <a class="btn" href="{{ data_downloads.parquet }}" download>Download Parquet</a>
+        </p>
+        <p style="font-size:.86rem;color:var(--muted);">
+          Full replication bundle (data + code + notebook):
+          <a href="/api/study/{{ slug }}/bundle.zip" download>{{ slug }}.zip</a>.
+        </p>
+      {% else %}
+        <p>
+          Full replication bundle (data + code + notebook):
+          <a class="btn" href="/api/study/{{ slug }}/bundle.zip" download>Download bundle (.zip)</a>
+        </p>
+      {% endif %}
+
+      <!-- (2) Replication code — GitHub permalink -->
+      <h2 id="replication-code">Replication code</h2>
+      <p>
+        Every chart and table above is produced by this exact script
+        (pinned commit):
+        <a href="{{ code_permalink }}" target="_blank" rel="noopener">
+          webapp/content/studies/code/{{ slug }}/analysis.py
+        </a>.
+      </p>
+      {% if code_files %}
+        <ul class="code-file-list" style="margin:8px 0 0; padding-left:20px; font-size:.9rem;">
+          {% for f in code_files %}
+            <li><a href="/api/file/{{ f }}">{{ f }}</a></li>
           {% endfor %}
-        </ol>
-      </section>
-    {% endif %}
+        </ul>
+      {% endif %}
+
+      <!-- (3) Sources block — definition list, not a wide table -->
+      <h2 id="sources">Sources</h2>
+      <dl class="sources-dl">
+        <dt>Input-output data</dt>
+        <dd>
+          U.S. Bureau of Economic Analysis (BEA), Annual Input-Output Accounts,
+          Summary level (71 sectors), 1997–2024 —
+          <a href="https://www.bea.gov/industry/input-output-accounts-data" target="_blank" rel="noopener">bea.gov</a>.
+        </dd>
+        {% if citations %}
+        <dt>Methodology &amp; literature</dt>
+        <dd>
+          <ol style="margin:0; padding-left:20px;">
+            {% for c in citations %}
+              <li id="cite-{{ c.key }}">
+                {% if c.get('label') %}{{ c.label | safe }}{% else %}{{ c.key }}{% endif %}
+                {% if c.get('url') %} — <a href="{{ c.url }}" target="_blank" rel="noopener">link</a>{% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        </dd>
+        {% endif %}
+      </dl>
+
+      <!-- (4) Educational disclaimer (names BEA as the original source) -->
+      <div class="edu-disclaimer" role="note" aria-label="Educational disclaimer">
+        <strong>Educational / research use.</strong> The data on this page is
+        reconstructed from BEA input-output accounts for research transparency and
+        education. It may lag official revisions or contain reconstruction error,
+        and it is not a substitute for the original source. For authoritative
+        figures, defer to the U.S. Bureau of Economic Analysis at
+        <a href="https://www.bea.gov/" target="_blank" rel="noopener">bea.gov</a>.
+      </div>
+    </section>
 
     <p style="margin-top:32px;">
       <a href="/studies">&larr; All studies</a>

@@ -4,6 +4,16 @@ summary: How we build the matrices — BEA Supply and Use tables, derivation of 
 order: 10
 ---
 
+<div class="edu-disclaimer" role="note">
+<strong>Educational / research disclaimer.</strong> The matrices and series on this
+site are <strong>reconstructed</strong> from BEA input-output accounts for research
+transparency and education. They may lag official BEA revisions or contain
+reconstruction error, and they are <strong>not a substitute for the original
+source</strong>. For authoritative figures, pull the canonical data directly from
+the U.S. Bureau of Economic Analysis at <a href="https://www.bea.gov/">bea.gov</a>
+(Input-Output Accounts). We are not the original source.
+</div>
+
 ## What Are Input-Output Accounts?
 
 Input-output (I-O) accounting is a systematic way to map the flows of goods and services between every sector of an economy. For every pair of industries, an I-O table records how much of one industry's output is consumed as an intermediate input by the other. Reading down a column reveals the full supply chain behind a sector's production; reading across a row shows where that sector's output ends up. From these flows, economists can trace how a shock to one industry — say a surge in energy prices or a collapse in construction — ripples through every other sector before reaching final consumers.[cite:miller_blair_2022]
@@ -43,7 +53,7 @@ The 71-sector annual series began in 2010 when BEA integrated annual GDP-by-Indu
 
 ## The Matrices We Publish
 
-For each year we publish seven matrices, available for download in CSV, Excel, JSON, and Parquet:
+For each year we publish seven matrices, available for download in CSV, Excel, and Parquet:
 
 | Matrix | Symbol | Dimensions | Description |
 |--------|--------|-----------|-------------|

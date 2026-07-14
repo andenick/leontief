@@ -9,10 +9,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from app import config as C
 from app.services import narrative_service as NS
 from app.services import data_service as DS
+from app.services import anu_service as ANU
 
 router = APIRouter(tags=["pages"])
 
@@ -26,6 +27,30 @@ def _t(request: Request):
     return request.app.state.templates
 
 
+def _prov_globals() -> dict:
+    """Honest site-wide provenance facts for the shared .ark-provenance panel
+    (Carson DNA A7/A10). Read once from the data manifest so the build/retrieval
+    date, coverage years and sector count are real, never invented."""
+    try:
+        manifest = DS.load_manifest()
+    except Exception:  # noqa: BLE001
+        manifest = {}
+    coverage = manifest.get("coverage", {}) or {}
+    years: list[int] = []
+    try:
+        years = sorted(
+            t["year"] for t in DS.list_tables() if t.get("year") is not None
+        )
+        years = sorted(set(years))
+    except Exception:  # noqa: BLE001
+        years = []
+    return {
+        "manifest_generated": manifest.get("generated", ""),
+        "coverage": coverage,
+        "years_sorted": years,
+    }
+
+
 def _ctx(request: Request, **kw) -> dict:
     """Base template context merged with extra keyword args."""
     base = {
@@ -33,6 +58,8 @@ def _ctx(request: Request, **kw) -> dict:
         "site_title": C.SITE_TITLE,
         "tagline": C.SITE_TAGLINE,
     }
+    # Provenance facts available on every page (caller kw can override).
+    base.update(_prov_globals())
     base.update(kw)
     return base
 
@@ -168,38 +195,11 @@ def learn_tutorial(request: Request, slug: str):
 
 @router.get("/tables", response_class=HTMLResponse)
 def tables(request: Request):
-    """I-O Table Explorer — template provided by later work-package."""
-    templates = _t(request)
-    tables_tmpl = C.TEMPLATES_DIR / "tables.html"
-    if tables_tmpl.exists():
-        return templates.TemplateResponse(
-            request,
-            "tables.html",
-            _ctx(request, section="Tables"),
-        )
-    # Placeholder until tables.html is delivered
-    return HTMLResponse(
-        """<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8">
-<title>Tables — Wassily</title>
-<link rel="stylesheet" href="/static/css/site.css">
-</head>
-<body>
-<header class="nav"><div class="inner">
-  <a class="brand" href="/">Wassily</a>
-  <nav><a href="/learn">Learn</a> <a href="/tables" class="active">Tables</a>
-  <a href="/studies">Studies</a> <a href="/data">Data</a></nav>
-</div></header>
-<main class="content"><div class="container">
-  <h1>I-O Table Explorer</h1>
-  <div class="stub-notice">
-    <strong>Coming soon:</strong> The interactive table explorer is being built.
-    In the meantime, browse the <a href="/data">Data catalog</a> for direct downloads.
-  </div>
-</div></main>
-</body></html>""",
-        status_code=200,
+    """I-O Table Explorer (tables.html — full kit chrome via base.html)."""
+    return _t(request).TemplateResponse(
+        request,
+        "tables.html",
+        _ctx(request, section="Tables"),
     )
 
 
@@ -226,13 +226,34 @@ def study(request: Request, slug: str):
     except FileNotFoundError:
         return _not_found_html(request, f"Study '{slug}' not found.")
 
-    # Derive list of code files from manifest (studies entry)
+    # Derive code files + primary data table from manifest (studies entry)
     code_files: list[str] = []
-    manifest_studies = DS.list_studies()
-    for s in manifest_studies:
+    data_tables: list[str] = []
+    for s in DS.list_studies():
         if s.get("slug") == slug or s.get("key") == slug:
             code_files = s.get("code_files", [])
+            data_tables = s.get("tables", [])
             break
+
+    # Primary-data download links (STUDY_PAGE_STANDARD: CSV + parquet). The study
+    # writes its result table to content/studies/code/<slug>/outputs/<table>.csv
+    # (with a generated .parquet companion); both are served by /api/file.
+    data_downloads: dict[str, str] | None = None
+    if data_tables:
+        primary = data_tables[0]
+        base = f"content/studies/code/{slug}/outputs/{primary}"
+        data_downloads = {
+            "name": primary,
+            "csv": f"/api/file/{base}.csv",
+            "parquet": f"/api/file/{base}.parquet",
+        }
+
+    # Replication-code permalink (pinned commit). STUDY_PAGE_STANDARD wants a
+    # GitHub permalink; we point at the exact study analysis.py at the pinned ref.
+    repo = C.GITHUB_URL.rstrip("/")
+    # Study code lives under webapp/ in the public repo (github.com/andenick/leontief);
+    # the path MUST include the webapp/ prefix or the permalink 404s (LEF-2).
+    code_permalink = f"{repo}/blob/{C.GITHUB_PIN}/webapp/content/studies/code/{slug}/analysis.py"
 
     return _t(request).TemplateResponse(
         request,
@@ -246,8 +267,39 @@ def study(request: Request, slug: str):
             meta=result["meta"],
             slug=slug,
             code_files=code_files,
+            data_downloads=data_downloads,
+            code_permalink=code_permalink,
         ),
     )
+
+
+# ---------------------------------------------------------------------------
+# /download — convenience alias so a hand-typed URL lands on the catalog.
+# The nav points at /data (canonical); /download just redirects there so a
+# visitor typing it is not dead-ended on a JSON 404.
+# ---------------------------------------------------------------------------
+
+@router.get("/download")
+def download_redirect():
+    """Redirect /download to the canonical /data catalog (308 permanent)."""
+    return RedirectResponse(url="/data", status_code=308)
+
+
+# ---------------------------------------------------------------------------
+# llms.txt — agent-first resource map (CODE_DATA_FIRST_STANDARD.md §B1.5).
+# Generated from ecosystem.json's cdf block by data_pipeline (make_llms_txt.py)
+# and shipped in site_data/llms.txt.
+# ---------------------------------------------------------------------------
+
+@router.get("/llms.txt")
+def llms_txt():
+    """Serve the agent-first resource map as text/plain."""
+    p = C.SITE_DATA / "llms.txt"
+    if not p.exists():
+        return Response(content="llms.txt not available", status_code=404,
+                        media_type="text/plain; charset=utf-8")
+    return Response(content=p.read_text(encoding="utf-8"),
+                    media_type="text/plain; charset=utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -271,6 +323,47 @@ def data_catalog(request: Request):
 
     years_sorted = sorted(by_year.keys())
 
+    # --------------------------------------------------------------
+    # Data inventory: one row per raw/derived BEA dataset type, with
+    # the vintage span, count, dimensions, source identifier, and the
+    # snapshot (build) date recorded in the manifest. Lets a user see
+    # exactly which BEA datasets underlie the whole site at a glance.
+    # --------------------------------------------------------------
+    try:
+        manifest = DS.load_manifest()
+    except Exception:  # noqa: BLE001
+        manifest = {}
+    manifest_generated = manifest.get("generated", "")
+    coverage = manifest.get("coverage", {})
+
+    # Per matrix-type: count, year span, dims (from a sample entry), provenance
+    _MATRIX_KIND = {
+        "Use":      ("raw",     "BEA Use table (Use_IxI_Summary_YYYY.json) — commodity × industry intermediate use + final demand"),
+        "Supply":   ("raw",     "BEA Supply/Make table (Supply_IxI_Summary_YYYY.json) — commodity × industry production"),
+        "L":        ("raw",     "BEA Total Requirements / Leontief inverse (Total_Requirements_IxI_Summary_YYYY.json)"),
+        "A":        ("derived", "Direct-requirements coefficients (non-square 70×71), derived from the Use table"),
+        "A_square": ("derived", "Direct-requirements coefficients, squared to the row∩col intersection"),
+        "VA":       ("derived", "Value-added rows (V-codes) extracted from the BEA accounts"),
+        "FD":       ("derived", "Final-demand columns (F-codes) extracted from the Use table"),
+    }
+    inventory: list[dict] = []
+    for mk in C.MATRIX_KEYS:
+        entries = [t for t in tables if t.get("matrix") == mk]
+        if not entries:
+            continue
+        yrs = sorted(t["year"] for t in entries if t.get("year") is not None)
+        sample = entries[0]
+        kind, desc = _MATRIX_KIND.get(mk, ("", sample.get("provenance", "")))
+        inventory.append({
+            "matrix": mk,
+            "kind": kind,
+            "description": desc,
+            "count": len(entries),
+            "year_min": yrs[0] if yrs else None,
+            "year_max": yrs[-1] if yrs else None,
+            "dims": f"{sample.get('rows', '?')} × {sample.get('cols', '?')}",
+        })
+
     return _t(request).TemplateResponse(
         request,
         "catalog.html",
@@ -281,6 +374,28 @@ def data_catalog(request: Request):
             years_sorted=years_sorted,
             matrix_keys=list(C.MATRIX_KEYS),
             series=series,
+            inventory=inventory,
+            manifest_generated=manifest_generated,
+            coverage=coverage,
+        ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Code mode — Anu-pipeline explainer + GitHub button
+# ---------------------------------------------------------------------------
+
+@router.get("/code", response_class=HTMLResponse)
+def code(request: Request):
+    """Code mode — friendly explainer of the Anu pipeline stages + GitHub link."""
+    return _t(request).TemplateResponse(
+        request,
+        "code.html",
+        _ctx(
+            request,
+            section="Code",
+            stages=ANU.stages(),
+            github_url=C.GITHUB_URL,
         ),
     )
 
@@ -302,6 +417,7 @@ def methodology(request: Request):
             title=result["meta"].get("title", "Methodology"),
             doc_html=result["html"],
             citations=result["citations"],
+            show_provenance=True,
         ),
     )
 

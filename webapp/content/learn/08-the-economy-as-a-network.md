@@ -20,7 +20,7 @@ In network analysis, **centrality** measures how important a node is to the over
 
 **Degree centrality** — a sector with high *out-degree* supplies many others; high *in-degree* means it buys from many. In I-O terms these correspond directly to [forward linkages and backward linkages](/glossary#linkages).
 
-**Eigenvector centrality** — a sector is important if it is connected to other important sectors. This recursive idea is exactly what the [Leontief inverse](/glossary#leontief-inverse) $L = (I - A)^{-1}$ captures: the $(i,j)$ entry of $L$ sums all direct *and* indirect paths from $i$ to $j$, weighted by their intensity. The column sum $m_j = \sum_i l_{ij}$ is the [output multiplier](/glossary#multiplier) for sector $j$ — a direct measure of how much total output the whole economy must generate to satisfy one dollar of final demand for $j$'s product [cite:miller_blair_2022].
+**Eigenvector centrality** — a sector is important if it is connected to other important sectors. This recursive idea is exactly what the [Leontief inverse](/glossary#leontief-inverse) $L = (I - A)^{-1}$ captures: the $(i,j)$ entry of $L$ sums all direct *and* indirect paths from $i$ to $j$, weighted by their intensity. The column sum $m_j = \sum_i l_{ij}$ is the [output multiplier](/glossary#multiplier) for sector $j$ — a direct measure of how much total output the whole economy must generate to satisfy one dollar of final demand for $j$'s product [cite:miller_blair_2009_ch14].
 
 **Betweenness centrality** — how often does a sector lie on the shortest path between two other sectors? Sectors with high betweenness are bottlenecks: disrupting them severs the most supply-chain routes simultaneously.
 
@@ -50,7 +50,7 @@ $$\sigma_{\text{aggregate}} \sim \frac{1}{\sqrt{n}} + \lambda_{\max}(A) \cdot \s
 
 The first term is the familiar diversification effect that shrinks as $n \to \infty$. The second term, proportional to the **spectral radius** $\lambda_{\max}(A)$ of the technology matrix, persists. If the largest eigenvalue of $A$ is close to 1 — which it will be in an economy with tight input-output linkages — a shock to a central sector (high eigenvector centrality) propagates through the entire production network and never fully diversifies away.
 
-This is a precise statement of why macroeconomic disasters can originate in microeconomic events: the 2011 Fukushima earthquake disrupted global automobile and electronics supply chains far beyond Japan; the 2021 semiconductor shortage cascaded from chips into cars, appliances, and medical devices. The I-O network is the transmission mechanism [cite:acemoglu_2012][cite:miller_blair_2022].
+This is a precise statement of why macroeconomic disasters can originate in microeconomic events: the 2011 Fukushima earthquake disrupted global automobile and electronics supply chains far beyond Japan; the 2021 semiconductor shortage cascaded from chips into cars, appliances, and medical devices. The I-O network is the transmission mechanism [cite:acemoglu_2012][cite:miller_blair_2009_ch14].
 
 ## Try It
 
@@ -82,3 +82,8 @@ All matrices here come from BEA Summary I-O tables at the 71-sector level, cover
 
 - **Tutorial 09** — Supply Chains and Global Value Chains: how do we extend the domestic network to include imports and track where value is *actually* created along international production chains?
 - **Deep dive** — [Supply Chains as Networks](/studies/supply-chains-network): centrality rankings across all 28 years, community structure evolution, and a replication of the Acemoglu et al. cascade model on BEA data.
+
+## Further reading
+
+- Miller &amp; Blair (2009), §14.3 — graph theory, structural path analysis, and qualitative input-output analysis (the network view of the I-O table). [cite:miller_blair_2009_ch14]
+- Acemoglu, Carvalho, Ozdaglar &amp; Tahbaz-Salehi (2012) — how aggregate fluctuations originate in the network structure of production. [cite:acemoglu_2012]

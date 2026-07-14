@@ -1,4 +1,4 @@
-"""JSON + download API endpoints for the Wassily I-O website.
+"""JSON + download API endpoints for the Leontief I-O website.
 
 Router is included by main.py with no extra prefix; the router itself
 declares prefix="/api".  All routes below are relative to /api.
@@ -37,9 +37,25 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse, Response
 
+from carson_telemetry import telemetry  # Carson Telemetry Standard §4 (download events)
+
 from app import config as C
 
 logger = logging.getLogger(__name__)
+
+
+def _emit_download(endpoint: str, raw: bytes) -> None:
+    """Record a surface="download" usage event (TELEMETRY_STANDARD.md §3/§4).
+
+    The ASGI middleware already logs every request as surface="rest"; these
+    explicit calls re-classify the genuine data/code downloads so download
+    counts are correct. ``endpoint`` is a route template (names only, never
+    argument values, per §3). Telemetry must never break the request path.
+    """
+    try:
+        telemetry.record_download("leontief", endpoint, bytes=len(raw or b""))
+    except Exception:  # noqa: BLE001 — telemetry is best-effort, never fatal
+        logger.debug("download telemetry emit failed for %s", endpoint, exc_info=True)
 
 router = APIRouter(prefix="/api", tags=["api"])
 
@@ -49,7 +65,11 @@ router = APIRouter(prefix="/api", tags=["api"])
 _WEBAPP_ROOT: Path = C.WEBAPP_ROOT.resolve()
 
 # Extensions allowed by /file endpoint
-_ALLOWED_EXTENSIONS = {".py", ".ipynb", ".txt", ".md", ".csv"}
+_ALLOWED_EXTENSIONS = {".py", ".ipynb", ".txt", ".md", ".csv", ".parquet"}
+
+# Binary extensions served as a download (not inline text/plain)
+_BINARY_EXTENSIONS = {".parquet"}
+_BINARY_MEDIA = {".parquet": "application/vnd.apache.parquet"}
 
 # ---------------------------------------------------------------------------
 # Static page catalogue for /search
@@ -60,6 +80,7 @@ _PAGES: list[dict[str, str]] = [
     {"title": "Tables",      "url": "/tables"},
     {"title": "Studies",     "url": "/studies"},
     {"title": "Data",        "url": "/data"},
+    {"title": "Code",        "url": "/code"},
     {"title": "Methodology", "url": "/methodology"},
     {"title": "About",       "url": "/about"},
 ]
@@ -138,7 +159,7 @@ def chart(
 
 @router.get("/table/{year}/{matrix}.{fmt}")
 def table_download(year: int, matrix: str, fmt: str) -> Response:
-    """Download a matrix as csv / xlsx / json / parquet.
+    """Download a matrix as csv / xlsx / parquet.
 
     URL shape: /api/table/2002/L.csv
     """
@@ -154,6 +175,7 @@ def table_download(year: int, matrix: str, fmt: str) -> Response:
         logger.exception("table_download failed year=%r matrix=%r fmt=%r", year, matrix, fmt)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    _emit_download("/api/table/{year}/{matrix}.{fmt}", raw)
     return Response(
         content=raw,
         media_type=media,
@@ -171,8 +193,19 @@ def table_json(
     matrix: str,
     agg: str | None = Query(default=None),
     search: str | None = Query(default=None),
-) -> JSONResponse:
-    """Return the matrix as a JSON payload for the Explorer grid / heatmap."""
+    fmt: str | None = Query(default=None),
+) -> Response:
+    """Return the matrix as a JSON payload for the Explorer grid / heatmap.
+
+    If ``?fmt=csv|xlsx|json|parquet`` is supplied, this delegates to the file
+    download handler so that catalog links of the form
+    ``/api/table/{year}/{matrix}?fmt=csv`` return a real downloadable file with
+    the correct Content-Type (the dotted route ``.{fmt}`` is the canonical
+    equivalent). Without ``fmt`` it returns the Explorer JSON payload.
+    """
+    if fmt is not None:
+        return table_download(year, matrix, fmt)
+
     from app.services.table_service import matrix_payload
 
     try:
@@ -210,11 +243,27 @@ def series_download(key: str, fmt: str) -> Response:
         logger.exception("series_download failed key=%r fmt=%r", key, fmt)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    _emit_download("/api/series/{key}.{fmt}", raw)
     return Response(
         content=raw,
         media_type=media,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ---------------------------------------------------------------------------
+# Series — query-param download (catalog links use ?fmt=…)
+#
+# The catalog template links to /api/series/{key}?fmt=csv (no dotted ext); that
+# would otherwise 404 since only the dotted route above exists. Honor ?fmt= by
+# delegating to series_download. ``fmt`` defaults to csv so a bare key still
+# yields a file rather than a 404.
+# ---------------------------------------------------------------------------
+
+@router.get("/series/{key}")
+def series_query(key: str, fmt: str = Query(default="csv")) -> Response:
+    """Download a derived series, format chosen via ``?fmt=``."""
+    return series_download(key, fmt)
 
 
 # ---------------------------------------------------------------------------
@@ -240,6 +289,32 @@ def study_bundle(slug: str) -> Response:
         logger.exception("study_bundle failed slug=%r", slug)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    _emit_download("/api/study/{slug}/bundle.zip", raw)
+    return Response(
+        content=raw,
+        media_type=media,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Code bundle (CDF Code triad leg) — pre-built matrix-build + study code zip.
+# ---------------------------------------------------------------------------
+
+@router.get("/code/bundle.zip")
+def code_bundle() -> Response:
+    """Download the matrix-build + study-analysis code bundle (Python + R)."""
+    from app.services.download_service import code_bundle_zip
+
+    try:
+        raw, media, filename = code_bundle_zip()
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("code_bundle failed")
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    _emit_download("/api/code/bundle.zip", raw)
     return Response(
         content=raw,
         media_type=media,
@@ -265,6 +340,7 @@ def bulk_all() -> Response:
         logger.exception("bulk_all failed")
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    _emit_download("/api/bulk/all.zip", raw)
     return Response(
         content=raw,
         media_type=media,
@@ -283,6 +359,7 @@ def bulk_year(year: int) -> Response:
         logger.exception("bulk_year failed year=%r", year)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
+    _emit_download("/api/bulk/{year}.zip", raw)
     return Response(
         content=raw,
         media_type=media,
@@ -376,6 +453,15 @@ def serve_file(relpath: str) -> Response:
         raise HTTPException(
             status_code=404,
             detail=f"File not found: {relpath}",
+        )
+
+    ext = resolved.suffix.lower()
+    if ext in _BINARY_EXTENSIONS:
+        raw = resolved.read_bytes()
+        return Response(
+            content=raw,
+            media_type=_BINARY_MEDIA.get(ext, "application/octet-stream"),
+            headers={"Content-Disposition": f'attachment; filename="{resolved.name}"'},
         )
 
     content = resolved.read_text(encoding="utf-8", errors="replace")

@@ -187,16 +187,26 @@ def _extract_math(text: str) -> tuple[str, list[str]]:
                 i = end + 2
                 continue
 
-        # Inline math  $ ... $  (only if not $$, and not preceded by another $)
+        # Inline math  $ ... $  — but NOT currency ("$1 increase") and never spanning
+        # a newline (inline math is single-line). Without these guards a dollar amount
+        # mis-opens a span that swallows whole markdown sections, which then come back
+        # raw after render (the literal-## / raw-table / unrendered-**bold** bug).
+        # Rule: opening "$" followed by a non-space, non-digit; closing "$" preceded by a
+        # non-space and not followed by a digit; no newline inside the span.
         if text[i] == "$":
-            end = text.find("$", i + 1)
-            if end != -1 and end != i + 1:   # avoid $$ being treated as empty inline
-                original = text[i : end + 1]
-                idx = len(bank)
-                bank.append(original)
-                result.append(f"MINLINE_{idx}_")
-                i = end + 1
-                continue
+            nxt = text[i + 1] if i + 1 < n else ""
+            if nxt and not nxt.isspace() and not nxt.isdigit():
+                end = text.find("$", i + 1)
+                if (end != -1 and end != i + 1
+                        and not text[end - 1].isspace()
+                        and (end + 1 >= n or not text[end + 1].isdigit())
+                        and "\n" not in text[i:end]):
+                    original = text[i : end + 1]
+                    idx = len(bank)
+                    bank.append(original)
+                    result.append(f"MINLINE_{idx}_")
+                    i = end + 1
+                    continue
 
         result.append(text[i])
         i += 1
@@ -219,8 +229,23 @@ def _restore_math(html: str, bank: list[str]) -> str:
 # ---------------------------------------------------------------------------
 
 def _chart_html(m: re.Match) -> str:
-    key = m.group(1)
-    return f'\n\n<div class="chart-embed" data-chart="{key}"></div>\n\n'
+    """Render a {{chart:KEY}} directive into a hydration div.
+
+    KEY may be a plain registry name ("multiplier_trend"), a compound colon key
+    ("heatmap:2024:L:15"), or carry a query string ("linkage_scatter?year=2024").
+    A trailing ``?query`` is split into a separate ``data-params`` attribute so
+    app.js forwards it as real query parameters; otherwise the "?year=2024" would
+    be URL-encoded into the chart-key path segment and 400 at /api/chart.
+    """
+    raw = m.group(1).strip()
+    if "?" in raw:
+        key, _, params = raw.partition("?")
+        params_attr = params.strip()
+        return (
+            f'\n\n<div class="chart-embed" data-chart="{key.strip()}" '
+            f'data-params="{params_attr}"></div>\n\n'
+        )
+    return f'\n\n<div class="chart-embed" data-chart="{raw}"></div>\n\n'
 
 
 def _table_html(m: re.Match) -> str:
@@ -435,8 +460,11 @@ def render_markdown(text: str) -> dict[str, Any]:
     # 7. Restore code blocks (replaces CODEBLOCK_n_ tokens with <figure> HTML)
     html = _restore_code_blocks(html, code_bank)
 
-    # 8. Append bibliography
-    html += _bibliography_html(citations_list)
+    # NOTE: the bibliography is rendered by the page templates (tutorial.html,
+    # narrative.html, glossary.html, study.html) from the returned
+    # ``citations`` list. We deliberately do NOT append a second
+    # <section class="bibliography"> here — doing so produced a duplicate
+    # "References" block on every page.
 
     return {
         "meta": meta,

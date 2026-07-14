@@ -23,6 +23,50 @@
     "label": "Miller, R. E., &amp; Blair, P. D. (2022). <em>Input-Output Analysis: Foundations and Extensions</em> (3rd ed.). Cambridge University Press.",
     "url": "https://www.cambridge.org/core/books/inputoutput-analysis/EED2427B0C8AB77BF0B64A6DD68F9F3A"
   },
+  "miller_blair_2009": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.). Cambridge University Press.",
+    "url": "https://www.cambridge.org/core/books/inputoutput-analysis/EED2427B0C8AB77BF0B64A6DD68F9F3A"
+  },
+  "miller_blair_2009_ch2": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 2 (Foundations of Input-Output Analysis; §2.3 the Leontief inverse, §2.4 the power-series approximation of (I − A)⁻¹). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch4": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 4 (Organization of Basic Data for Input-Output Models; §4.4 national accounts, §4.7 secondary production and imports, §4.9 the aggregation problem). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch5": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 5 (The Commodity-by-Industry Approach: Use and Make tables; deriving direct- and total-requirements matrices). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch6": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 6 (Multipliers in the Input-Output Model; §6.2.1 output, §6.2.2 income/employment, Type I vs Type II). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch12": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 12 (Supply-Side Models, Linkages, and Important Coefficients; §12.2 backward/forward linkages, §12.2.6 hypothetical extraction). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch13": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 13 (Structural Decomposition, Mixed and Dynamic Models; §13.1 structural decomposition analysis). Cambridge University Press.",
+    "url": ""
+  },
+  "miller_blair_2009_ch14": {
+    "label": "Miller, R. E., &amp; Blair, P. D. (2009). <em>Input-Output Analysis: Foundations and Extensions</em> (2nd ed.), ch. 14 (Additional Topics; §14.3 Graph Theory, Structural Path Analysis, and Qualitative Input-Output Analysis). Cambridge University Press.",
+    "url": ""
+  },
+  "ten_raa_2005": {
+    "label": "ten Raa, T. (2005). <em>The Economics of Input-Output Analysis</em>. Cambridge University Press.",
+    "url": "https://www.cambridge.org/core/books/economics-of-inputoutput-analysis/9D4B3C8F0C8A3B0E"
+  },
+  "hirschman_1958": {
+    "label": "Hirschman, A. O. (1958). <em>The Strategy of Economic Development</em>. Yale University Press.",
+    "url": ""
+  },
+  "rasmussen_1956": {
+    "label": "Rasmussen, P. N. (1956). <em>Studies in Inter-Sectoral Relations</em>. Einar Harcks Forlag / North-Holland.",
+    "url": ""
+  },
   "bea_concepts_2009": {
     "label": "Horowitz, K. J., &amp; Planting, M. A. (2009). <em>Concepts and Methods of the U.S. Input-Output Accounts</em>. Bureau of Economic Analysis, U.S. Department of Commerce.",
     "url": "https://www.bea.gov/sites/default/files/methodologies/IOmanual_092906.pdf"

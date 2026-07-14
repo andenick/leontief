@@ -9,7 +9,7 @@ summary: "The Hypothetical Extraction Method (HEM) ranks every sector by the gro
 
 Which sectors are truly indispensable? One answer comes from linkage indices — which sector has the longest supply chain or the broadest downstream reach? But linkage indices normalize out absolute scale. A fuller question is: *if this sector simply vanished, taking with it both its purchases from other industries and its sales to them, how much total output would the rest of the economy lose?*
 
-That is the Hypothetical Extraction Method (HEM).[cite:miller_blair_2022]
+That is the Hypothetical Extraction Method (HEM).[cite:miller_blair_2009_ch12]
 
 ---
 
@@ -94,4 +94,4 @@ python analysis.py
 
 The script reads `data/A_square_2024.csv` (71x71 direct-requirements matrix, derived from the BEA Leontief inverse as $A = I - L^{-1}$), `data/fd_agg_2024.csv` (aggregated final demand per sector), and `data/sector_names.csv`. It uses only `numpy.linalg.inv` — no scipy or networkx. An `analysis.ipynb` notebook mirrors every step interactively.
 
-[cite:miller_blair_2022]
+[cite:miller_blair_2009_ch12]

@@ -12,7 +12,7 @@ Between 1997 and 2024 the U.S. economy went through a visible transformation: ma
 
 2. **Final demand changed.** Households, government, and exporters simply shifted what they wanted to buy. This is captured in the [final demand](/glossary#final-demand) vector $f$.
 
-**Structural Decomposition Analysis** (SDA) is the method that attributes a historical change in output $\Delta x$ to each of these forces separately [cite:dietzenbacher_los_1998][cite:miller_blair_2022].
+**Structural Decomposition Analysis** (SDA) is the method that attributes a historical change in output $\Delta x$ to each of these forces separately [cite:dietzenbacher_los_1998][cite:miller_blair_2009_ch13].
 
 ## The Basic Identity
 
@@ -20,35 +20,32 @@ Recall the core I-O equation: $x = Lf$. For two points in time — call them per
 
 $$x^1 = L^1 f^1 \qquad x^0 = L^0 f^0$$
 
-The total change is $\Delta x = x^1 - x^0$. We want to split this into a piece driven by $\Delta L = L^1 - L^0$ (the technology effect) and a piece driven by $\Delta f = f^1 - f^0$ (the demand effect).
+The total change is $\Delta x = x^1 - x^0$. We want to split this into a piece driven by $\Delta L = L^1 - L^0$ (the technology effect) and a piece driven by $\Delta f = f^1 - f^0$ (the demand effect). Starting from $\Delta x = L^1 f^1 - L^0 f^0$ and adding and subtracting $L^1 f^0$ gives an **exact two-term decomposition**:
 
-A natural three-term decomposition is:
+$$\Delta x = \underbrace{L^1 \Delta f}_{\text{demand effect}} + \underbrace{\Delta L\, f^0}_{\text{technology effect}}$$
 
-$$\Delta x = L^1 \Delta f + \Delta L\, f^0 + \Delta L\, \Delta f$$
-
-Each term has a clear economic reading:
+There is no separate residual: the two terms reproduce $\Delta x$ exactly. Each term has a clear economic reading:
 
 | Term | Name | Interpretation |
 |------|------|----------------|
-| $L^1 \Delta f$ | Demand effect | How much output would have changed if technology had *stayed* at its 2024 level but demand had shifted from $f^0$ to $f^1$ |
-| $\Delta L\, f^0$ | Technology effect | How much output would have changed if demand had *stayed* at its 1997 level but technology (the recipe matrix) evolved from $L^0$ to $L^1$ |
-| $\Delta L\, \Delta f$ | Interaction term | The residual — output change attributable to both forces changing *together* |
+| $L^1 \Delta f$ | Demand effect | How much output changes from the shift in demand from $f^0$ to $f^1$, evaluated at period-1 technology $L^1$ |
+| $\Delta L\, f^0$ | Technology effect | How much output changes from the evolution of technology from $L^0$ to $L^1$, evaluated at period-0 demand $f^0$ |
 
 ## The Index-Number Problem and Polar Decompositions
 
-The three-term formula above is not unique — you could equally write:
+The two-term split above is not unique. Adding and subtracting $L^0 f^1$ instead yields the equally exact **polar alternate**:
 
-$$\Delta x = L^0 \Delta f + \Delta L\, f^1 + \Delta L\, \Delta f$$
+$$\Delta x = L^0 \Delta f + \Delta L\, f^1$$
 
-which puts the demand effect at period-0 technology, and the technology effect at period-1 demand. These two formulations give different answers, just as a price index using old quantities differs from one using new quantities. This is the familiar [index-number problem](/glossary#index-number-problem).
+which evaluates the demand effect at period-0 technology and the technology effect at period-1 demand. The two decompositions give different answers, just as a price index using old quantities differs from one using new quantities. This is the familiar [index-number problem](/glossary#index-number-problem).
 
-Dietzenbacher and Los (1998) showed that the most defensible approach is to **average over the polar decompositions** [cite:dietzenbacher_los_1998]. Instead of choosing one base year, compute both extremes and take the arithmetic mean:
+Dietzenbacher and Los (1998) showed that the most defensible approach is to **average over the two polar decompositions** [cite:dietzenbacher_los_1998]. Instead of choosing one base year, compute both exact two-term forms and take the arithmetic mean of the demand and technology pieces:
 
 $$\Delta x_{\text{demand}} = \tfrac{1}{2}\!\left(L^0 \Delta f + L^1 \Delta f\right)$$
 
 $$\Delta x_{\text{technology}} = \tfrac{1}{2}\!\left(\Delta L\, f^0 + \Delta L\, f^1\right)$$
 
-These two averaged terms sum exactly to $\Delta x$, eliminating the separate interaction term. The averaging has an intuitive appeal: it weights each endpoint equally rather than privileging either 1997 or 2024 as the reference year. For an economy spanning 28 years and 71 sectors, this symmetry matters [cite:bea_concepts_2009].
+These two averaged terms still sum exactly to $\Delta x$ (each polar form does, so their average does too). The averaging has an intuitive appeal: it weights each endpoint equally rather than privileging either 1997 or 2024 as the reference year. For an economy spanning 28 years and 71 sectors, this symmetry matters [cite:dietzenbacher_los_1998].
 
 ## Manufacturing Decline: 1997 to 2024
 
@@ -82,7 +79,7 @@ demand, tech = sda_polar(L0, L1, f0, f1)
 check = demand + tech  # should equal L1 @ f1 - L0 @ f0
 ```
 
-The function above takes fewer than 10 lines of NumPy and produces a 71-vector of attributed output changes — one entry per sector [cite:miller_blair_2022].
+The function above takes fewer than 10 lines of NumPy and produces a 71-vector of attributed output changes — one entry per sector [cite:miller_blair_2009_ch13].
 
 ## Caveats and Regime Breaks
 
@@ -92,3 +89,8 @@ One important caution: the BEA switched from the Standard Industrial Classificat
 
 - **Tutorial 08** — [The Economy as a Network](/learn/08-the-economy-as-a-network): after decomposing *changes*, the next step is to ask which industries sit at the structural core of the economy and why shocks to them propagate so widely.
 - **Deep dive** — [Structural Decomposition Study](/studies/structural-decomposition): worked examples on the full 1997–2024 panel with sector-level attribution charts.
+
+## Further reading
+
+- Miller &amp; Blair (2009), ch. 13 — structural decomposition analysis and the polar/averaged decomposition forms. [cite:miller_blair_2009_ch13]
+- Dietzenbacher &amp; Los (1998) — the canonical analysis of SDA's index-number sensitivity and the average-of-polar-forms recommendation. [cite:dietzenbacher_los_1998]

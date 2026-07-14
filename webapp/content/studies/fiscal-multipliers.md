@@ -7,7 +7,7 @@ summary: "Using the 2024 Leontief inverse and the BEA final-demand matrix, we co
 
 ## The Question
 
-Government spending is not monolithic. Federal defense spending on weapons systems flows into a different set of industrial sectors than state and local spending on school construction or federal nondefense spending on social services. Because each spending pattern triggers a different chain of intermediate-goods purchases through the Leontief inverse, different categories of government spending have different macroeconomic multipliers — even if their dollar totals are the same.[cite:miller_blair_2022]
+Government spending is not monolithic. Federal defense spending on weapons systems flows into a different set of industrial sectors than state and local spending on school construction or federal nondefense spending on social services. Because each spending pattern triggers a different chain of intermediate-goods purchases through the Leontief inverse, different categories of government spending have different macroeconomic multipliers — even if their dollar totals are the same.[cite:miller_blair_2009_ch6]
 
 This study quantifies those differences for 2024 using the BEA's official twelve government final-demand columns and the 71-sector Leontief inverse.
 
@@ -88,7 +88,7 @@ Software/IP spending (F06S, F07S, F10S) is concentrated in construction (`23`) a
 
 ### Clean-Input Caveat
 
-All calculations use the **square 71×71 Leontief inverse** from the BEA pipeline, not the raw 70×71 A matrix. The three missing retail sectors (441, 445, 452) are explicitly set to $f = 0$ — they are not silently dropped from $L$, so their upstream-supplier effects remain active. The FD rows `Other` and `Used` (bookkeeping rows in the BEA Use table) are excluded from $f_c$ with no loss of economic content.[cite:miller_blair_2022]
+All calculations use the **square 71×71 Leontief inverse** from the BEA pipeline, not the raw 70×71 A matrix. The three missing retail sectors (441, 445, 452) are explicitly set to $f = 0$ — they are not silently dropped from $L$, so their upstream-supplier effects remain active. The FD rows `Other` and `Used` (bookkeeping rows in the BEA Use table) are excluded from $f_c$ with no loss of economic content.[cite:miller_blair_2009_ch6]
 
 ---
 
@@ -107,7 +107,7 @@ Download the full replication bundle at:
 **[/api/study/fiscal-multipliers/bundle.zip](/api/study/fiscal-multipliers/bundle.zip)**
 
 ```bash
-unzip wassily_study_fiscal-multipliers.zip
+unzip leontief_study_fiscal-multipliers.zip
 cd code
 pip install -r requirements.txt
 python analysis.py
@@ -116,4 +116,4 @@ python analysis.py
 
 The script reads `data/L_2024.csv`, `data/fd_2024.csv`, `data/fd_cols.csv`, and `data/sector_names.csv`. It uses only pandas and NumPy (no networkx, no scipy). The alignment of FD rows to L's index is performed explicitly and logged to stdout on every run. An `analysis.ipynb` notebook mirrors every step.
 
-[cite:miller_blair_2022][cite:godley_lavoie_2007]
+[cite:miller_blair_2009_ch6][cite:godley_lavoie_2007]

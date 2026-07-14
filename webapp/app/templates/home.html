@@ -18,6 +18,10 @@
         and fully reproducible example studies.
       </p>
 
+      <!-- Research Triad (ASK v2 ark-triad) — Data · Code · Outputs, above the fold.
+           Hydrated by ark-triad.js from ecosystem.json `cdf` block (site_key=leontief). -->
+      {% include "_shared/triad.html" %}
+
       <!-- Headline stats -->
       <div class="stats">
         <div class="stat">
@@ -41,30 +45,94 @@
   </section>
 
   <!-- ------------------------------------------------------------------ -->
-  <!-- What is an I-O table? teaser                                        -->
+  <!-- What is an I-O table? teaser  +  worked mini-example                 -->
   <!-- ------------------------------------------------------------------ -->
   <section class="container io-teaser">
     <div class="prose">
       <h2>What is an Input-Output Table?</h2>
       <p>
-        An input-output (I-O) table is a matrix that records how much each
-        industry in an economy buys from every other industry — and from final
-        demand (households, government, exports). Developed by Nobel laureate
-        Wassily Leontief in the 1940s, I-O analysis lets economists answer
-        questions like: <em>if auto sales rise by $1 billion, how much does
-        steel output need to grow?</em>
+        An input-output (I-O) table is a grid that records how much each
+        industry in an economy buys from every other industry — and how much
+        goes to final demand (households, government, exports). Developed by
+        Nobel laureate Leontief, I-O analysis answers questions like:
+        <em>if car sales rise by $1, how much more steel, glass, and electricity
+        does the economy need to make?</em>
       </p>
       <p>
-        The U.S. Bureau of Economic Analysis (BEA) publishes annual I-O accounts
-        at the summary (71-sector) level. This site packages every table from
-        1997 to 2024 into machine-readable formats and derived matrices — all
-        freely downloadable and reproducible.
+        The table below is a tiny three-sector economy. Read a <strong>row</strong>
+        to see where a sector's output is sold; read a <strong>column</strong> to
+        see what a sector buys to make its output.
       </p>
-      <p><a href="/learn">Start with the tutorials &rarr;</a></p>
     </div>
 
-    <!-- Embedded chart: multiplier trend (hydrated client-side by app.js) -->
-    <div class="chart-embed" data-chart="multiplier_trend"></div>
+    <!-- Self-explanatory worked mini I-O table (static; no API needed) -->
+    <figure class="io-demo" aria-label="A simple input-output table">
+      <div class="ark-table-wrap">
+      <table class="io-demo-table">
+        <caption class="io-demo-cap">A simple economy (all figures in $ millions)</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="corner">sells&nbsp;↓ &nbsp;/&nbsp; buys&nbsp;→</th>
+            <th scope="col">Farms</th>
+            <th scope="col">Food&nbsp;factory</th>
+            <th scope="col" class="fd">Households<br><span>(final demand)</span></th>
+            <th scope="col" class="tot">Total&nbsp;output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Farms</th>
+            <td>0</td>
+            <td class="hl">60</td>
+            <td class="fd">40</td>
+            <td class="tot">100</td>
+          </tr>
+          <tr>
+            <th scope="row">Food&nbsp;factory</th>
+            <td>0</td>
+            <td>0</td>
+            <td class="fd">120</td>
+            <td class="tot">120</td>
+          </tr>
+          <tr class="va-row">
+            <th scope="row">Value added<br><span>(wages&nbsp;+&nbsp;profit)</span></th>
+            <td>100</td>
+            <td>60</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr class="tot-row">
+            <th scope="row">Total input</th>
+            <td class="tot">100</td>
+            <td class="tot">120</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <figcaption>
+        The food factory (column) buys <strong>$60m of crops from farms</strong> and
+        adds <strong>$60m of its own labor and profit</strong> to make
+        <strong>$120m of food</strong>, all sold to households. Trace one more step
+        and you can see how $1 of extra food demand pulls crops, then the inputs to
+        those crops, and so on — that ripple is exactly what input-output analysis
+        measures, across all <strong>{{ n_sectors or 71 }}</strong> real U.S. sectors.
+      </figcaption>
+    </figure>
+
+    <div class="prose io-teaser-cta">
+      <p>
+        The U.S. Bureau of Economic Analysis (BEA) publishes annual I-O accounts at
+        the 71-sector summary level. This site packages every table from 1997 to
+        2024 into machine-readable formats and derived matrices — all freely
+        downloadable and reproducible.
+      </p>
+      <p>
+        <a class="btn" href="/learn/01-what-is-an-io-table">Start the tutorials &rarr;</a>
+        <a class="btn btn-secondary" href="/studies">Browse the studies &rarr;</a>
+      </p>
+    </div>
   </section>
 
   <!-- ------------------------------------------------------------------ -->
@@ -90,7 +158,7 @@
         <h3>Tables</h3>
         <p>Interactive I-O Table Explorer: pick a year (1997–2024) and matrix
            (Use, Supply, Leontief inverse, …), toggle 71↔15-sector aggregation,
-           search sectors, and download in CSV, XLSX, JSON, or Parquet.</p>
+           search sectors, and download in CSV, XLSX, or Parquet.</p>
         <span class="badge live">{{ n_years or 28 }} years × 7 matrices</span>
       </a>
 

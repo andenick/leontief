@@ -7,7 +7,7 @@ summary: "An output multiplier answers: if final demand for one sector rises by 
 
 ## The Question
 
-You hear about "economic multipliers" constantly in policy debates: a dollar of infrastructure spending "multiplies" through the economy. But what exactly is being multiplied, and how is the number calculated? Input-output analysis gives a precise, reproducible answer grounded in the full intermediate-transactions network.[cite:miller_blair_2022]
+You hear about "economic multipliers" constantly in policy debates: a dollar of infrastructure spending "multiplies" through the economy. But what exactly is being multiplied, and how is the number calculated? Input-output analysis gives a precise, reproducible answer grounded in the full intermediate-transactions network.[cite:miller_blair_2009_ch6]
 
 ---
 
@@ -25,7 +25,7 @@ A few things to keep in mind:
 
 - **All multipliers exceed 1** because $L$ includes the direct effect (the diagonal element $l_{jj} \geq 1$) plus all upstream indirect effects.
 - **Variation across sectors** reflects how deeply a sector is embedded in the intermediate-goods network. A sector that buys mostly from the economy (domestic intermediates) has a higher multiplier than one that relies on imports or primary inputs with few domestic supply chains.
-- **Type I vs. Type II**: The multipliers computed here are *Type I* — they close the model for intermediate transactions only. A *Type II* (closed-model) multiplier also endogenizes household income and consumption, treating wages and consumer spending as an additional round of circulation. Type II multipliers are systematically larger. We focus on Type I here because they correspond directly to the published BEA Leontief inverse $L$ and can be verified cell by cell.[cite:miller_blair_2022]
+- **Type I vs. Type II**: The multipliers computed here are *Type I* — they close the model for intermediate transactions only. A *Type II* (closed-model) multiplier also endogenizes household income and consumption, treating wages and consumer spending as an additional round of circulation. Type II multipliers are systematically larger. We focus on Type I here because they correspond directly to the published BEA Leontief inverse $L$ and can be verified cell by cell.[cite:miller_blair_2009_ch6]
 
 ---
 
@@ -93,4 +93,4 @@ python analysis.py
 
 The script reads `data/L_2024.csv` (Leontief inverse, 2024), `data/multiplier_timeseries.csv` (precomputed multipliers 1997–2024 from the verified BEA pipeline), and `data/sector_names.csv`. An `analysis.ipynb` notebook mirrors every step. All figures are written as Plotly JSON so they can be embedded or rendered independently.
 
-[cite:miller_blair_2022]
+[cite:miller_blair_2009_ch6]

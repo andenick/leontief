@@ -1,4 +1,4 @@
-// Wassily — tables.js
+// Leontief — tables.js
 // Responsibilities:
 //   1. On /tables page: initialize and drive the full I-O Table Explorer.
 //   2. On every page: hydrate .table-embed[data-year][data-matrix] elements
@@ -124,8 +124,12 @@
     for (var ci2 = 0; ci2 < cols; ci2++) {
       var th = document.createElement("th");
       var code = colCodes[ci2] || ("C" + ci2);
-      th.textContent = code;
-      th.title       = colLabels[ci2] || code;
+      var colName = colLabels[ci2] || "";
+      // Header shows the human-readable sector NAME (not the BEA code/number);
+      // the code is kept in the tooltip so it is never lost. Mirrors the row
+      // label cell (rowName || rowCode).
+      th.textContent = colName || code;
+      th.title       = colName ? (code + " — " + colName) : code;
       if (hitColSet[ci2]) { th.className = "col-hit"; }
       headerRow.appendChild(th);
     }
@@ -213,7 +217,6 @@
     var dlBulkYr  = document.getElementById("dl-bulk-year");
     var dlCsv     = document.getElementById("dl-csv");
     var dlXlsx    = document.getElementById("dl-xlsx");
-    var dlJson    = document.getElementById("dl-json");
     var dlParquet = document.getElementById("dl-parquet");
 
     if (!ctrlYear) { return; }  // not on /tables
@@ -235,7 +238,6 @@
       var base = "/api/table/" + state.year + "/" + state.matrix;
       dlCsv.href     = base + ".csv";
       dlXlsx.href    = base + ".xlsx";
-      dlJson.href    = base + ".json";
       dlParquet.href = base + ".parquet";
       dlBulk.href    = "/api/bulk/" + state.year + ".zip";
       dlBulkYr.textContent = String(state.year);
@@ -341,6 +343,19 @@
     // Heatmap — prefers chart API; falls back to client-side Plotly heatmap
     // -----------------------------------------------------------------------
 
+    // Render the chart title as HTML above the plot (wraps responsively, unlike the
+    // Plotly SVG title which truncates on narrow screens — DNA graph contract).
+    function setHeatmapTitle(t) {
+      var el = document.getElementById("heatmap-title");
+      if (!el && heatPlotEl && heatPlotEl.parentNode) {
+        el = document.createElement("div");
+        el.id = "heatmap-title"; el.className = "ark-chart-title";
+        el.style.margin = "0 0 8px";
+        heatPlotEl.parentNode.insertBefore(el, heatPlotEl);
+      }
+      if (el) el.textContent = t || "";
+    }
+
     function renderHeatmap(token, tablePayload) {
       var suffix   = state.agg ? (":" + state.agg) : "";
       var chartKey = "heatmap:" + state.year + ":" + state.matrix + suffix;
@@ -349,15 +364,26 @@
         .then(function (data) {
           if (token !== _currentRender) { return; }
           if (data && data.figure && data.figure.data && window.Plotly) {
+            var srvLayout = data.figure.layout || {};
+            var title = (srvLayout.title && (srvLayout.title.text ||
+                         (typeof srvLayout.title === "string" ? srvLayout.title : ""))) || "";
+            setHeatmapTitle(title);   // HTML title (wraps) instead of the truncating Plotly SVG title
             var layout = Object.assign(
-              { margin: { t: 50, b: 120, l: 160, r: 20 }, autosize: true },
-              data.figure.layout || {}
+              { margin: { t: 16, b: 120, l: 160, r: 20 }, autosize: true },
+              srvLayout
             );
-            Plotly.newPlot(heatPlotEl, data.figure.data, layout, {
-              responsive: true,
-              displaylogo: false,
-              modeBarButtonsToRemove: ["lasso2d", "select2d"]
-            });
+            delete layout.title;
+            // Theme + dark-aware re-theming via the kit (ArkPlotly registers the div).
+            if (window.ArkPlotly) {
+              ArkPlotly.plot(heatPlotEl, data.figure.data, layout,
+                             { filename: chartKey.replace(/[^a-z0-9]+/gi, "_") });
+            } else {
+              Plotly.newPlot(heatPlotEl, data.figure.data, layout, {
+                responsive: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ["lasso2d", "select2d"]
+              });
+            }
           } else {
             // Chart API unavailable or returned incomplete data — build client-side
             renderClientHeatmap(token, tablePayload);
@@ -378,26 +404,28 @@
       var colLabels = payload.column_names || payload.columns || [];
       var values    = payload.values       || [];
 
-      Plotly.newPlot(
-        heatPlotEl,
-        [{
-          type: "heatmap",
-          z:    values,
-          x:    colLabels,
-          y:    rowLabels,
-          colorscale: "Teal",
-          reversescale: false,
-          showscale: true
-        }],
-        {
-          margin: { t: 50, b: 120, l: 200, r: 40 },
-          xaxis: { tickangle: -45, tickfont: { size: 9 } },
-          yaxis: { tickfont: { size: 9 }, autorange: "reversed" },
-          autosize: true
-        },
-        { responsive: true, displaylogo: false,
-          modeBarButtonsToRemove: ["lasso2d", "select2d"] }
-      );
+      var traces = [{
+        type: "heatmap",
+        z:    values,
+        x:    colLabels,
+        y:    rowLabels,
+        colorscale: "Teal",
+        reversescale: false,
+        showscale: true
+      }];
+      var layout = {
+        margin: { t: 50, b: 120, l: 200, r: 40 },
+        xaxis: { tickangle: -45, tickfont: { size: 9 } },
+        yaxis: { tickfont: { size: 9 }, autorange: "reversed" },
+        autosize: true
+      };
+      if (window.ArkPlotly) {
+        ArkPlotly.plot(heatPlotEl, traces, layout, { filename: "io_heatmap" });
+      } else {
+        Plotly.newPlot(heatPlotEl, traces, layout,
+          { responsive: true, displaylogo: false,
+            modeBarButtonsToRemove: ["lasso2d", "select2d"] });
+      }
     }
 
     // -----------------------------------------------------------------------
@@ -461,8 +489,24 @@
   // Compact table-embed hydration (global — fires on every page)
   // Hydrates: <div class="table-embed" data-year="..." data-matrix="..."
   //                                    data-agg="...">
-  // Note: app.js also calls WassilyTables.hydrate for .table-embed[data-table]
+  // Note: app.js also calls LeontiefTables.hydrate for .table-embed[data-table]
   // -------------------------------------------------------------------------
+
+  // Cap a matrix payload to a small preview slice so a compact embed NEVER inlines a
+  // huge grid (DNA TABLE_RENDERING_STANDARD: the full matrix lives in the Explorer).
+  function _previewPayload(p, maxR, maxC) {
+    var totalR = p.rows || (p.values ? p.values.length : 0);
+    var totalC = p.cols || ((p.values && p.values[0]) ? p.values[0].length : 0);
+    var R = Math.min(maxR, totalR), C = Math.min(maxC, totalC);
+    var out = {}; for (var k in p) out[k] = p[k];
+    out.rows = R; out.cols = C;
+    if (p.columns)      out.columns      = p.columns.slice(0, C);
+    if (p.column_names) out.column_names = p.column_names.slice(0, C);
+    if (p.index_names)  out.index_names  = p.index_names.slice(0, R);
+    if (p.index)        out.index        = p.index.slice(0, R);
+    if (p.values)       out.values       = p.values.slice(0, R).map(function (row) { return (row || []).slice(0, C); });
+    return { p: out, truncated: (totalR > R || totalC > C), R: R, C: C, totalR: totalR, totalC: totalC };
+  }
 
   function hydrateTableEmbed(el) {
     // Support both data-year/data-matrix attributes AND legacy data-table="YEAR/MATRIX"
@@ -536,8 +580,27 @@
       if (!payload) { return; }
       loadingP.remove();
       if (payload.label) { titleSpan.textContent = payload.label; }
-      var table = buildGrid(payload, {rows: [], cols: []});
-      body.appendChild(table);
+      // Compact PREVIEW only — never inline a huge matrix; the full grid is one click
+      // away via "Open in Explorer →" (DNA table standard).
+      var prev = _previewPayload(payload, 8, 8);
+      // Wrap the matrix preview in a focusable scroll region (matrices don't reflow to
+      // cards well) so a narrow viewport scrolls it accessibly instead of overflowing.
+      var grid = buildGrid(prev.p, {rows: [], cols: []});
+      var gwrap = document.createElement("div");
+      gwrap.className = "ark-table-wrap";
+      gwrap.setAttribute("role", "region");
+      gwrap.setAttribute("tabindex", "0");
+      gwrap.setAttribute("aria-label", "matrix preview (scrollable)");
+      gwrap.appendChild(grid);
+      body.appendChild(gwrap);
+      if (prev.truncated) {
+        var note = document.createElement("p");
+        note.className = "tec-note";
+        note.style.cssText = "margin:8px 0 0;font-size:.85rem;color:var(--ark-fg-dim)";
+        note.textContent = "Preview: " + prev.R + "×" + prev.C + " of the full " +
+          prev.totalR + "×" + prev.totalC + " matrix — use “Open in Explorer” for the complete table.";
+        body.appendChild(note);
+      }
     });
   }
 
@@ -567,13 +630,13 @@
     hydrateAllTableEmbeds();
 
     // Expose API for app.js delegation
-    window.WassilyTables = {
+    window.LeontiefTables = {
       hydrate:    hydrateTableEmbed,
       hydrateAll: hydrateAllTableEmbeds
     };
 
     // Signal ready so app.js can delegate to us
-    document.dispatchEvent(new CustomEvent("wassily:tables-ready"));
+    document.dispatchEvent(new CustomEvent("leontief:tables-ready"));
   }
 
   if (document.readyState === "loading") {

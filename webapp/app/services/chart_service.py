@@ -23,9 +23,15 @@ build_chart(key, **params) -> dict
 
 Unknown key raises ValueError listing available builders.
 
-THEME
------
-Module-level THEME dict applied to every figure's layout.
+THEME (v1.1)
+------------
+Figures are built THEME-NEUTRAL (transparent backgrounds, no imposed font color
+or colorway). Visual theming — font/grid colors, accent-led colorway, and live
+light/dark re-theming on the toggle — is applied CLIENT-SIDE by the Arcanum Site
+Kit ``ark-plotly.js`` (``ArkPlotly.layout`` merged in ``static/js/app.js``). The
+only color this module still owns is the diverging heatmap colorscale, which is a
+data encoding (not chrome). Single/multi-series traces omit explicit colors so the
+kit colorway colors them and they re-theme on toggle.
 """
 from __future__ import annotations
 
@@ -57,20 +63,12 @@ _CACHE_DIR: Path = _WEBAPP_ROOT / "site_data" / "cache"
 # Theme
 # ---------------------------------------------------------------------------
 
+# v1.1: NO imposed light theme. Figures ship transparent + uncolored; the kit
+# (ark-plotly.js) supplies font/grid/colorway and re-themes on the toggle. The
+# only retained color is the diverging heatmap colorscale (a data encoding).
 THEME: dict[str, Any] = {
-    "font": {
-        "family": "Inter, Arial, sans-serif",
-        "size": 12,
-        "color": "#1a1a2e",
-    },
-    "paper_bgcolor": "#fafafa",
-    "plot_bgcolor": "#ffffff",
     "margin": {"l": 80, "r": 40, "t": 60, "b": 80},
-    "colorway": [
-        "#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51",
-        "#457b9d", "#a8dadc", "#e63946", "#06d6a0", "#118ab2",
-    ],
-    # Diverging colorscale for heatmaps (blue-white-red)
+    # Diverging colorscale for heatmaps (blue-white-red) — data encoding, not chrome
     "heatmap_colorscale": [
         [0.0, "#1d3557"],
         [0.25, "#457b9d"],
@@ -78,6 +76,15 @@ THEME: dict[str, Any] = {
         [0.75, "#e63946"],
         [1.0, "#9b2226"],
     ],
+}
+
+# Semantic categorical colors for the linkage quadrant scatter (data encoding —
+# distinct saturated hues that read on BOTH light and dark backgrounds).
+_QUADRANT = {
+    "key":      "#dc2626",  # BL>1 & FL>1  (Rasmussen key sector)
+    "backward": "#2563eb",  # BL>1 only
+    "forward":  "#0d9488",  # FL>1 only
+    "weak":     "#9aa3af",  # neither
 }
 
 
@@ -108,13 +115,17 @@ def _fig_dict(fig: go.Figure) -> dict:
 # ---------------------------------------------------------------------------
 
 def _base_layout(**overrides: Any) -> dict:
-    """Return a layout dict starting from THEME defaults, with overrides merged."""
+    """Return a THEME-NEUTRAL layout (transparent bg; no font/colorway imposed).
+
+    The kit's ``ArkPlotly.layout`` (applied client-side in app.js) supplies font
+    color, grid colors, the accent-led colorway, and live light/dark re-theming.
+    We only fix the margins and force transparent backgrounds so the chart sits
+    cleanly on the page in either mode even before the kit hydrates.
+    """
     layout = {
-        "font": THEME["font"],
-        "paper_bgcolor": THEME["paper_bgcolor"],
-        "plot_bgcolor": THEME["plot_bgcolor"],
         "margin": THEME["margin"],
-        "colorway": THEME["colorway"],
+        "paper_bgcolor": "rgba(0,0,0,0)",
+        "plot_bgcolor": "rgba(0,0,0,0)",
     }
     layout.update(overrides)
     return layout
@@ -148,32 +159,38 @@ def matrix_heatmap(year: int, matrix: str = "L", agg: str | None = None) -> dict
     x_codes = payload["columns"]
     y_codes = payload["index"]
 
-    # Custom hover: use codes for brevity in template; names via customdata
+    # Axis ticks use human-readable sector NAMES, not BEA codes (numbers): a
+    # visitor should read "Construction", not "23". Codes are still surfaced in
+    # the hover tooltip alongside the name so the BEA code is never lost. When a
+    # name collides (rare), disambiguate with its code so Plotly's categorical
+    # axis does not merge two distinct sectors onto one tick.
+    def _unique(labels: list[str], codes: list[str]) -> list[str]:
+        seen: dict[str, int] = {}
+        out: list[str] = []
+        for lbl, code in zip(labels, codes):
+            if labels.count(lbl) > 1:
+                out.append(f"{lbl} ({code})")
+            else:
+                out.append(lbl)
+            seen[lbl] = seen.get(lbl, 0) + 1
+        return out
+
+    x_axis = _unique(x_labels, x_codes)
+    y_axis = _unique(y_labels, y_codes)
+
+    # Hover shows "Name (CODE)" for both axes; customdata carries the pre-built
+    # "Name (CODE)" strings so the tooltip is explicit even though the axis tick
+    # already shows the name.
     customdata_rows = [
-        [[y_codes[r], x_codes[c]] for c in range(len(x_labels))]
+        [[f"{y_labels[r]} ({y_codes[r]})", f"{x_labels[c]} ({x_codes[c]})"]
+         for c in range(len(x_labels))]
         for r in range(len(y_labels))
     ]
 
-    trace = go.Heatmap(
-        z=z,
-        x=x_codes,
-        y=y_codes,
-        colorscale=THEME["heatmap_colorscale"],
-        hovertemplate=(
-            "<b>Row:</b> %{meta[0]}<br>"
-            "<b>Col:</b> %{meta[1]}<br>"
-            "<b>Value:</b> %{z:.4f}<extra></extra>"
-        ),
-        meta=[[f"{y_labels[r]} ({y_codes[r]})" + "||" + f"{x_labels[c]} ({x_codes[c]})"
-               for c in range(len(x_codes))]
-              for r in range(len(y_codes))],
-    )
-
-    # Rebuild with proper meta structure for hovertemplate
     trace2 = go.Heatmap(
         z=z,
-        x=x_codes,
-        y=y_codes,
+        x=x_axis,
+        y=y_axis,
         colorscale=THEME["heatmap_colorscale"],
         customdata=customdata_rows,
         hovertemplate=(
@@ -244,7 +261,7 @@ def multiplier_bar(year: int, n: int = 15) -> dict:
         x=values,
         y=sector_names_list,
         orientation="h",
-        marker_color=THEME["colorway"][0],
+        # color omitted -> kit colorway[0] (accent), re-themes on toggle
         hovertemplate="<b>%{y}</b><br>Multiplier: %{x:.3f}<extra></extra>",
     )
 
@@ -306,7 +323,7 @@ def multiplier_trend() -> dict:
         x=year_col.tolist(),
         y=mean_mult.tolist(),
         mode="lines+markers",
-        line={"color": THEME["colorway"][0], "width": 2},
+        line={"width": 2},  # color from kit colorway, re-themes on toggle
         marker={"size": 6},
         hovertemplate="<b>%{x}</b><br>Mean multiplier: %{y:.3f}<extra></extra>",
         name="Mean output multiplier",
@@ -380,13 +397,13 @@ def linkage_scatter(year: int) -> dict:
     colors = []
     for b, f in zip(bl, fl):
         if b >= 1.0 and f >= 1.0:
-            colors.append(THEME["colorway"][4])   # red = key
+            colors.append(_QUADRANT["key"])        # key sector
         elif b >= 1.0:
-            colors.append(THEME["colorway"][0])   # dark = backward-dominant
+            colors.append(_QUADRANT["backward"])   # backward-dominant
         elif f >= 1.0:
-            colors.append(THEME["colorway"][1])   # teal = forward-dominant
+            colors.append(_QUADRANT["forward"])    # forward-dominant
         else:
-            colors.append(THEME["colorway"][6])   # light = weak
+            colors.append(_QUADRANT["weak"])       # weak
 
     trace = go.Scatter(
         x=bl.tolist(),
@@ -414,7 +431,7 @@ def linkage_scatter(year: int) -> dict:
     annotations = [
         {"x": 1.02, "y": 1.02, "xref": "x", "yref": "y",
          "text": "Key sectors", "showarrow": False,
-         "font": {"size": 10, "color": THEME["colorway"][4]}},
+         "font": {"size": 10, "color": _QUADRANT["key"]}},
     ]
 
     fig = go.Figure(
@@ -498,7 +515,7 @@ def structural_trend(key: str) -> dict:
                 y=df[col].tolist(),
                 mode="lines+markers",
                 name=col.replace("_", " ").title(),
-                line={"color": THEME["colorway"][i % len(THEME["colorway"])], "width": 2},
+                line={"width": 2},  # color from kit colorway, re-themes on toggle
                 marker={"size": 6},
                 hovertemplate=f"<b>%{{x}}</b><br>{col}: %{{y:.4f}}<extra></extra>",
             )
@@ -598,7 +615,7 @@ def generic_series(key: str, columns: list[str] | None = None) -> dict:
                 y=mean_vals,
                 mode="lines+markers",
                 name="Cross-sector mean",
-                line={"color": THEME["colorway"][0], "width": 2},
+                line={"width": 2},  # color from kit colorway, re-themes on toggle
                 marker={"size": 6},
                 hovertemplate="<b>%{x}</b><br>Mean: %{y:.4f}<extra></extra>",
             )
@@ -612,10 +629,7 @@ def generic_series(key: str, columns: list[str] | None = None) -> dict:
                     y=df[col].tolist(),
                     mode="lines+markers",
                     name=col.replace("_", " ").title(),
-                    line={
-                        "color": THEME["colorway"][i % len(THEME["colorway"])],
-                        "width": 2,
-                    },
+                    line={"width": 2},  # color from kit colorway, re-themes on toggle
                     marker={"size": 5},
                     hovertemplate=f"<b>%{{x}}</b><br>{col}: %{{y:.4f}}<extra></extra>",
                 )
@@ -803,10 +817,20 @@ def build_chart(chart_key: str, **params: Any) -> dict:
         if alias in _COMPOUND_ALIASES:
             builder_name, arg_names = _COMPOUND_ALIASES[alias]
         elif alias in CHART_REGISTRY:
-            # Allow full builder name as alias with colon-args (best effort)
-            # e.g. "matrix_heatmap:2024:L"
+            # Allow full builder name as alias with colon-args, e.g.
+            # "matrix_heatmap:2024:L" or "structural_trend:labor_share".
+            # Derive the positional arg names from the builder's OWN signature
+            # so colon args map correctly (a fixed generic list mis-mapped the
+            # first arg of single-arg builders to "year" — e.g.
+            # structural_trend:labor_share -> structural_trend(year="labor_share"),
+            # a TypeError).
+            import inspect
             builder_name = alias
-            arg_names = ["year", "matrix", "agg", "n", "key", "columns"]
+            sig = inspect.signature(CHART_REGISTRY[builder_name])
+            arg_names = [
+                p.name for p in sig.parameters.values()
+                if p.kind in (p.POSITIONAL_OR_KEYWORD, p.POSITIONAL_ONLY)
+            ]
         else:
             raise ValueError(
                 f"Unknown chart alias {alias!r}. "

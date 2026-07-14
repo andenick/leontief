@@ -1,10 +1,10 @@
-"""Central configuration for the Leontief I-O website.
+"""Central configuration for the Leontief website.
 
 Resolves project paths and site constants. All paths are computed relative to
 this file so the app works regardless of where the venv lives.
 
 Path hierarchy:
-    webapp/app/config.py  ->  webapp/  ->  <project-root>/
+    webapp/app/config.py  ->  webapp/  ->  Leontief/  ->  Projects/  ->  Arcanum/
 """
 from __future__ import annotations
 
@@ -15,9 +15,10 @@ from pathlib import Path
 # Root paths
 # ---------------------------------------------------------------------------
 
-# webapp/app/config.py -> webapp/ -> <project-root>/
+# webapp/app/config.py -> webapp/ -> Leontief/
 WEBAPP_ROOT: Path = Path(__file__).resolve().parent.parent
-PROJECT_ROOT: Path = WEBAPP_ROOT.parent           # project root (one level above webapp/)
+PROJECT_ROOT: Path = WEBAPP_ROOT.parent           # …/Leontief/
+ARCANUM_ROOT: Path = PROJECT_ROOT.parent.parent   # …/Arcanum/  (Leontief -> Projects -> Arcanum)
 
 # ---------------------------------------------------------------------------
 # Project source directories (read-only; populated outside webapp)
@@ -50,10 +51,15 @@ STATIC_DIR: Path = WEBAPP_ROOT / "app" / "static"
 
 SITE_TITLE: str = "Leontief"
 SITE_TAGLINE: str = "U.S. Input-Output Tables, 1997–2024"
-SITE_HOST: str = os.environ.get("LEONTIEF_HOST", "leontief.nickanderson.us")
+SITE_HOST: str = os.environ.get("LEONTIEF_HOST", "leontief.heterodata.org")
 
 # Public source repository (Code mode "View on GitHub" button).
 GITHUB_URL: str = os.environ.get("LEONTIEF_GITHUB_URL", "https://github.com/andenick/leontief")
+
+# Pinned commit ref for replication-code permalinks (STUDY_PAGE_STANDARD requires a
+# pinned SHA, not a branch). Set LEONTIEF_GITHUB_PIN to the release commit at deploy
+# time; defaults to "main" only as a development fallback.
+GITHUB_PIN: str = os.environ.get("LEONTIEF_GITHUB_PIN", "main")
 
 # BEA data scope constants
 BEA_YEARS: tuple[int, ...] = tuple(range(1997, 2025))   # 1997–2024 inclusive

@@ -42,13 +42,14 @@ import pandas as pd
 # Config — resolve paths without depending on a running FastAPI app
 # ---------------------------------------------------------------------------
 try:
-    from app.config import SITE_DATA, CACHE_DIR, CONTENT_DIR, get_manifest_path
+    from app.config import SITE_DATA, CACHE_DIR, CONTENT_DIR, DOWNLOADS_DIR, get_manifest_path
 except ImportError:
     # Fallback: compute paths relative to this file (webapp/app/services/…)
     _WEBAPP_ROOT = Path(__file__).resolve().parent.parent.parent
     SITE_DATA = _WEBAPP_ROOT / "site_data"
     CACHE_DIR = SITE_DATA / "cache"
     CONTENT_DIR = _WEBAPP_ROOT / "content"
+    DOWNLOADS_DIR = SITE_DATA / "downloads"
 
     def get_manifest_path() -> Path:  # type: ignore[misc]
         return SITE_DATA / "site_manifest.json"
@@ -57,12 +58,12 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # Allowed export formats
 # ---------------------------------------------------------------------------
-_ALLOWED_FMTS = frozenset({"csv", "xlsx", "json", "parquet"})
+# DNA: CSV / XLSX / Parquet only — JSON is not a published download format.
+_ALLOWED_FMTS = frozenset({"csv", "xlsx", "parquet"})
 
 _MEDIA = {
     "csv": "text/csv",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "json": "application/json",
     "parquet": "application/octet-stream",
 }
 
@@ -174,23 +175,12 @@ def _df_to_bytes(df: pd.DataFrame, fmt: str, sheet_name: str = "data") -> bytes:
             df.to_excel(writer, sheet_name=sheet_name, index=True)
         return buf.getvalue()
 
-    if fmt == "json":
-        # orient='split': {"index":[…],"columns":[…],"data":[[…],…]}
-        # We also output as "values" key alias for spec compliance.
-        split = json.loads(df.to_json(orient="split"))
-        # Rename "data" -> "values" to match the spec wording
-        payload = {
-            "index": split["index"],
-            "columns": split["columns"],
-            "values": split["data"],
-        }
-        buf.write(json.dumps(payload).encode("utf-8"))
-        return buf.getvalue()
-
     if fmt == "parquet":
         df.to_parquet(buf, index=True)
         return buf.getvalue()
 
+    # JSON is intentionally NOT a published download format (DNA: CSV/XLSX/Parquet
+    # only). _check_fmt already rejects it upstream; no json branch here.
     raise ValueError(f"Unknown format: {fmt!r}")  # unreachable after _check_fmt
 
 
@@ -207,20 +197,11 @@ def _series_to_bytes(df: pd.DataFrame, fmt: str, sheet_name: str = "data") -> by
             df.to_excel(writer, sheet_name=sheet_name, index=False)
         return buf.getvalue()
 
-    if fmt == "json":
-        split = json.loads(df.to_json(orient="split"))
-        payload = {
-            "index": split["index"],
-            "columns": split["columns"],
-            "values": split["data"],
-        }
-        buf.write(json.dumps(payload).encode("utf-8"))
-        return buf.getvalue()
-
     if fmt == "parquet":
         df.to_parquet(buf, index=False)
         return buf.getvalue()
 
+    # JSON intentionally omitted (DNA: CSV/XLSX/Parquet only).
     raise ValueError(f"Unknown format: {fmt!r}")
 
 
@@ -245,7 +226,7 @@ def export_matrix(
     df = _read_matrix_parquet(year, matrix)
     sheet = f"{matrix}_{year}"
     raw = _df_to_bytes(df, fmt, sheet_name=sheet)
-    filename = f"wassily_{matrix}_{year}.{fmt}"
+    filename = f"leontief_{matrix}_{year}.{fmt}"
     return raw, _MEDIA[fmt], filename
 
 
@@ -263,7 +244,7 @@ def export_series(
     _check_fmt(fmt)
     df = _read_series_parquet(key)
     raw = _series_to_bytes(df, fmt, sheet_name=key[:31])  # xlsx sheet name ≤31 chars
-    filename = f"wassily_{key}.{fmt}"
+    filename = f"leontief_{key}.{fmt}"
     return raw, _MEDIA[fmt], filename
 
 
@@ -298,7 +279,7 @@ def bundle_year_zip(year: int) -> tuple[bytes, str, str]:
             except FileNotFoundError:
                 continue
             csv_bytes = df.to_csv(index=True).encode("utf-8")
-            arc_name = f"wassily_{matrix}_{year}.csv"
+            arc_name = f"leontief_{matrix}_{year}.csv"
             zf.writestr(arc_name, csv_bytes)
             csv_count += 1
             prov = t.get("provenance", "")
@@ -314,23 +295,41 @@ def bundle_year_zip(year: int) -> tuple[bytes, str, str]:
             + "\n".join(provenance_lines)
             + "\n\n"
             f"Source: Bureau of Economic Analysis (BEA) Input-Output Accounts\n"
-            f"Site: https://leontief.nickanderson.us\n"
+            f"Site: https://leontief.heterodata.org\n"
             f"Generated: {manifest.get('generated', 'unknown')}\n"
         )
         zf.writestr("README.txt", readme.encode("utf-8"))
 
-    filename = f"wassily_io_{year}.zip"
+    filename = f"leontief_io_{year}.zip"
     return buf.getvalue(), "application/zip", filename
 
 
-def bundle_all_zip() -> tuple[bytes, str, str]:
-    """Build an in-memory zip of every matrix CSV across all years.
+def code_bundle_zip() -> tuple[bytes, str, str]:
+    """Return the pre-built code bundle (matrix-build pipeline + study analyses).
 
-    Also includes:
-    - README.txt  (top-level provenance)
-    - sectors.json
-    - site_manifest.json
+    Built by data_pipeline/build_bundles.py and shipped in site_data/downloads/.
+    Raises FileNotFoundError if it has not been built.
     """
+    static = DOWNLOADS_DIR / "leontief_code.zip"
+    if not static.exists():
+        raise FileNotFoundError(
+            "code bundle not built — run data_pipeline/build_bundles.py"
+        )
+    return static.read_bytes(), "application/zip", "leontief_code.zip"
+
+
+def bundle_all_zip() -> tuple[bytes, str, str]:
+    """Return the full-dataset DATA bundle.
+
+    Prefers the pre-built Code-&-Data-First bundle (CSV + XLSX + Parquet for every
+    matrix + series, plus LICENSE / data_dictionary.csv / PROVENANCE.csv), built
+    by data_pipeline/build_bundles.py and shipped in site_data/downloads/. Falls
+    back to an on-the-fly CSV-only zip if the static bundle is absent.
+    """
+    static = DOWNLOADS_DIR / "leontief_all.zip"
+    if static.exists():
+        return static.read_bytes(), "application/zip", "leontief_all.zip"
+
     manifest = _load_manifest()
     tables = manifest.get("tables", [])
 
@@ -345,7 +344,7 @@ def bundle_all_zip() -> tuple[bytes, str, str]:
             except FileNotFoundError:
                 continue
             csv_bytes = df.to_csv(index=True).encode("utf-8")
-            arc_name = f"{year}/wassily_{matrix}_{year}.csv"
+            arc_name = f"{year}/leontief_{matrix}_{year}.csv"
             zf.writestr(arc_name, csv_bytes)
 
         # Static data files
@@ -367,14 +366,14 @@ def bundle_all_zip() -> tuple[bytes, str, str]:
             f"Matrices per year: Use, Supply, A, A_square, L, VA, FD\n"
             f"Sector count: {manifest.get('coverage', {}).get('sector_count', 71)}\n"
             f"Classification: {manifest.get('coverage', {}).get('classification', 'BEA Summary')}\n\n"
-            f"Directory layout: <year>/wassily_<matrix>_<year>.csv\n\n"
+            f"Directory layout: <year>/leontief_<matrix>_<year>.csv\n\n"
             f"Source: Bureau of Economic Analysis (BEA) Input-Output Accounts\n"
-            f"Site: https://leontief.nickanderson.us\n"
+            f"Site: https://leontief.heterodata.org\n"
             f"Generated: {manifest.get('generated', 'unknown')}\n"
         )
         zf.writestr("README.txt", readme.encode("utf-8"))
 
-    return buf.getvalue(), "application/zip", "wassily_io_all.zip"
+    return buf.getvalue(), "application/zip", "leontief_io_all.zip"
 
 
 def study_bundle_zip(slug: str) -> tuple[bytes, str, str]:
@@ -413,5 +412,5 @@ def study_bundle_zip(slug: str) -> tuple[bytes, str, str]:
         for fpath in sorted(cache_artifacts):
             zf.write(fpath, "cache/" + fpath.name)
 
-    filename = f"wassily_study_{slug}.zip"
+    filename = f"leontief_study_{slug}.zip"
     return buf.getvalue(), "application/zip", filename

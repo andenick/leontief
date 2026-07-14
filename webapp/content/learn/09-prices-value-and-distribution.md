@@ -20,7 +20,7 @@ Read this right to left: the price of a good equals the cost of all its intermed
 
 $$p = v(I - A)^{-1} = vL$$
 
-where $L = (I-A)^{-1}$ is the familiar [Leontief inverse](/glossary#leontief-inverse). The same matrix that solves the quantity system also solves the price system — just applied to value-added coefficients instead of final demand. [cite:miller_blair_2022]
+where $L = (I-A)^{-1}$ is the familiar [Leontief inverse](/glossary#leontief-inverse). The same matrix that solves the quantity system also solves the price system — just applied to value-added coefficients instead of final demand. [cite:miller_blair_2009_ch2]
 
 **What this means in plain English.** The price of a car embeds not just the auto assembler's wages, but also the wages of steel workers, the wages of iron miners, and the wages of the coal miners who supplied energy to the blast furnace. The Leontief inverse unravels every layer of the supply chain and adds them all up. Prices, in this framework, are *vertically integrated cost structures* made visible.
 
@@ -42,7 +42,7 @@ The formula is identical to the **Marxian labor value** — the total socially n
 
 $$\lambda = \ell(I - A)^{-1}$$
 
-This is not a coincidence. Wassily Leontief and Karl Marx were asking the same empirical question — how much labor, direct and indirect, does production require? — even if they drew different political conclusions from the answer. [cite:shaikh_capitalism_2016]
+This is not a coincidence. Leontief and Karl Marx were asking the same empirical question — how much labor, direct and indirect, does production require? — even if they drew different political conclusions from the answer. [cite:shaikh_capitalism_2016]
 
 ## Distribution: Wages and Profits in I-O
 
@@ -92,3 +92,9 @@ print(pd.Series(v_integrated, index=L.columns).sort_values().tail(10))
 ## Where Next
 
 The price and distribution framework sets the stage for thinking about *change over time*. Tutorial 10 — [Vintages and Pitfalls](/learn/10-vintages-and-pitfalls) — shows how to navigate Leontief's 28 annual tables responsibly: which years are directly comparable, where the methodological breaks are, and how to download the data. For deeper empirical work on wages, profits, and prices across industries, see [/studies/prices-and-distribution](/studies/prices-and-distribution).
+
+## Further reading
+
+- Miller &amp; Blair (2009), §2.6 — the Leontief price (cost-push) model, the dual of the quantity model. [cite:miller_blair_2009_ch2]
+- Pasinetti (1981), *Structural Change and Economic Growth* — vertically integrated labor coefficients. [cite:pasinetti_1981]
+- Shaikh (2016), *Capitalism: Competition, Conflict, Crises* — the labor-value reading of the I-O system. [cite:shaikh_capitalism_2016]

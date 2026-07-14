@@ -58,7 +58,7 @@ A sector that scores above average on both [backward linkage](#backward-linkage)
 
 ### Leontief Inverse (Total Requirements Matrix)
 
-The central object of input-output analysis, defined as $L = (I - A)^{-1}$. Each element $l_{ij}$ gives the total output of sector $i$ required — directly and through all indirect supply-chain rounds — to deliver one unit of sector $j$'s output to final demand. The Leontief inverse can be expressed as a convergent power series: $L = I + A + A^2 + A^3 + \cdots$, where the first term is direct output, the second is first-round indirect requirements, and so on. Column sums of L give [output multipliers](#multiplier-output--income--employment). Named after Wassily Leontief.[cite:leontief_1936][cite:miller_blair_2022]
+The central object of input-output analysis, defined as $L = (I - A)^{-1}$. Each element $l_{ij}$ gives the total output of sector $i$ required — directly and through all indirect supply-chain rounds — to deliver one unit of sector $j$'s output to final demand. The Leontief inverse can be expressed as a convergent power series: $L = I + A + A^2 + A^3 + \cdots$, where the first term is direct output, the second is first-round indirect requirements, and so on. Column sums of L give [output multipliers](#multiplier-output--income--employment). Named after Leontief.[cite:leontief_1936][cite:miller_blair_2022]
 
 ### Make Table
 

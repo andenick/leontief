@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Code — {{ site_title }}{% endblock %}
+{% block description %}How {{ site_title }} is built: the Anu-framework data-construction pipeline, plus a runnable R and Python transform that reproduces the output-multiplier figures from the published Leontief inverse.{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="container">
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/">Home</a> &rsaquo; Code
+    </nav>
+
+    <div class="code-hero">
+      <div class="code-hero-text">
+        <h1>How the pipeline works</h1>
+        <p class="lead" style="max-width:760px;color:var(--muted);">
+          This dataset is built by the <strong>Anu framework</strong> — a staged,
+          documented data-construction pipeline. Every script and file carries a
+          <em>stage prefix</em> so the code reads as an ordered method, not a pile
+          of scripts. Here is what the prefixes mean.
+        </p>
+      </div>
+      {% if github_url %}
+      <a class="btn btn-gh" href="{{ github_url }}" target="_blank" rel="noopener">
+        View all the code on GitHub &#8599;
+      </a>
+      {% endif %}
+    </div>
+
+    <ol class="stage-list">
+      {% for st in stages %}
+      <li class="stage-card">
+        <div class="stage-badge">{{ st.prefix }}</div>
+        <div class="stage-body">
+          <h3>{{ st.title }}</h3>
+          <p>{{ st.blurb }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+
+    <div class="code-note">
+      <p>
+        Each <em>script</em> filename combines a phase prefix with a number that
+        identifies the step (e.g. <code>P02_build_coefficients.py</code> is a
+        processing step). The numbers are ids, not an ordering — the
+        <em>letter</em> tells you which pipeline phase the script belongs to, and
+        <code>P</code> always means processing. (A script-phase prefix is a
+        different thing from a data series's own id; the letter on a script says
+        nothing about how a series is classified, and vice versa.) The full
+        source — loaders, processors and validators — lives on GitHub, and every
+        chart and table on this site is produced by that same code.
+      </p>
+      {% if github_url %}
+      <a class="btn btn-gh" href="{{ github_url }}" target="_blank" rel="noopener">
+        Browse the repository &#8594;
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- Reproduce a figure — the output-multiplier transform (R + Python)    -->
+    <!-- Carson DNA A6: every code chunk is a boxed, copyable, R<->Python      -->
+    <!-- toggleable block. This is the exact transform behind the multiplier   -->
+    <!-- figures, faithful to content/studies/code/multipliers-explained.     -->
+    <!-- =================================================================== -->
+    <h2 id="reproduce" style="margin-top:48px;">Reproduce a figure</h2>
+    <p style="max-width:760px;color:var(--muted);">
+      You do not need the whole pipeline to check our numbers. An economy's
+      <strong>output multiplier</strong> for a sector is simply the column sum of
+      the Leontief inverse <code>L = (I − A)⁻¹</code>: the total output, across all
+      sectors, required to deliver one unit of that sector's final demand. The
+      transform below downloads the published <code>L</code> for 2024
+      (<a href="/api/table/2024/L?fmt=csv">CSV</a>), computes every sector's output
+      multiplier, and ranks them — the same computation behind the
+      <a href="/studies/multipliers-explained">Multipliers</a> study. It is shown
+      in both <strong>R</strong> and <strong>Python</strong>; switch with the
+      toggle. Point <code>L_url</code> at any year, and change the column you sort
+      on to explore.
+    </p>
+
+    <div class="ark-code" data-arkcode data-filename="leontief_output_multipliers" data-default="r">
+      <div class="ark-code-head">
+        <span class="ark-code-path">output multipliers from the Leontief inverse</span>
+      </div>
+      <pre data-lang="r"><code>{% filter forceescape %}{% raw %}# Output multipliers from the published Leontief inverse L = (I - A)^-1.
+# The output multiplier of sector j is the column sum of L: total output
+# (across all sectors) needed to deliver one unit of j's final demand.
+#
+# DATA:   point L_url at any year's Leontief inverse (the /api/table CSV).
+# CHANGE: L_url (the year) and `n` (how many top sectors to print).
+
+L_url <- "https://leontief.heterodata.org/api/table/2024/L?fmt=csv"
+n      <- 10
+
+# read the 71 x 71 inverse; first column is the sector index -> row names
+L <- read.csv(L_url, check.names = FALSE, row.names = 1)
+L <- as.matrix(L)
+
+# output multiplier = column sum of L (one value per sector)
+mult <- colSums(L)
+
+out <- data.frame(
+  sector     = names(mult),
+  multiplier = as.numeric(mult),
+  row.names  = NULL,
+  stringsAsFactors = FALSE
+)
+out <- out[order(-out$multiplier), ]
+out$rank <- seq_len(nrow(out))
+
+cat(sprintf("economy mean output multiplier: %.3f\n", mean(out$multiplier)))
+print(head(out[, c("rank", "sector", "multiplier")], n), row.names = FALSE)
+# write.csv(out, "multipliers_2024.csv", row.names = FALSE){% endraw %}{% endfilter %}</code></pre>
+      <pre data-lang="python"><code>{% filter forceescape %}{% raw %}# Output multipliers from the published Leontief inverse L = (I - A)^-1.
+# The output multiplier of sector j is the column sum of L: total output
+# (across all sectors) needed to deliver one unit of j's final demand.
+#
+# DATA:   point L_url at any year's Leontief inverse (the /api/table CSV).
+# CHANGE: L_url (the year) and `n` (how many top sectors to print).
+import pandas as pd
+
+L_url = "https://leontief.heterodata.org/api/table/2024/L?fmt=csv"
+n     = 10
+
+# read the 71 x 71 inverse; first column is the sector index -> row index
+L = pd.read_csv(L_url, index_col=0)
+
+# output multiplier = column sum of L (one value per sector)
+mult = L.sum(axis=0).rename("multiplier")
+mult.index.name = "sector"
+
+out = mult.reset_index().sort_values("multiplier", ascending=False).reset_index(drop=True)
+out["rank"] = out.index + 1
+
+print(f"economy mean output multiplier: {out['multiplier'].mean():.3f}")
+print(out.loc[: n - 1, ["rank", "sector", "multiplier"]].to_string(index=False))
+# out.to_csv("multipliers_2024.csv", index=False){% endraw %}{% endfilter %}</code></pre>
+    </div>
+
+    <p style="font-size:.9rem;color:var(--muted);max-width:760px;">
+      Both versions read the same published CSV and produce the same ranking — the
+      <a href="/studies">studies</a> ship full runnable bundles (R + Python +
+      notebook + data) at <code>/api/study/&lt;slug&gt;/bundle.zip</code>.
+    </p>
+
+    <!-- Carson DNA A7/A10 — standardized provenance + honest last-updated -->
+    {% include "_shared/provenance.html" %}
+
+  </div>
+</main>
+{% endblock %}

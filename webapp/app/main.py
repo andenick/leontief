@@ -1,4 +1,4 @@
-"""FastAPI application factory for the Wassily (Leontief) website.
+"""FastAPI application factory for the Leontief website.
 
 Usage:
     uvicorn app.main:app --reload --port 8080
@@ -15,7 +15,10 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from carson_telemetry import telemetry  # Carson Telemetry Standard §4 (Layer-3 usage events)
+
 from app import config as C
+from app import chrome  # Arcanum Site Kit (ASK) v1 — shared-chrome context processor
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +54,26 @@ async def _lifespan(app: FastAPI):
     # Nothing to clean up on shutdown
 
 
+def _asset_ver(static_dir) -> str:
+    """Short content hash of the vendored kit (_shared) + site css/js — changes
+    whenever any of those change, so ?v=<hash> busts the CDN cache on deploy."""
+    import hashlib
+    from pathlib import Path
+    h = hashlib.md5()
+    root = Path(static_dir)
+    for sub in ("_shared", "css", "js"):
+        d = root / sub
+        if not d.exists():
+            continue
+        for p in sorted(d.rglob("*")):
+            if p.is_file():
+                try:
+                    h.update(p.read_bytes())
+                except Exception:  # noqa: BLE001
+                    pass
+    return h.hexdigest()[:8]
+
+
 def create_app() -> FastAPI:
     """Construct and configure the FastAPI application."""
     C.ensure_dirs()
@@ -63,11 +86,30 @@ def create_app() -> FastAPI:
     )
 
     # ------------------------------------------------------------------
+    # Carson telemetry (TELEMETRY_STANDARD.md §4) — Layer-3 usage events.
+    # Emits one usage_events row per request (surface="rest"/"download") into
+    # the shared SQLite DB at $CARSON_TELEMETRY_DB. Download routes are tagged
+    # explicitly via telemetry.record_download() in app/routers/api.py, since
+    # Leontief's downloads live under /api/table|series|bulk and /…/bundle.zip
+    # (not the library's default /download prefix).
+    app.add_middleware(telemetry.ASGIMiddleware, service="leontief")
+
+    # ------------------------------------------------------------------
     # Jinja2 templates
     # ------------------------------------------------------------------
-    templates = Jinja2Templates(directory=str(C.TEMPLATES_DIR))
+    # context_processors=[chrome.ark_context] injects the Arcanum Site Kit
+    # shared-chrome vars (site_key, site_title, site_home, dpr_url, ecosystem,
+    # nav) into EVERY TemplateResponse — no per-route changes needed.
+    templates = Jinja2Templates(
+        directory=str(C.TEMPLATES_DIR),
+        context_processors=[chrome.ark_context],
+    )
     templates.env.globals["site_title"] = C.SITE_TITLE
     templates.env.globals["tagline"] = C.SITE_TAGLINE
+    # asset_ver: short content-hash of the vendored kit + site static, stamped as
+    # ?v=<hash> on asset URLs so a kit/CSS/JS change busts the Cloudflare cache
+    # automatically (the box has no CF purge token; kit assets are cached 4h).
+    templates.env.globals["asset_ver"] = _asset_ver(C.STATIC_DIR)
     app.state.templates = templates
 
     # ------------------------------------------------------------------

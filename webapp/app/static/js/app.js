@@ -1,4 +1,4 @@
-// Wassily — app.js
+// Leontief — app.js
 // Responsibilities:
 //   1. Hydrate .chart-embed elements via /api/chart/{key} + Plotly.newPlot
 //   2. Code-block copy buttons (reads .raw-code textarea; matches narrative_service markup)
@@ -12,44 +12,63 @@
   // Chart hydration
   // -----------------------------------------------------------------------
 
+  // Fallback (kit-absent) download renderer. Primary path uses ArkDownloads,
+  // which renders ALL keys incl. `bundle` (fixes study-figure bundle links).
   function dlButtons(dl) {
     if (!dl) return "";
+    var LABEL = { csv: "CSV", xlsx: "XLSX", parquet: "Parquet",
+                  bundle: "Bundle (.zip)", zip: ".zip" };  // no JSON (DNA)
     var b = '<span class="dl-btns">Download:';
-    if (dl.csv)     b += ' <a href="' + dl.csv     + '">CSV</a>';
-    if (dl.xlsx)    b += ' <a href="' + dl.xlsx    + '">XLSX</a>';
-    if (dl.json)    b += ' <a href="' + dl.json    + '">JSON</a>';
-    if (dl.parquet) b += ' <a href="' + dl.parquet + '">Parquet</a>';
+    Object.keys(dl).forEach(function (k) {
+      if (dl[k]) b += ' <a href="' + dl[k] + '" download>' + (LABEL[k] || k.toUpperCase()) + "</a>";
+    });
     return b + "</span>";
+  }
+
+  // Derive a safe CSV filename from the chart key (e.g. "heatmap:2024:L").
+  function _chartFilename(el) {
+    return (el.getAttribute("data-chart") || "chart").replace(/[^a-z0-9]+/gi, "_");
   }
 
   function renderChart(el, payload) {
     var fig = payload.figure || {};
     el.innerHTML = "";
 
-    // Plot holder
-    var holder = document.createElement("div");
-    holder.style.minHeight = "420px";
-    el.appendChild(holder);
-
-    if (fig.data && window.Plotly) {
-      var layout = Object.assign({ margin: { t: 40, b: 60, l: 60, r: 20 } }, fig.layout || {});
-      Plotly.newPlot(holder, fig.data, layout, {
-        responsive: true,
-        displaylogo: false,
+    if (fig.data && window.Plotly && window.ArkChart) {
+      // Single chart entry point (ark-chart.js): legend-below, top-right Download CSV,
+      // the CSV/XLSX/Parquet downloads row, and an HTML title that WRAPS (the Plotly SVG
+      // title truncates on narrow screens) — all by construction (DNA graph contract).
+      var layout = fig.layout || {};
+      var title = (layout.title && (layout.title.text ||
+                   (typeof layout.title === "string" ? layout.title : ""))) || "";
+      if (layout.title) { layout = Object.assign({}, layout); delete layout.title; }
+      ArkChart.render(el, {
+        traces: fig.data, layout: layout, title: title,
+        downloads: payload.download, filename: _chartFilename(el)
+      });
+    } else if (fig.data && window.Plotly && window.ArkPlotly) {
+      // Kit chart-wrapper absent — theme via ArkPlotly + a downloads row.
+      var holder = document.createElement("div"); holder.style.minHeight = "420px"; el.appendChild(holder);
+      ArkPlotly.plot(holder, fig.data, fig.layout || {}, { filename: _chartFilename(el) });
+      if (payload.download && window.ArkDownloads) el.appendChild(ArkDownloads.buttons(payload.download));
+    } else if (fig.data && window.Plotly) {
+      // Kit absent — plain plot so charts still render.
+      var h2 = document.createElement("div"); h2.style.minHeight = "420px"; el.appendChild(h2);
+      Plotly.newPlot(h2, fig.data, fig.layout || {}, {
+        responsive: true, displaylogo: false,
         modeBarButtonsToRemove: ["lasso2d", "select2d"]
       });
     } else {
-      holder.innerHTML =
-        '<p style="color:#888;padding:24px;text-align:center">' +
-        (payload.caption || "Chart unavailable.") + "</p>";
+      el.innerHTML =
+        '<p class="chart-error">' + (payload.caption || "Chart unavailable.") + "</p>";
     }
 
-    // Caption + download row
+    // Caption below the chart + downloads (ArkChart renders the downloads row itself)
     var meta = document.createElement("div");
     meta.className = "chart-meta";
-    meta.innerHTML =
-      "<span>" + (payload.caption || "") + "</span>" +
-      dlButtons(payload.download);
+    var cap = document.createElement("span");
+    cap.textContent = payload.caption || "";
+    meta.appendChild(cap);
     el.appendChild(meta);
   }
 
@@ -87,18 +106,18 @@
 
   // -----------------------------------------------------------------------
   // Table embed hydration — DELEGATED to tables.js
-  // app.js only calls WassilyTables.hydrate; tables.js owns the logic.
+  // app.js only calls LeontiefTables.hydrate; tables.js owns the logic.
   // -----------------------------------------------------------------------
 
   function hydrateAllTables() {
     var embeds = document.querySelectorAll(".table-embed[data-table]");
     if (!embeds.length) return;
-    if (window.WassilyTables && window.WassilyTables.hydrate) {
-      embeds.forEach(window.WassilyTables.hydrate);
+    if (window.LeontiefTables && window.LeontiefTables.hydrate) {
+      embeds.forEach(window.LeontiefTables.hydrate);
     } else {
       // tables.js not ready yet — wait for its ready event
-      document.addEventListener("wassily:tables-ready", function () {
-        embeds.forEach(window.WassilyTables.hydrate);
+      document.addEventListener("leontief:tables-ready", function () {
+        embeds.forEach(window.LeontiefTables.hydrate);
       });
     }
   }
@@ -322,7 +341,7 @@
   });
 
   // Expose for use by tables.js and external callers
-  window.WassilyApp = {
+  window.LeontiefApp = {
     renderChart: renderChart,
     dlButtons:   dlButtons
   };

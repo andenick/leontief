@@ -20,7 +20,7 @@ $$m_j = \sum_{i=1}^{n} l_{ij}$$
 
 This is the **Type I output multiplier** for sector $j$. If $m_j = 1.82$, then a $1 billion increase in final demand for sector $j$ generates $1.82 billion of total output across all 71 sectors — $1 billion in sector $j$ itself plus $0.82 billion spread through its suppliers and their suppliers.
 
-The minimum possible value is 1 (a sector with no intermediate inputs at all; the diagonal element $l_{jj}$ is always at least 1). The maximum in the Leontief dataset over 1997–2024 peaked at about 3.18 in 2008, for the most deeply embedded manufacturing industries.[cite:miller_blair_2022]
+The minimum possible value is 1 (a sector with no intermediate inputs at all; the diagonal element $l_{jj}$ is always at least 1). The maximum in the Leontief dataset over 1997–2024 peaked at about 3.18 in 2008, for the most deeply embedded manufacturing industries.[cite:miller_blair_2009_ch6]
 
 {{chart:multiplier_bar?year=2024}}
 
@@ -40,7 +40,7 @@ Let $\mathbf{v}$ be the row vector of compensation-per-dollar-of-output coeffici
 
 $$m_j^v = \sum_{i=1}^{n} v_i \, l_{ij} = (\mathbf{v} \, L)_j$$
 
-In matrix form, $\mathbf{v} L$ is a row vector of income multipliers for all sectors simultaneously. The interpretation: $m_j^v$ dollars of employee compensation are generated economy-wide per dollar of final demand for sector $j$, accounting for every supply-chain round.[cite:miller_blair_2022]
+In matrix form, $\mathbf{v} L$ is a row vector of income multipliers for all sectors simultaneously. The interpretation: $m_j^v$ dollars of employee compensation are generated economy-wide per dollar of final demand for sector $j$, accounting for every supply-chain round.[cite:miller_blair_2009_ch6]
 
 **Employment multipliers** work identically, substituting an employment coefficient $e_i$ (jobs per dollar of output in sector $i$) for $v_i$:
 
@@ -69,7 +69,7 @@ Type II multipliers are uniformly larger than Type I multipliers. The gap betwee
 | Comparison across sectors (relative ranking) | Either — rankings are usually stable |
 | Policy advocacy (e.g., stimulus justification) | Type II, with caveats about circularity |
 
-Type II multipliers require an assumption that household spending patterns are stable and proportional to income — an assumption more defensible in the long run.[cite:miller_blair_2022]
+Type II multipliers require an assumption that household spending patterns are stable and proportional to income — an assumption more defensible in the long run.[cite:miller_blair_2009_ch6]
 
 ---
 
@@ -102,3 +102,8 @@ The column sum is literally the operation $\sum_i l_{ij}$ — no extra steps nee
 **Next tutorial:** [Tutorial 06 — Linkages and Key Sectors](/learn/06-linkages-and-key-sectors) takes the multiplier logic one step further by asking which sectors are strategically central to the whole economy — pulling from many suppliers *and* supplying to many industries at once.
 
 **Go deeper:** See the [Multipliers study](/studies/multipliers-explained) for a worked numerical example with 2024 BEA data, including a breakdown of how the 2008 financial crisis shifted the distribution of multipliers across the 71-sector table.
+
+## Further reading
+
+- Miller &amp; Blair (2009), ch. 6 — output, income, and employment multipliers, and the Type I vs Type II distinction (closing the model on households). [cite:miller_blair_2009_ch6]
+- ten Raa (2005), *The Economics of Input-Output Analysis* — a rigorous treatment of multiplier analysis. [cite:ten_raa_2005]

@@ -1,4 +1,4 @@
-"""Build the Parquet cache and site_manifest.json for the Wassily website.
+"""Build the Parquet cache and site_manifest.json for the Leontief website.
 
 For each year 1997-2024, reads the source pickle and writes 7 labeled
 DataFrames (Use, Supply, A, A_square, L, VA, FD) to:
@@ -114,13 +114,14 @@ def write_tidy_parquet(df: pd.DataFrame, path: Path) -> None:
 # Table download URL helper
 # ---------------------------------------------------------------------------
 
+# DNA: CSV / XLSX / Parquet only — no JSON.
 def table_downloads(year: int, matrix: str) -> dict[str, str]:
     base = f"/api/table/{year}/{matrix}"
-    return {fmt: f"{base}.{fmt}" for fmt in ("csv", "xlsx", "json", "parquet")}
+    return {fmt: f"{base}.{fmt}" for fmt in ("csv", "xlsx", "parquet")}
 
 
 def series_downloads(key: str) -> dict[str, str]:
-    return {fmt: f"/api/series/{key}.{fmt}" for fmt in ("csv", "xlsx", "json", "parquet")}
+    return {fmt: f"/api/series/{key}.{fmt}" for fmt in ("csv", "xlsx", "parquet")}
 
 
 # ---------------------------------------------------------------------------

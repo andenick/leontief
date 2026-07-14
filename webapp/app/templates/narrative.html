@@ -16,6 +16,11 @@
       {{ doc_html | safe }}
     </article>
 
+    {% if show_provenance %}
+      {# Carson DNA A7/A10 — standardized provenance + honest last-updated #}
+      {% include "_shared/provenance.html" %}
+    {% endif %}
+
     {% if citations %}
       <section class="references" aria-label="References">
         <h2>References</h2>

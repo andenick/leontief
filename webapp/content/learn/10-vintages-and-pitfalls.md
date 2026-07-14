@@ -77,7 +77,7 @@ Reading the two tables: entries that have grown signal deepening supply-chain in
 
 ## How to Download the Data
 
-All matrices are available in four formats: **CSV**, **Excel (XLSX)**, **JSON**, and **Parquet**. For most analytical purposes CSV or Parquet are easiest. Parquet is recommended for bulk work — it preserves column types and reads roughly 10× faster than CSV in pandas or R.
+All matrices are available in three formats: **CSV**, **Excel (XLSX)**, and **Parquet**. For most analytical purposes CSV or Parquet are easiest. Parquet is recommended for bulk work — it preserves column types and reads roughly 10× faster than CSV in pandas or R.
 
 **Single-matrix downloads** are available from the [Table Explorer](/tables): navigate to any year and matrix, then click the download link for your preferred format. The direct API path is `/api/table/YEAR/MATRIX.FORMAT` — for example `/api/table/2019/L.csv`.
 
@@ -109,3 +109,8 @@ print(delta.sort_values(ascending=False).head(5))
 ## Where Next
 
 You now have the conceptual toolkit and the data-hygiene rules to work with the full Leontief series. The [Studies](/studies) section applies these tools to concrete empirical questions — labor share trends, financialization, supply-chain resilience, and structural decomposition of U.S. growth. The [Data page](/data) has bulk downloads and the API reference for programmatic access.
+
+## Further reading
+
+- Horowitz &amp; Planting (2009), *Concepts and Methods of the U.S. Input-Output Accounts* — BEA's documentation of vintages, revisions, and classification changes. [cite:bea_concepts_2009]
+- Miller &amp; Blair (2009), ch. 4 — organization of basic data, valuation, imports, and the aggregation problem. [cite:miller_blair_2009_ch4]

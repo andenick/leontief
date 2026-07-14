@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Data Catalog — {{ site_title }}{% endblock %}
-{% block description %}Machine-readable catalog of all U.S. BEA input-output tables (1997–2024, 71 sectors, 7 matrix types) with CSV, XLSX, JSON, and Parquet downloads.{% endblock %}
+{% block description %}Machine-readable catalog of all U.S. BEA input-output tables (1997–2024, 71 sectors, 7 matrix types) with CSV, XLSX, and Parquet downloads.{% endblock %}
 
 {% block content %}
 <main class="content">
@@ -14,25 +14,87 @@
     <h1>Data Catalog</h1>
 
     <p class="lead" style="max-width:760px; color:var(--muted); margin-bottom:12px;">
-      Every BEA input-output table processed by Wassily, in four machine-readable
+      Every BEA input-output table processed by Leontief, in three machine-readable
       formats. Data are derived from the U.S. Bureau of Economic Analysis (BEA)
       Annual I-O Accounts, Summary Level (71-sector).
     </p>
 
-    <div class="provenance-note">
-      <strong>Provenance:</strong> Source data fetched from the
-      <a href="https://apps.bea.gov/api/" target="_blank" rel="noopener">BEA API</a>
-      (Annual Input-Output Accounts, Summary). Matrices A, A_square, L and derived series
-      are computed from the Use and Supply tables using standard I-O methodology.
-      See <a href="/methodology">Methodology</a> for full derivation details.
+    <!-- Carson DNA A7/A10 — standardized provenance + honest last-updated -->
+    {% include "_shared/provenance.html" %}
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- Educational disclaimer (EDUCATIONAL_DISCLAIMER_STANDARD v1.0)        -->
+    <!-- ------------------------------------------------------------------ -->
+    <div class="edu-disclaimer" role="note" aria-label="Educational disclaimer"
+         style="margin:24px 0; padding:16px 20px; border-left:4px solid var(--accent, #c77); background:rgba(200,120,90,.08); border-radius:6px;">
+      <strong>Educational / research use.</strong>
+      The data on this site is <strong>reconstructed</strong> from BEA input-output
+      accounts for research transparency and education. It may lag official BEA
+      revisions or contain reconstruction error, and it is <strong>not a substitute
+      for the original source</strong>. For authoritative figures, pull the canonical
+      data directly from the U.S. Bureau of Economic Analysis at
+      <a href="https://www.bea.gov/" target="_blank" rel="noopener">bea.gov</a>
+      (Input-Output Accounts). We are not the original source.
     </div>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- DATA INVENTORY — every raw/derived BEA dataset underlying the site  -->
+    <!-- ------------------------------------------------------------------ -->
+    <h2 id="inventory">Data inventory</h2>
+    <p style="color:var(--muted);font-size:.94rem;margin-bottom:8px;">
+      Every BEA dataset loaded and hosted by this site. Coverage:
+      <strong>{{ coverage.get('classification', 'BEA Summary') }}</strong> level,
+      <strong>{{ coverage.get('sector_count', 71) }} sectors</strong>,
+      {% if years_sorted %}<strong>{{ years_sorted[0] }}–{{ years_sorted[-1] }}</strong>
+      ({{ years_sorted | length }} annual vintages){% endif %}.
+      {% if manifest_generated %}
+      Snapshot built <strong>{{ manifest_generated[:10] }}</strong> from the BEA API;
+      this is the retrieval date of record for every table below.
+      {% endif %}
+    </p>
+    {% if inventory %}
+      <div class="table-embed" style="margin:0 0 12px;">
+        <table class="grid" data-arktable aria-label="Data inventory">
+          <thead>
+            <tr>
+              <th scope="col">Dataset</th>
+              <th scope="col">Type</th>
+              <th scope="col">Vintages</th>
+              <th scope="col">Years</th>
+              <th scope="col">Dims (per year)</th>
+              <th scope="col">Source of record</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for inv in inventory %}
+              <tr>
+                <td style="font-weight:600;font-family:monospace;">{{ inv.matrix }}</td>
+                <td>{{ inv.kind }}</td>
+                <td>{{ inv.count }}</td>
+                <td>{{ inv.year_min }}–{{ inv.year_max }}</td>
+                <td>{{ inv.dims }}</td>
+                <td style="font-size:.88rem;">{{ inv.description }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:36px;">
+        “raw” = a BEA-published table loaded as-is; “derived” = computed by this
+        site from the raw tables using the documented
+        <a href="/methodology">methodology</a>. Per-year provenance for each table is
+        recorded in <code>site_data/site_manifest.json</code>.
+      </p>
+    {% else %}
+      <div class="stub-notice">Inventory unavailable — manifest not built.</div>
+    {% endif %}
 
     <!-- ------------------------------------------------------------------ -->
     <!-- Global bulk download                                                 -->
     <!-- ------------------------------------------------------------------ -->
     <div class="bundle-box" style="margin:32px 0;" aria-label="Bulk download">
       <h4>Download Everything</h4>
-      <p>One ZIP containing all years, all matrix types, in all four formats.</p>
+      <p>One ZIP containing all years and all matrix types as CSV, with the manifest and sector map.</p>
       <a class="btn" href="/api/bulk/all.zip">Download all.zip</a>
     </div>
 
@@ -76,12 +138,12 @@
           </div>
 
           <div class="table-embed" style="margin:0 0 32px;">
-            <table class="grid" aria-label="Matrices for {{ yr }}">
+            <table class="grid" data-arktable aria-label="Matrices for {{ yr }}">
               <thead>
                 <tr>
                   <th scope="col">Matrix</th>
                   <th scope="col">Dimensions</th>
-                  <th scope="col" colspan="4">Download</th>
+                  <th scope="col" colspan="3">Download</th>
                 </tr>
               </thead>
               <tbody>
@@ -109,11 +171,6 @@
                     <td>
                       {% if row.found %}
                         <a href="/api/table/{{ yr }}/{{ mk }}?fmt=xlsx" class="dl-fmt-link">XLSX</a>
-                      {% else %}—{% endif %}
-                    </td>
-                    <td>
-                      {% if row.found %}
-                        <a href="/api/table/{{ yr }}/{{ mk }}?fmt=json" class="dl-fmt-link">JSON</a>
                       {% else %}—{% endif %}
                     </td>
                     <td>
@@ -156,12 +213,12 @@
 
     {% if series %}
       <div class="table-embed">
-        <table class="grid" aria-label="Derived series">
+        <table class="grid" data-arktable aria-label="Derived series">
           <thead>
             <tr>
               <th scope="col">Key</th>
               <th scope="col">Description</th>
-              <th scope="col" colspan="4">Download</th>
+              <th scope="col" colspan="3">Download</th>
             </tr>
           </thead>
           <tbody>
@@ -171,7 +228,6 @@
                 <td>{{ s.get('description', s.get('title', '')) }}</td>
                 <td><a href="/api/series/{{ s.get('key') }}?fmt=csv" class="dl-fmt-link">CSV</a></td>
                 <td><a href="/api/series/{{ s.get('key') }}?fmt=xlsx" class="dl-fmt-link">XLSX</a></td>
-                <td><a href="/api/series/{{ s.get('key') }}?fmt=json" class="dl-fmt-link">JSON</a></td>
                 <td><a href="/api/series/{{ s.get('key') }}?fmt=parquet" class="dl-fmt-link">Parquet</a></td>
               </tr>
             {% endfor %}

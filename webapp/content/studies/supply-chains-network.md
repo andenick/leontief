@@ -30,7 +30,7 @@ Standard degree centrality (strength) treats all neighbors equally. Eigenvector 
 
 $$A \, v = \lambda_{\max} \, v$$
 
-where $\lambda_{\max}$ is the dominant eigenvalue of $A$. We compute $v$ by power iteration (no external libraries — only `numpy.linalg`):[cite:miller_blair_2022]
+where $\lambda_{\max}$ is the dominant eigenvalue of $A$. We compute $v$ by power iteration (no external libraries — only `numpy.linalg`):[cite:miller_blair_2009_ch14]
 
 $$v^{(k+1)} = \frac{A \, v^{(k)}}{\|A \, v^{(k)}\|_2}, \qquad v^{(0)} = \tfrac{1}{n}\mathbf{1}$$
 
@@ -88,7 +88,7 @@ Acemoglu et al. (2012) show that in an economy with $n$ sectors, idiosyncratic s
 
 The 2024 U.S. A-matrix is not a star, but it is far from uniform. The top 5 sectors by eigenvector centrality account for a disproportionate share of the network's aggregate influence. A sustained disruption to chemical supply chains (think a major facility closure, a trade restriction on specialty chemicals), or a broad contraction in professional and business services (think a credit-driven slump in B2B outsourcing), would not diversify away. It would propagate through the supply-chain network to every sector that depends on those intermediates.
 
-This is why network topology matters for macroeconomic stability — and why the input-output table, properly read as an adjacency matrix, is a tool for identifying systemic risk in the production network, not merely for computing multipliers.[cite:miller_blair_2022]
+This is why network topology matters for macroeconomic stability — and why the input-output table, properly read as an adjacency matrix, is a tool for identifying systemic risk in the production network, not merely for computing multipliers.[cite:miller_blair_2009_ch14]
 
 ---
 
@@ -109,4 +109,4 @@ python analysis.py
 
 The script reads `data/A_square_2024.csv` (68×68 BEA commodity-by-commodity A-matrix), `data/sector_agg15.csv` (sector codes, names, and 15-group aggregation). All computation uses only `numpy` and `pandas` — no network libraries. The `analysis.ipynb` notebook mirrors every step for interactive exploration.
 
-[cite:acemoglu_2012][cite:miller_blair_2022]
+[cite:acemoglu_2012][cite:miller_blair_2009_ch14]

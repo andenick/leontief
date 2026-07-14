@@ -14,7 +14,7 @@ Define $z_{ij}$ as the dollar value of commodity $i$ used by industry $j$ as an 
 
 $$a_{ij} = \frac{z_{ij}}{x_j}$$
 
-Read it as: *for every dollar of output that industry $j$ produces, it must purchase $a_{ij}$ dollars of input from sector $i$*.[cite:miller_blair_2022] Scale up or scale down production, and — under the key assumption that proportions hold — you can read off all input requirements directly from a column of A.
+Read it as: *for every dollar of output that industry $j$ produces, it must purchase $a_{ij}$ dollars of input from sector $i$*.[cite:miller_blair_2009_ch5] Scale up or scale down production, and — under the key assumption that proportions hold — you can read off all input requirements directly from a column of A.
 
 Stacking all these coefficients into a matrix gives **A**, the direct requirements matrix. It is the economy's **recipe book**: each column is a recipe for one industry, listing every ingredient and its quantity per dollar of output.
 
@@ -22,7 +22,7 @@ Stacking all these coefficients into a matrix gives **A**, the direct requiremen
 
 Suppose the Petroleum refining industry (a real BEA sector) has total output $x_j = \$100$ billion. Its Use table column shows it purchased $\$12$ billion of Crude oil and $\$4$ billion of Chemical products. The corresponding technical coefficients are:
 
-$$a_{\text{crude},\,\text{petro}} = \frac{12}{100} = 0.12 \qquad a_{\text{chem},\,\text{petro}} = \frac{0.04}{100} = 0.04$$
+$$a_{\text{crude},\,\text{petro}} = \frac{12}{100} = 0.12 \qquad a_{\text{chem},\,\text{petro}} = \frac{4}{100} = 0.04$$
 
 These numbers are far more informative than the raw flows. They remain stable across years even as nominal output expands with inflation, and they let us compare the petroleum industry's input structure in 2002 versus 2024 on an equal footing.
 
@@ -51,14 +51,14 @@ The result: the published BEA direct-requirements matrix A is technically **70 �
 To solve this, Leontief also publishes **A_square**: a square 71 × 71 version derived by applying the industry-technology assumption to allocate secondary products back to their primary industry, yielding an industry-by-industry direct requirements matrix. The heatmap above and the table above both show A_square. See our [methodology](/methodology) page for the full derivation.
 
 ```python
-import requests, numpy as np
+import numpy as np, pandas as pd
 
-# Fetch A_square for 2002 (71x71) via the Leontief API
-resp = requests.get("http://localhost:5000/api/table/2002/A_square.json")
-data = resp.json()
+# Fetch A_square for 2002 (71x71) via the Leontief API as CSV
+# (first column = sector labels -> index)
+A_df = pd.read_csv("https://leontief.heterodata.org/api/table/2002/A_square?fmt=csv", index_col=0)
 
-labels = data["columns"]
-A = np.array(data["data"])
+labels = list(A_df.columns)
+A = A_df.to_numpy()
 
 # Which sector has the largest average direct requirements?
 col_means = A.mean(axis=0)
@@ -79,3 +79,8 @@ The recipe book metaphor has one more virtue: it makes clear that the economy is
 **Continue to:** [Tutorial 4 — The Leontief Inverse](/learn/04-leontief-inverse), where we invert $(I - A)$ to get total requirements and discover that even a small direct coefficient can imply a large economy-wide impact.
 
 **Applied:** Explore the [Supply Chains Network study](/studies/supply-chains-network) to see how A-matrix structure reveals the most connected sectors in the U.S. economy.
+
+## Further reading
+
+- Miller &amp; Blair (2009), ch. 5 — direct-requirements (technical-coefficient) matrices and the commodity-vs-industry alignment behind the square A. [cite:miller_blair_2009_ch5]
+- Miller &amp; Blair (2009), §4.9 — the aggregation problem: what is gained and lost when 71 sectors are collapsed to 15. [cite:miller_blair_2009_ch4]
